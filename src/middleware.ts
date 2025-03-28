@@ -4,19 +4,29 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const isPublic = ["/login", "/register"].includes(path);
-    const token = request.cookies.get("next-auth.session-token")?.value;
 
-    if (!isPublic && !token) {
-        return NextResponse.redirect(new URL("/login", request.nextUrl));
+    // Get the session token - handle both development and production cookie names
+    const token = request.cookies.get("next-auth.session-token")?.value ??
+        request.cookies.get("__Secure-next-auth.session-token")?.value;
+
+    try {
+        if (!isPublic && !token) {
+            return NextResponse.redirect(new URL("/login", request.nextUrl));
+        }
+
+        if (isPublic && token) {
+            return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+        }
+
+        return NextResponse.next();
+    } catch (error) {
+        console.error("Middleware error:", error);
+        return NextResponse.next();
     }
-
-    if (isPublic && token) {
-        return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
-    }
-
-    return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/profile"],
+    matcher: [
+        "/((?!api|_next/static|_next/image|favicon.ico|public).*)",
+    ],
 };

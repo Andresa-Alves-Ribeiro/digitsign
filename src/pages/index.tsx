@@ -1,113 +1,180 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { toast } from 'react-hot-toast';
+import Header from '@/components/Header';
+interface DashboardStats {
+  pending: number;
+  signed: number;
+  total: number;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [stats, setStats] = useState<DashboardStats>({ pending: 0, signed: 0, total: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/login');
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/documents/stats');
+        if (!response.ok) throw new Error('Erro ao carregar estatísticas');
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        toast.error('Erro ao carregar estatísticas');
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (status === 'authenticated') {
+      fetchStats();
+    }
+  }, [status]);
+
+  if (status === 'loading' || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (status === 'authenticated') {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        {/* Navbar */}
+        <Header />
+
+        <div className="flex">
+          {/* Sidebar */}
+          <div className="w-64 bg-white shadow-lg h-screen fixed">
+            <div className="p-4">
+              <nav className="space-y-2">
+                <Link
+                  href="/"
+                  className="block px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/documents/upload"
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Upload de Documentos
+                </Link>
+                <Link
+                  href="/documents/pending"
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Pendentes
+                </Link>
+                <Link
+                  href="/documents/signed"
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  Assinados
+                </Link>
+              </nav>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <main className="flex-1 ml-64 p-8">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+              <p className="text-gray-600">Bem-vindo ao SuperSign, {session.user?.email}</p>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-700">Total de Documentos</h3>
+                <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-700">Pendentes</h3>
+                <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-700">Assinados</h3>
+                <p className="text-3xl font-bold text-green-600">{stats.signed}</p>
+              </div>
+            </div>
+
+            {/* Action Cards */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Card para Upload de Documento */}
+              <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+                <div className="p-5">
+                  <h3 className="text-lg font-medium text-gray-900">Upload de Documento</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Faça upload de um novo documento para assinatura
+                  </p>
+                  <div className="mt-4">
+                    <Link
+                      href="/documents/upload"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                    >
+                      Upload
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card para Documentos Pendentes */}
+              <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+                <div className="p-5">
+                  <h3 className="text-lg font-medium text-gray-900">Documentos Pendentes</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Visualize e assine documentos pendentes
+                  </p>
+                  <div className="mt-4">
+                    <Link
+                      href="/documents/pending"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 transition-colors"
+                    >
+                      Ver Pendentes
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card para Documentos Assinados */}
+              <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+                <div className="p-5">
+                  <h3 className="text-lg font-medium text-gray-900">Documentos Assinados</h3>
+                  
+                  <p className="mt-1 text-sm text-gray-500">
+                    Acesse o histórico de documentos assinados
+                  </p>
+
+                  <div className="mt-4">
+                    <Link
+                      href="/documents/signed"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                    >
+                      Ver Assinados
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      </div>
+    );
+  }
+
+  return null;
 }

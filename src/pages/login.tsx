@@ -1,8 +1,11 @@
+import React from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const schema = z.object({
     email: z.string().email(),
@@ -22,7 +25,14 @@ export default function LoginPage() {
         });
 
         if (result?.error) {
-            alert(result.error);
+            toast.error("Erro ao fazer login. Confira seus dados e tente novamente.", {
+                duration: 4000,
+                position: "top-right",
+                style: {
+                    background: "#ef4444",
+                    color: "#fff",
+                },
+            });
         } else {
             router.push("/");
         }
@@ -49,6 +59,10 @@ export default function LoginPage() {
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
                     Login
                 </button>
+
+                <div className="mt-4">
+                    <p className="text-sm text-gray-500">Não tem uma conta? <Link href="/register" className="text-blue-600">Cadastre-se</Link></p>
+                </div>
             </form>
         </div>
     );

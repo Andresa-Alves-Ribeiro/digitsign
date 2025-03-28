@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
 
     try {
         if (!isPublic && !token) {
-            return NextResponse.redirect(new URL("/login", request.nextUrl));
+            return NextResponse.redirect(new URL("/", request.nextUrl));
         }
 
         if (isPublic && token) {

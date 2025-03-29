@@ -2,13 +2,13 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import bcrypt from "bcryptjs";
-import { prisma } from "../../lib/prisma";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { v4 as uuidv4 } from 'uuid';
 import logo from "../../public/logo.png";
 import loginBackground from "../../public/login-background.png";
+import { toast } from "react-hot-toast";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -28,17 +28,44 @@ export default function RegisterPage() {
 
     const onSubmit = async (data: any) => {
         try {
-            const hashedPassword = await bcrypt.hash(data.password, 10);
-            await prisma.user.create({
-                data: {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: uuidv4(),
                     name: data.name,
                     email: data.email,
-                    password: hashedPassword,
+                    password: data.password,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message);
+            }
+
+            toast.success("Cadastro realizado com sucesso!", {
+                duration: 4000,
+                position: "top-right",
+                style: {
+                    background: "#22c55e",
+                    color: "#fff",
                 },
             });
             router.push("/login");
-        } catch (error) {
-            alert("Registration failed");
+        } catch (error: any) {
+            toast.error(error.message || "Erro ao fazer cadastro. Tente novamente mais tarde.", {
+                duration: 4000,
+                position: "top-right",
+                style: {
+                    background: "#ef4444",
+                    color: "#fff",
+                },
+            });
+            console.error(error);
         }
     };
 

@@ -7,12 +7,14 @@ interface LogoutButtonProps {
     className?: string;
     children?: React.ReactNode;
     onLogout?: () => void;
+    onClick?: () => void;
 }
 
 export default function LogoutButton({
     className = "",
     children = "Sair",
     onLogout,
+    onClick,
 }: LogoutButtonProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +28,7 @@ export default function LogoutButton({
                 callbackUrl: "/login",
             });
             onLogout?.();
+            onClick?.();
             router.push("/login");
         } catch (error) {
             toast.error("Erro ao fazer logout. Por favor, tente novamente.", {
@@ -44,6 +47,7 @@ export default function LogoutButton({
 
     const handleClick = () => {
         setShowConfirmation(true);
+        onClick?.();
     };
 
     return (

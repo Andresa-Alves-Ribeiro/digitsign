@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import logo from "../../public/logo.png";
 import loginBackground from "../../public/login-background.png";
 import { toast } from "react-hot-toast";
+import Loading from "@/components/Loading";
+import { useState } from "react";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -22,11 +24,13 @@ const schema = z.object({
 
 export default function RegisterPage() {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState } = useForm({
         resolver: zodResolver(schema),
     });
 
     const onSubmit = async (data: any) => {
+        setIsLoading(true);
         try {
             const response = await fetch('/api/register', {
                 method: 'POST',
@@ -66,6 +70,8 @@ export default function RegisterPage() {
                 },
             });
             console.error(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -217,9 +223,16 @@ export default function RegisterPage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            disabled={isLoading}
+                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Cadastrar
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loading text="Cadastrando..." />
+                                </div>
+                            ) : (
+                                "Cadastrar"
+                            )}
                         </motion.button>
                     </form>
 

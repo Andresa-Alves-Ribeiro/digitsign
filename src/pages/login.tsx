@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import loginBackground from "../../public/login-background.png";
+import Loading from "@/components/Loading";
 
 const schema = z.object({
     email: z.string().email(),
@@ -18,27 +19,33 @@ const schema = z.object({
 
 export default function LoginPage() {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState } = useForm({
         resolver: zodResolver(schema),
     });
 
     const onSubmit = async (data: any) => {
-        const result = await signIn("credentials", {
-            redirect: false,
-            ...data,
-        });
-
-        if (result?.error) {
-            toast.error("Erro ao fazer login. Confira seus dados e tente novamente.", {
-                duration: 4000,
-                position: "top-right",
-                style: {
-                    background: "#ef4444",
-                    color: "#fff",
-                },
+        setIsLoading(true);
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                ...data,
             });
-        } else {
-            router.push("/");
+
+            if (result?.error) {
+                toast.error("Erro ao fazer login. Confira seus dados e tente novamente.", {
+                    duration: 4000,
+                    position: "top-right",
+                    style: {
+                        background: "#ef4444",
+                        color: "#fff",
+                    },
+                });
+            } else {
+                router.push("/");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -135,9 +142,16 @@ export default function LoginPage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            disabled={isLoading}
+                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Entrar
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loading text="Entrando..." />
+                                </div>
+                            ) : (
+                                "Entrar"
+                            )}
                         </motion.button>
                     </form>
 

@@ -4,6 +4,7 @@ import withAuth from "@/components/withAuth";
 import Header from "@/components/Header";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import Loading from "@/components/Loading";
 
 function UploadDocumentPage() {
     const [file, setFile] = useState<File | null>(null);
@@ -106,11 +107,14 @@ function UploadDocumentPage() {
                                 </div>
                             )}
 
+                            {isLoading && (
+                                <div className="mb-6">
+                                    <Loading text="Enviando documento..." />
+                                </div>
+                            )}
+
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
-                                    <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Arquivo PDF
-                                    </label>
                                     <div className="mt-1 relative">
                                         <div className="group relative">
                                             <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -208,7 +212,7 @@ function UploadDocumentPage() {
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+                                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 cursor-pointer"
                                     >
                                         {isLoading ? (
                                             <>

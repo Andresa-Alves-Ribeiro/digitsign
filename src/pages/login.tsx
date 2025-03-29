@@ -1,52 +1,25 @@
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../../public/logo.png";
 import loginBackground from "../../public/login-background.png";
 import Loading from "@/components/Loading";
-
-const schema = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-});
+import FormField from "@/components/FormField";
+import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/constants/schemas";
+import { commonStyles } from "@/constants/styles";
 
 export default function LoginPage() {
-    const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const { login, isLoading } = useAuth();
     const { register, handleSubmit, formState } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(loginSchema),
     });
 
     const onSubmit = async (data: any) => {
-        setIsLoading(true);
-        try {
-            const result = await signIn("credentials", {
-                redirect: false,
-                ...data,
-            });
-
-            if (result?.error) {
-                toast.error("Erro ao fazer login. Confira seus dados e tente novamente.", {
-                    duration: 4000,
-                    position: "top-right",
-                    style: {
-                        background: "#ef4444",
-                        color: "#fff",
-                    },
-                });
-            } else {
-                router.push("/");
-            }
-        } finally {
-            setIsLoading(false);
-        }
+        await login(data);
     };
 
     return (
@@ -83,67 +56,29 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <div className="relative">
-                                <input
-                                    {...register("email")}
-                                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent transition-all duration-200 outline-0"
-                                    placeholder="seu@email.com"
-                                />
-                                <svg
-                                    className="absolute left-3 top-3.5 h-5 w-5 text-gray-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                                    />
-                                </svg>
-                            </div>
-                            {formState.errors.email && (
-                                <p className="text-red-500 text-sm mt-1">{formState.errors.email.message}</p>
-                            )}
-                        </div>
+                        <FormField
+                            label="Email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            register={register}
+                            error={formState.errors.email?.message}
+                        />
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-                            <div className="relative">
-                                <input
-                                    {...register("password")}
-                                    type="password"
-                                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent transition-all duration-200 outline-0"
-                                    placeholder="••••••••"
-                                />
-                                <svg
-                                    className="absolute left-3 top-3.5 h-5 w-5 text-gray-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                    />
-                                </svg>
-                            </div>
-                            {formState.errors.password && (
-                                <p className="text-red-500 text-sm mt-1">{formState.errors.password.message}</p>
-                            )}
-                        </div>
+                        <FormField
+                            label="Senha"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            register={register}
+                            error={formState.errors.password?.message}
+                        />
 
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                            className={commonStyles.button.primary}
                         >
                             {isLoading ? (
                                 <div className="flex items-center justify-center">
@@ -158,7 +93,7 @@ export default function LoginPage() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Não tem uma conta?{" "}
-                            <Link href="/register" className="text-green-600 hover:text-green-800 font-medium">
+                            <Link href="/register" className={commonStyles.link}>
                                 Cadastre-se
                             </Link>
                         </p>

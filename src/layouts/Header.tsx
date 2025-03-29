@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import LogoutButton from "@/components/LogoutButton";
+import LogoutButton from "@/features/auth/LogoutButton";
 import { useState, useEffect, useRef } from "react";
 
 export default function Header() {

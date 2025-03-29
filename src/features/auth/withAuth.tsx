@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Loading from "@/components/Loading";
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   return function WithAuthComponent(props: any) {
@@ -14,7 +15,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     }, [status, router]);
 
     if (status === "loading") {
-      return <div>Carregando...</div>;
+      return <Loading text="Verificando autenticação..." />;
     }
 
     if (status === "authenticated") {

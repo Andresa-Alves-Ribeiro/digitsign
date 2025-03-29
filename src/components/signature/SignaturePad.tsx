@@ -33,12 +33,12 @@ export default function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-            <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Assine no espaço abaixo</h2>
+            <div className="bg-white w-4xl flex flex-col shadow-lg items-center rounded-xl p-8 mx-auto">
+                <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Assinatura Digital</h3>
+                <p className="text-gray-600 text-center mb-8">Use o campo abaixo para desenhar sua assinatura</p>
                 
-                <div className={`border-2 border-dashed rounded-lg mb-6 transition-colors duration-200 ${
-                    isEmpty ? 'border-gray-300 bg-gray-50' : 'border-blue-500 bg-white'
+                <div className={`border-2 border-dashed rounded-xl mb-8 transition-all duration-200 w-full ${
+                    isEmpty ? 'border-gray-300 bg-gray-50' : 'border-blue-500 bg-white shadow-sm'
                 }`}>
                     <SignatureCanvas
                         ref={sigCanvas}
@@ -46,17 +46,17 @@ export default function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
                         canvasProps={{
                             width: 500,
                             height: 200,
-                            className: "w-full h-full bg-white",
+                            className: "w-full h-full bg-white rounded-xl",
                         }}
                         onEnd={() => setIsEmpty(false)}
                         aria-label="Área para assinatura"
                     />
                 </div>
 
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center gap-4 w-full">
                     <button 
                         onClick={handleClear}
-                        className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 font-medium"
+                        className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                         aria-label="Limpar assinatura"
                     >
                         Limpar
@@ -64,7 +64,7 @@ export default function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
 
                     <button 
                         onClick={onCancel}
-                        className="px-6 py-2.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors duration-200 font-medium"
+                        className="flex-1 px-6 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                         aria-label="Cancelar assinatura"
                     >
                         Cancelar
@@ -73,17 +73,16 @@ export default function SignaturePad({ onSave, onCancel }: SignaturePadProps) {
                     <button 
                         onClick={handleSave}
                         disabled={isEmpty || isSaving}
-                        className={`px-6 py-2.5 rounded-lg transition-colors duration-200 font-medium ${
+                        className={`flex-1 px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md ${
                             isEmpty || isSaving
-                                ? 'bg-gray-300 cursor-not-allowed'
-                                : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                : 'bg-green-600 hover:bg-green-700 text-white'
                         }`}
                         aria-label="Salvar assinatura"
                     >
-                        {isSaving ? 'Salvando...' : 'Salvar Assinatura'}
+                        {isSaving ? 'Salvando...' : 'Salvar'}
                     </button>
                 </div>
             </div>
-        </div>
     );
 }

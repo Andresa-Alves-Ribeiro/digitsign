@@ -1,24 +1,12 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
 }
-
-/* Add smooth scrolling behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Remove default focus outline and add custom one */
-*:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-} 

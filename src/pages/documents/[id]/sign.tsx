@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
 import withAuth from "../../../features/auth/withAuth";
 import SignaturePad from "../../../components/signature/SignaturePad";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import Header from "../../../layouts/Header";
+import { motion } from "framer-motion";
 
 function SignDocumentPage() {
     const router = useRouter();
@@ -47,46 +49,57 @@ function SignDocumentPage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
-            <div className="flex-1 container mx-auto px-4 py-8">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Assinar Documento</h1>
-                            <p className="text-sm text-gray-500 mt-1">Documento ID: {documentId}</p>
+        <div className="flex h-screen">
+            <DashboardLayout activePage="documents" />
+            <div className="flex-1 flex flex-col bg-zinc-100">
+                <Header />
+                <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full h-full"
+                    >
+                        <div className="bg-white rounded-lg shadow-sm p-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-gray-900">Assinar Documento</h1>
+                                    <p className="text-sm text-gray-500 mt-1">Documento ID: {documentId}</p>
+                                </div>
+                                <button
+                                    onClick={() => router.back()}
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                >
+                                    Voltar
+                                </button>
+                            </div>
+
+                            <div className="max-w-2xl mx-auto">
+                                <p className="text-gray-600 mb-6">
+                                    Por favor, desenhe sua assinatura no campo abaixo e clique em "Salvar Assinatura"
+                                    para finalizar o processo.
+                                </p>
+
+                                <SignaturePad
+                                    onSave={handleSaveSignature}
+                                    onCancel={() => router.back()}
+                                />
+
+                                {error && (
+                                    <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                                        {error}
+                                    </div>
+                                )}
+
+                                {isSubmitting && (
+                                    <div className="mt-4 flex items-center justify-center">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                                        <span className="ml-2 text-gray-600">Salvando assinatura...</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <button
-                            onClick={() => router.back()}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            Voltar
-                        </button>
-                    </div>
-
-                    <div className="max-w-2xl mx-auto">
-                        <p className="text-gray-600 mb-6">
-                            Por favor, desenhe sua assinatura no campo abaixo e clique em "Salvar Assinatura"
-                            para finalizar o processo.
-                        </p>
-
-                        <SignaturePad
-                            onSave={handleSaveSignature}
-                            onCancel={() => router.back()}
-                        />
-
-                        {error && (
-                            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                                {error}
-                            </div>
-                        )}
-
-                        {isSubmitting && (
-                            <div className="mt-4 flex items-center justify-center">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                                <span className="ml-2 text-gray-600">Salvando assinatura...</span>
-                            </div>
-                        )}
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </div>

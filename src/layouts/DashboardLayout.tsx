@@ -46,6 +46,16 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
             </Link>
 
             <Link
+              href="/documents/upload"
+              className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'upload' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
+                }`}
+            >
+              <DocumentArrowUpIcon className={`w-5 h-5 mr-3 ${activePage === 'upload' ? 'text-green-500 group-hover:text-green-600' : 'text-gray-400 group-hover:text-green-500'
+                }`} />
+              <span className="font-medium">Upload de Documentos</span>
+            </Link>
+
+            <Link
               href="/documents"
               className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'documents' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
                 }`}
@@ -55,16 +65,6 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
               <span className="font-medium">Todos os Documentos</span>
             </Link>
 
-            <Link
-              href="/documents/upload"
-              className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'upload' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
-                }`}
-            >
-              <DocumentArrowUpIcon className={`w-5 h-5 mr-3 ${activePage === 'upload' ? 'text-green-500 group-hover:text-green-600' : 'text-gray-400 group-hover:text-green-500'
-                }`} />
-              <span className="font-medium">Upload de Documentos</span>
-            </Link>
-            
             <Link
               href="/documents/pending"
               className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'pending' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'

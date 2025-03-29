@@ -6,7 +6,7 @@ import UploadComponent from "@/features/upload/UploadComponent";
 function UploadDocumentPage() {
     return (
         <div className="flex h-screen">
-            <DashboardLayout />
+            <DashboardLayout activePage="upload" />
 
             <div className="flex-1 flex flex-col bg-zinc-100">
                 <Header />

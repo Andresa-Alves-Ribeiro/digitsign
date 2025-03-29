@@ -1,8 +1,8 @@
 import React from "react";
-import withAuth from "@/components/withAuth";
-import Header from "@/components/Header";
-import DashboardLayout from "@/components/DashboardLayout";
-import UploadComponent from "@/components/UploadComponent";
+import withAuth from "@/features/auth/withAuth";
+import Header from "@/layouts/Header";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import UploadComponent from "@/features/upload/UploadComponent";
 function UploadDocumentPage() {
     return (
         <div className="flex h-screen">

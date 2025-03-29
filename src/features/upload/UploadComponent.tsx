@@ -2,19 +2,21 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Loading from "@/components/Loading";
+import { useDocumentStore } from "@/store/useDocumentStore";
 
 const UploadComponent = () => {
     const [file, setFile] = useState<File | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const router = useRouter();
+    const { addDocument, setLoading, setError: setStoreError, isLoading } = useDocumentStore();
 
     const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setStoreError(null);
 
         if (!file) {
             setError("Por favor, selecione um arquivo");
@@ -26,7 +28,7 @@ const UploadComponent = () => {
             return;
         }
 
-        setIsLoading(true);
+        setLoading(true);
 
         const formData = new FormData();
         formData.append("file", file);
@@ -45,14 +47,17 @@ const UploadComponent = () => {
                 throw new Error(errorMessage + details);
             }
 
+            addDocument(data);
             setSuccess(true);
             setTimeout(() => {
                 router.push("/documents");
             }, 1500);
         } catch (error) {
-            setError(error instanceof Error ? error.message : "Erro ao fazer upload do documento");
+            const errorMessage = error instanceof Error ? error.message : "Erro ao fazer upload do documento";
+            setError(errorMessage);
+            setStoreError(errorMessage);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 

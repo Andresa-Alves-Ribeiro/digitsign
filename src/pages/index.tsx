@@ -3,21 +3,17 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import Header from '@/components/Header';
+import Header from '@/layouts/Header';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
-import logo from '../../public/logo.png';
 import {
-  HomeIcon,
   DocumentArrowUpIcon,
   ClockIcon,
   CheckCircleIcon,
-  ChartBarIcon,
   DocumentTextIcon,
   ClipboardDocumentListIcon,
   DocumentCheckIcon
 } from '@heroicons/react/24/outline';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 interface DashboardStats {
   pending: number;

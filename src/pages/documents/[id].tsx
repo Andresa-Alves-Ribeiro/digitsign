@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import withAuth from "@/components/withAuth";
+import withAuth from "@/features/auth/withAuth";
 import Loading from '@/components/Loading';
 import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import DashboardLayout from "@/components/DashboardLayout";
-import Header from "@/components/Header";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import Header from "@/layouts/Header";
 
 interface Document {
     id: string;

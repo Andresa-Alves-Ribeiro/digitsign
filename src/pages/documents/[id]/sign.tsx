@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
-import withAuth from "@/features/auth/withAuth";
-import SignaturePad from "@/components/signature/SignaturePad";
+import withAuth from "../../../features/auth/withAuth";
+import SignaturePad from "../../../components/signature/SignaturePad";
 
 function SignDocumentPage() {
     const router = useRouter();

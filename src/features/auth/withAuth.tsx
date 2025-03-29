@@ -5,7 +5,7 @@ import Loading from "@/components/Loading";
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   return function WithAuthComponent(props: any) {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const router = useRouter();
 
     useEffect(() => {

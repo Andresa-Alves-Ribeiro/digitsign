@@ -20,82 +20,63 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const session = await getSession({ req });
-    if (!session) return res.status(401).json({ error: "Não autorizado" });
-
     if (req.method !== "POST") {
-        return res.status(405).json({ error: "Método não permitido" });
+        return res.status(405).json({ message: "Method not allowed" });
     }
 
-    let uploadedFilePath: string | null = null;
-
     try {
-        // Configuração do formidable
+        const session = await getSession({ req });
+        if (!session) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
         const form = formidable({
-            uploadDir: path.join(process.cwd(), "public", "uploads"),
-            filename: (name, ext) => `${uuidv4()}${ext}`,
-            maxFileSize: MAX_FILE_SIZE,
+            uploadDir: path.join(process.cwd(), "uploads"),
+            keepExtensions: true,
+            maxFileSize: MAX_FILE_SIZE, // 10MB
         });
 
-        // Processar o upload
-        const [fields, files] = await new Promise<[formidable.Fields, formidable.Files]>((resolve, reject) => {
+        // Cria o diretório de uploads se não existir
+        if (!fs.existsSync(form.uploadDir)) {
+            fs.mkdirSync(form.uploadDir, { recursive: true });
+        }
+
+        const [fields, files] = await new Promise((resolve, reject) => {
             form.parse(req, (err, fields, files) => {
                 if (err) reject(err);
                 resolve([fields, files]);
             });
         });
 
-        const file = files.file?.[0];
-        
-        // Validações
+        const file = files.file as formidable.File;
+
         if (!file) {
-            return res.status(400).json({ error: "Nenhum arquivo enviado" });
+            return res.status(400).json({ message: "Nenhum arquivo enviado" });
         }
 
         if (!file.mimetype || !ALLOWED_FILE_TYPES.includes(file.mimetype)) {
             throw new Error("Tipo de arquivo não permitido");
         }
 
-        const documentName = fields.name?.[0];
-        if (!documentName || typeof documentName !== 'string' || documentName.trim().length === 0) {
-            throw new Error("Nome do documento é obrigatório");
-        }
-
-        uploadedFilePath = file.filepath;
-        const fileName = path.basename(file.filepath);
+        const fileName = file.newFilename;
 
         // Salvar metadados no banco de dados
         const document = await prisma.document.create({
             data: {
-                name: documentName.trim(),
+                name: file.originalFilename || fileName,
                 fileKey: fileName,
                 userId: session.user.id,
                 status: "PENDING",
             },
         });
 
-        res.status(201).json(document);
+        return res.status(200).json({ 
+            message: "File uploaded successfully",
+            fileName: fileName,
+            originalName: file.originalFilename
+        });
     } catch (error) {
         console.error("Upload error:", error);
-        
-        // Limpar arquivo em caso de erro
-        if (uploadedFilePath) {
-            try {
-                await fs.unlink(uploadedFilePath);
-            } catch (unlinkError) {
-                console.error("Error deleting file:", unlinkError);
-            }
-        }
-
-        if (error instanceof Error) {
-            if (error.message === "Tipo de arquivo não permitido") {
-                return res.status(400).json({ error: "Tipo de arquivo não permitido. Tipos aceitos: PDF, JPEG, PNG e GIF" });
-            }
-            if (error.message === "Nome do documento é obrigatório") {
-                return res.status(400).json({ error: "Nome do documento é obrigatório" });
-            }
-        }
-
-        res.status(500).json({ error: "Erro no upload do arquivo" });
+        return res.status(500).json({ message: "Error uploading file" });
     }
 }

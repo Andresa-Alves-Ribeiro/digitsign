@@ -2,31 +2,27 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-interface WithAuthOptions {
-    redirectTo?: string;
-    LoadingComponent?: React.ComponentType;
-}
+const withAuth = (WrappedComponent: React.ComponentType) => {
+  return function WithAuthComponent(props: any) {
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
-export default function withAuth<P extends object>(
-    Component: React.ComponentType<P>,
-    options: WithAuthOptions = {}
-) {
-    const { redirectTo = "/login", LoadingComponent } = options;
+    useEffect(() => {
+      if (status === "unauthenticated") {
+        router.push("/login");
+      }
+    }, [status, router]);
 
-    return function AuthenticatedComponent(props: P) {
-        const { status } = useSession();
-        const router = useRouter();
+    if (status === "loading") {
+      return <div>Carregando...</div>;
+    }
 
-        useEffect(() => {
-            if (status === "unauthenticated") {
-                router.push(redirectTo);
-            }
-        }, [status, router, redirectTo]);
+    if (status === "authenticated") {
+      return <WrappedComponent {...props} />;
+    }
 
-        if (status === "loading") {
-            return LoadingComponent ? <LoadingComponent /> : <div>Loading...</div>;
-        }
+    return null;
+  };
+};
 
-        return <Component {...props} />;
-    };
-}
+export default withAuth;

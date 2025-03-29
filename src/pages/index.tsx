@@ -17,6 +17,7 @@ import {
   ClipboardDocumentListIcon,
   DocumentCheckIcon
 } from '@heroicons/react/24/outline';
+import DashboardLayout from '@/components/DashboardLayout';
 
 interface DashboardStats {
   pending: number;
@@ -68,61 +69,7 @@ export default function Home() {
     return (
       <div className="flex h-screen">
           {/* Sidebar */}
-          <div className="hidden md:block w-64 bg-white shadow-lg">
-            {/* Sidebar Header */}
-            <div className="p-4 border-b border-gray-100">
-              <Link href="/" className="flex items-center justify-center">
-                <Image
-                  src={logo}
-                  alt="Logo"
-                  width={120}
-                  height={120}
-                  className="w-auto"
-                />
-              </Link>
-            </div>
-
-            <div className="p-4">
-              <nav className="space-y-1">
-                <Link
-                  href="/"
-                  className="flex items-center px-4 py-2.5 text-gray-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all duration-200 group"
-                >
-                  <HomeIcon className="w-5 h-5 mr-3 text-blue-500 group-hover:text-blue-600" />
-                  <span className="font-medium">Dashboard</span>
-                </Link>
-                <Link
-                  href="/documents/upload"
-                  className="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
-                >
-                  <DocumentArrowUpIcon className="w-5 h-5 mr-3 text-gray-400 group-hover:text-blue-500" />
-                  <span className="font-medium">Upload de Documentos</span>
-                </Link>
-                <Link
-                  href="/documents/pending"
-                  className="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
-                >
-                  <ClockIcon className="w-5 h-5 mr-3 text-gray-400 group-hover:text-blue-500" />
-                  <span className="font-medium">Pendentes</span>
-                </Link>
-                <Link
-                  href="/documents/signed"
-                  className="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
-                >
-                  <CheckCircleIcon className="w-5 h-5 mr-3 text-gray-400 group-hover:text-blue-500" />
-                  <span className="font-medium">Assinados</span>
-                </Link>
-              </nav>
-            </div>
-
-            {/* Sidebar Footer */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>v1.0.0</span>
-                <span>© 2025</span>
-              </div>
-            </div>
-          </div>
+          <DashboardLayout />
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col bg-zinc-100">

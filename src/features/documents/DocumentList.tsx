@@ -3,9 +3,15 @@ import { useDocumentStore } from '@/store/useDocumentStore';
 import Loading from '@/components/Loading';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { DocumentStatus, statusLabels } from '@/types/enums/document';
 
 const DocumentList = () => {
     const { documents, isLoading, error, setDocuments, setLoading, setError } = useDocumentStore();
+
+    const translateStatus = (status: string | undefined): string => {
+        if (!status) return statusLabels[DocumentStatus.PENDING];
+        return statusLabels[status as DocumentStatus] || status;
+    };
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -125,31 +131,23 @@ const DocumentList = () => {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap text-left">
                                     <div className="text-sm text-gray-500">
                                         {new Date(document.createdAt).toLocaleDateString('pt-BR')}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap text-left">
                                     <div className="text-sm text-gray-500">
                                         {document.size ? `${(document.size / (1024 * 1024)).toFixed(2)} MB` : '-'}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap text-left">
                                     <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800">
-                                        {document.status || 'Processado'}
+                                        {translateStatus(document.status)}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center justify-end space-x-3">
-                                        <a
-                                            href={`/api/documents/${document.id}/download`}
-                                            className="text-green-600 hover:text-green-900"
-                                        >
-                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                            </svg>
-                                        </a>
                                         <button
                                             onClick={async () => {
                                                 if (window.confirm('Tem certeza que deseja excluir este documento?')) {

@@ -1,73 +1,61 @@
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { commonStyles } from "@/constants/styles";
 
 interface LogoutButtonProps {
     className?: string;
     children?: React.ReactNode;
     onLogout?: () => void;
+    onClick?: () => void;
 }
 
 export default function LogoutButton({
     className = "",
     children = "Sair",
     onLogout,
+    onClick,
 }: LogoutButtonProps) {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const { logout, isLoading } = useAuth();
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const handleLogout = async () => {
         try {
-            setIsLoading(true);
-            await signOut({
-                redirect: false,
-                callbackUrl: "/login",
-            });
+            await logout();
             onLogout?.();
-            router.push("/login");
-        } catch (error) {
-            toast.error("Erro ao fazer logout. Por favor, tente novamente.", {
-                duration: 4000,
-                position: "top-right",
-                style: {
-                    background: "#ef4444",
-                    color: "#fff",
-                },
-            });
+            onClick?.();
         } finally {
-            setIsLoading(false);
             setShowConfirmation(false);
         }
     };
 
     const handleClick = () => {
         setShowConfirmation(true);
+        onClick?.();
     };
 
     return (
         <>
             {showConfirmation ? (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+                    <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
                             Confirmar logout
                         </h3>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-sm text-gray-500 mb-6">
                             Tem certeza que deseja sair da sua conta?
                         </p>
-                        <div className="flex justify-end gap-3">
+                        <div className="flex justify-end space-x-3">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
-                                disabled={isLoading}
+                                className={commonStyles.button.secondary}
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleLogout}
-                                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className={commonStyles.button.danger}
                                 disabled={isLoading}
                                 aria-label="Confirmar logout"
                             >
@@ -90,7 +78,7 @@ export default function LogoutButton({
                 <button
                     onClick={handleClick}
                     aria-label="Sair da conta"
-                    className={`px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ${className}`}
+                    className={`${commonStyles.button.danger} ${className}`}
                     disabled={isLoading}
                 >
                     {children}

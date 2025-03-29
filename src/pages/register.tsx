@@ -1,78 +1,129 @@
+import React from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import bcrypt from "bcryptjs";
-import { prisma } from "../../lib/prisma";
-
-const schema = z.object({
-    name: z.string().min(3),
-    email: z.string().email(),
-    password: z.string().min(6),
-    confirmPassword: z.string(),
-}).refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-});
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { v4 as uuidv4 } from 'uuid';
+import logo from "../../public/logo.png";
+import loginBackground from "../../public/login-background.png";
+import { toast } from "react-hot-toast";
+import Loading from "@/components/Loading";
+import FormField from "@/components/FormField";
+import { useAuth } from "@/hooks/useAuth";
+import { registerSchema } from "@/constants/schemas";
+import { commonStyles } from "@/constants/styles";
 
 export default function RegisterPage() {
     const router = useRouter();
+    const { register: registerUser, isLoading } = useAuth();
     const { register, handleSubmit, formState } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(registerSchema),
     });
 
     const onSubmit = async (data: any) => {
-        try {
-            const hashedPassword = await bcrypt.hash(data.password, 10);
-            await prisma.user.create({
-                data: {
-                    name: data.name,
-                    email: data.email,
-                    password: hashedPassword,
-                },
-            });
-            router.push("/login");
-        } catch (error) {
-            alert("Registration failed");
-        }
+        await registerUser({
+            ...data,
+            id: uuidv4(),
+        });
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded shadow-md w-96">
-                <h1 className="text-2xl font-bold mb-6">Register</h1>
-                <div className="mb-4">
-                    <label className="block mb-2">Name</label>
-                    <input {...register("name")} className="w-full p-2 border rounded" />
-                    {formState.errors.name && (
-                        <p className="text-red-500 text-sm">{formState.errors.name.message}</p>
-                    )}
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-2">Email</label>
-                    <input {...register("email")} className="w-full p-2 border rounded" />
-                    {formState.errors.email && (
-                        <p className="text-red-500 text-sm">{formState.errors.email.message}</p>
-                    )}
-                </div>
-                <div className="mb-4">
-                    <label className="block mb-2">Password</label>
-                    <input {...register("password")} type="password" className="w-full p-2 border rounded" />
-                    {formState.errors.password && (
-                        <p className="text-red-500 text-sm">{formState.errors.password.message}</p>
-                    )}
-                </div>
-                <div className="mb-6">
-                    <label className="block mb-2">Confirm Password</label>
-                    <input {...register("confirmPassword")} type="password" className="w-full p-2 border rounded" />
-                    {formState.errors.confirmPassword && (
-                        <p className="text-red-500 text-sm">{formState.errors.confirmPassword.message}</p>
-                    )}
-                </div>
-                <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-                    Register
-                </button>
-            </form>
+        <div className="min-h-screen flex">
+            {/* Left side - Background Image */}
+            <div className="hidden lg:flex lg:w-3/5 relative">
+                <Image
+                    src={loginBackground}
+                    alt="Register Background"
+                    fill
+                    className="object-cover"
+                    priority
+                />
+            </div>
+
+            {/* Right side - Register Form */}
+            <div className="w-full lg:w-2/5 flex items-center justify-center bg-white p-8 border-l">
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full max-w-md"
+                >
+                    <div className="text-center mb-8">
+                        <Image
+                            src={logo}
+                            alt="Logo"
+                            width={80}
+                            height={80}
+                            className="mx-auto mb-4 w-auto"
+                        />
+                        <h1 className="text-3xl font-bold text-gray-800">Criar conta</h1>
+                        <p className="text-gray-600 mt-2">Preencha seus dados para começar</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <FormField
+                            label="Nome"
+                            name="name"
+                            placeholder="Seu nome completo"
+                            register={register}
+                            error={formState.errors.name?.message}
+                        />
+
+                        <FormField
+                            label="Email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            register={register}
+                            error={formState.errors.email?.message}
+                        />
+
+                        <FormField
+                            label="Senha"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            register={register}
+                            error={formState.errors.password?.message}
+                        />
+
+                        <FormField
+                            label="Confirmar Senha"
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="••••••••"
+                            register={register}
+                            error={formState.errors.confirmPassword?.message}
+                        />
+
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={isLoading}
+                            className={commonStyles.button.primary}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loading text="Cadastrando..." />
+                                </div>
+                            ) : (
+                                "Cadastrar"
+                            )}
+                        </motion.button>
+                    </form>
+
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-600">
+                            Já tem uma conta?{" "}
+                            <Link href="/login" className={commonStyles.link}>
+                                Faça login
+                            </Link>
+                        </p>
+                    </div>
+                </motion.div>
+            </div>
         </div>
     );
 }

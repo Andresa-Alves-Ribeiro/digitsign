@@ -1,69 +1,105 @@
 import React from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
-
-const schema = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-});
+import logo from "../../public/logo.png";
+import loginBackground from "../../public/login-background.png";
+import Loading from "@/components/Loading";
+import FormField from "@/components/FormField";
+import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/constants/schemas";
+import { commonStyles } from "@/constants/styles";
 
 export default function LoginPage() {
-    const router = useRouter();
+    const { login, isLoading } = useAuth();
     const { register, handleSubmit, formState } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(loginSchema),
     });
 
     const onSubmit = async (data: any) => {
-        const result = await signIn("credentials", {
-            redirect: false,
-            ...data,
-        });
-
-        if (result?.error) {
-            toast.error("Erro ao fazer login. Confira seus dados e tente novamente.", {
-                duration: 4000,
-                position: "top-right",
-                style: {
-                    background: "#ef4444",
-                    color: "#fff",
-                },
-            });
-        } else {
-            router.push("/");
-        }
+        await login(data);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded shadow-md w-96">
-                <h1 className="text-2xl font-bold mb-6">Login</h1>
-                <div className="mb-4">
-                    <label className="block mb-2">Email</label>
-                    <input {...register("email")} className="w-full p-2 border rounded" />
-                    {formState.errors.email && (
-                        <p className="text-red-500 text-sm">{formState.errors.email.message}</p>
-                    )}
-                </div>
-                <div className="mb-6">
-                    <label className="block mb-2">Password</label>
-                    <input {...register("password")} type="password" className="w-full p-2 border rounded" />
-                    {formState.errors.password && (
-                        <p className="text-red-500 text-sm">{formState.errors.password.message}</p>
-                    )}
-                </div>
-                <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-                    Login
-                </button>
+        <div className="min-h-screen flex">
+            {/* Left side - Background Image */}
+            <div className="hidden lg:flex lg:w-3/5 relative">
+                <Image
+                    src={loginBackground}
+                    alt="Login Background"
+                    fill
+                    className="object-cover"
+                    priority
+                />
+            </div>
 
-                <div className="mt-4">
-                    <p className="text-sm text-gray-500">Não tem uma conta? <Link href="/register" className="text-blue-600">Cadastre-se</Link></p>
-                </div>
-            </form>
+            {/* Right side - Login Form */}
+            <div className="w-full lg:w-2/5 flex items-center justify-center bg-white p-8 border-l">
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full max-w-md"
+                >
+                    <div className="text-center mb-8">
+                        <Image
+                            src={logo}
+                            alt="Logo"
+                            width={80}
+                            height={80}
+                            className="mx-auto mb-4 w-auto"
+                        />
+                        <h1 className="text-3xl font-bold text-gray-800">Bem-vindo de volta!</h1>
+                        <p className="text-gray-600 mt-2">Entre com suas credenciais</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <FormField
+                            label="Email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            register={register}
+                            error={formState.errors.email?.message}
+                        />
+
+                        <FormField
+                            label="Senha"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            register={register}
+                            error={formState.errors.password?.message}
+                        />
+
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={isLoading}
+                            className={commonStyles.button.primary}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loading text="Entrando..." />
+                                </div>
+                            ) : (
+                                "Entrar"
+                            )}
+                        </motion.button>
+                    </form>
+
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-600">
+                            Não tem uma conta?{" "}
+                            <Link href="/register" className={commonStyles.link}>
+                                Cadastre-se
+                            </Link>
+                        </p>
+                    </div>
+                </motion.div>
+            </div>
         </div>
     );
 }

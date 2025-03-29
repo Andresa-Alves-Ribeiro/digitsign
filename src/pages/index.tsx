@@ -125,7 +125,7 @@ export default function Home() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col bg-zinc-100">
             <Header />
             <div className="flex-1 px-4 md:px-6 py-6 overflow-auto">
               <motion.div
@@ -135,7 +135,6 @@ export default function Home() {
                 className="mb-8"
               >
                 <div className="flex items-center">
-                  <ChartBarIcon className="w-10 h-10 text-green-600 mr-3" />
                   <div>
                     <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h2>
                     <p className="text-gray-600 mt-1">Bem-vindo ao SuperSign, {session.user?.name}</p>

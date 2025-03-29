@@ -49,9 +49,6 @@ export default function Header() {
                                 </div>
                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                             </div>
-                            <span className="text-sm font-medium text-gray-700 hidden sm:inline group-hover:text-blue-600 transition-colors duration-200">
-                                {session?.user?.name}
-                            </span>
                             <svg 
                                 className={`w-4 h-4 text-gray-500 transition-all duration-200 group-hover:text-blue-600 ${
                                     isDropdownOpen ? 'transform rotate-180' : ''

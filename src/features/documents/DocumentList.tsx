@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import Loading from '@/components/Loading';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const DocumentList = () => {
     const { documents, isLoading, error, setDocuments, setLoading, setError } = useDocumentStore();
@@ -53,70 +54,130 @@ const DocumentList = () => {
         );
     }
 
+    if (!documents || documents.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center h-full">
+                <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 className="mt-2 text-lg font-medium text-gray-900">Nenhum documento encontrado</h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Você ainda não possui nenhum documento. Comece fazendo o upload de um novo documento.
+                    </p>
+                    <div className="mt-6">
+                        <Link
+                            href="/documents/upload"
+                            className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+                        >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Fazer Upload
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Documentos</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {documents.map((document, index) => (
-                    <motion.div
-                        key={document.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                    >
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center">
-                                    <div className="p-2 rounded-full bg-green-50">
-                                        <svg className="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
+        <div className="container mx-auto px-4 py-8 h-full">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Nome do documento
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Data
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tamanho
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ações
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {documents.map((document, index) => (
+                            <motion.tr
+                                key={document.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                                className="hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                        <div className="flex-shrink-0 h-10 w-10">
+                                            <svg className="h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <div className="ml-4">
+                                            <div className="text-sm font-medium text-gray-900">{document.name}</div>
+                                        </div>
                                     </div>
-                                    <h2 className="ml-3 text-lg font-semibold text-gray-900">{document.name}</h2>
-                                </div>
-                                <span className="text-sm text-gray-500">
-                                    {new Date(document.createdAt).toLocaleDateString('pt-BR')}
-                                </span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <a
-                                    href={`/api/documents/${document.id}/download`}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                                >
-                                    <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    Download
-                                </a>
-                                <button
-                                    onClick={async () => {
-                                        if (window.confirm('Tem certeza que deseja excluir este documento?')) {
-                                            try {
-                                                const response = await fetch(`/api/documents/${document.id}`, {
-                                                    method: 'DELETE',
-                                                });
-                                                if (!response.ok) {
-                                                    throw new Error('Failed to delete document');
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm text-gray-500">
+                                        {new Date(document.createdAt).toLocaleDateString('pt-BR')}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm text-gray-500">
+                                        {document.size ? `${(document.size / (1024 * 1024)).toFixed(2)} MB` : '-'}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800">
+                                        {document.status || 'Processado'}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div className="flex items-center justify-end space-x-3">
+                                        <a
+                                            href={`/api/documents/${document.id}/download`}
+                                            className="text-green-600 hover:text-green-900"
+                                        >
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            </svg>
+                                        </a>
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm('Tem certeza que deseja excluir este documento?')) {
+                                                    try {
+                                                        const response = await fetch(`/api/documents/${document.id}`, {
+                                                            method: 'DELETE',
+                                                        });
+                                                        if (!response.ok) {
+                                                            throw new Error('Failed to delete document');
+                                                        }
+                                                        setDocuments(documents.filter(doc => doc.id !== document.id));
+                                                    } catch (err) {
+                                                        setError(err instanceof Error ? err.message : 'Error deleting document');
+                                                    }
                                                 }
-                                                // Update the store to remove the deleted document
-                                                setDocuments(documents.filter(doc => doc.id !== document.id));
-                                            } catch (err) {
-                                                setError(err instanceof Error ? err.message : 'Error deleting document');
-                                            }
-                                        }
-                                    }}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-red-600 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                >
-                                    <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Excluir
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
+                                            }}
+                                            className="text-red-600 hover:text-red-900"
+                                        >
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </motion.tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

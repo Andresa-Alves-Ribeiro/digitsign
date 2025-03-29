@@ -64,26 +64,6 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
                 }`} />
               <span className="font-medium">Todos os Documentos</span>
             </Link>
-
-            <Link
-              href="/documents/pending"
-              className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'pending' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
-                }`}
-            >
-              <ClockIcon className={`w-5 h-5 mr-3 ${activePage === 'pending' ? 'text-green-500 group-hover:text-green-600' : 'text-gray-400 group-hover:text-green-500'
-                }`} />
-              <span className="font-medium">Pendentes</span>
-            </Link>
-
-            <Link
-              href="/documents/signed"
-              className={`flex items-center px-4 py-2.5 text-gray-700 rounded-lg transition-all duration-200 group ${activePage === 'signed' ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
-                }`}
-            >
-              <CheckCircleIcon className={`w-5 h-5 mr-3 ${activePage === 'signed' ? 'text-green-500 group-hover:text-green-600' : 'text-gray-400 group-hover:text-green-500'
-                }`} />
-              <span className="font-medium">Assinados</span>
-            </Link>
           </nav>
         </div>
 

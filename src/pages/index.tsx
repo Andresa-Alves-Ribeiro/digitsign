@@ -158,7 +158,7 @@ export default function Home() {
                       Visualize e assine documentos pendentes
                     </p>
                     <Link
-                      href="/documents/pending"
+                      href="/documents"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition-colors duration-200"
                     >
                       <ClockIcon className="w-4 h-4 mr-2" />
@@ -181,7 +181,7 @@ export default function Home() {
                       Acesse o histórico de documentos assinados
                     </p>
                     <Link
-                      href="/documents/signed"
+                      href="/documents"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-purple-600 hover:bg-purple-700 transition-colors duration-200"
                     >
                       <CheckCircleIcon className="w-4 h-4 mr-2" />

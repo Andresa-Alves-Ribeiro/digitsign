@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Loading from "@/components/Loading";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { getSession } from "next-auth/react";
 
 const UploadComponent = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -34,9 +35,17 @@ const UploadComponent = () => {
         formData.append("file", file);
 
         try {
+            const session = await getSession();
+            if (!session) {
+                router.push("/login");
+                return;
+            }
+
             const res = await fetch("/api/documents/upload", {
                 method: "POST",
                 body: formData,
+                headers: {
+                },
             });
 
             const data = await res.json();

@@ -74,7 +74,7 @@ export const useAuth = () => {
             router.push("/documents");
         } catch (error: any) {
             toast.error(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG);
-            console.error(error);
+            // Error is already handled by toast notification
         } finally {
             setIsLoading(false);
         }

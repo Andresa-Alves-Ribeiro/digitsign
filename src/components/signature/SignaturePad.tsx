@@ -44,7 +44,6 @@ export const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
       await onSave(signature)
       toast.success('Assinatura salva com sucesso!', TOAST_CONFIG)
     } catch (error) {
-      console.error(error)
       toast.error('Erro ao salvar assinatura', TOAST_CONFIG)
     } finally {
       setIsSaving(false)

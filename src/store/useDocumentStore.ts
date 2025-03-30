@@ -1,35 +1,18 @@
 import { create } from 'zustand'
 import { Document } from '@prisma/client'
+import { DocumentState as DocumentStateType } from '@/types/interfaces'
 
-interface DocumentState {
-  documents: Document[]
-  isLoading: boolean
-  error: string | null
-  setDocuments: (documents: Document[]) => void
-  addDocument: (document: Document) => void
-  updateDocument: (document: Document) => void
-  deleteDocument: (id: string) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
+interface DocumentStore extends DocumentStateType {
+  setDocuments: (documents: Document[]) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
 }
 
-export const useDocumentStore = create<DocumentState>((set) => ({
+export const useDocumentStore = create<DocumentStore>((set) => ({
   documents: [],
-  isLoading: false,
+  loading: false,
   error: null,
   setDocuments: (documents) => set({ documents }),
-  addDocument: (document) =>
-    set((state) => ({ documents: [...state.documents, document] })),
-  updateDocument: (document) =>
-    set((state) => ({
-      documents: state.documents.map((doc) =>
-        doc.id === document.id ? document : doc
-      ),
-    })),
-  deleteDocument: (id) =>
-    set((state) => ({
-      documents: state.documents.filter((doc) => doc.id !== id),
-    })),
-  setLoading: (loading) => set({ isLoading: loading }),
+  setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 })) 

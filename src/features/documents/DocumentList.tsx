@@ -3,20 +3,16 @@ import { useDocumentStore } from '@/store/useDocumentStore';
 import Loading from '@/components/Loading';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { DocumentStatus } from '@/types/enums/document';
+import { Document as DocumentType } from '@/types/interfaces';
+import { DocumentStatus } from '@/types/enums';
 import { documentStatusConfig } from '@/constants/documentStatus';
 import { formatFileSizeInMB } from '@/utils/file';
 
-interface Document {
-    id: string;
-    name: string;
-    fileKey: string;
-    userId: string;
-    status: string;
-    mimeType: string | null;
-    size: number | null;
-    createdAt: Date;
-    updatedAt: Date;
+interface DocumentListProps {
+    documents: DocumentType[];
+    onView: (id: string) => void;
+    onSign: (id: string) => void;
+    onDelete: (id: string) => void;
 }
 
 const DocumentList = () => {
@@ -78,7 +74,7 @@ const DocumentList = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {documents.map((document: Document, index) => (
+                    {documents.map((document: DocumentType, index) => (
                         <motion.tr
                             key={document.id}
                             initial={{ opacity: 0, y: 20 }}

@@ -7,21 +7,10 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatFileSize } from '@/utils/file';
 import { documentStatusConfig } from '@/constants/documentStatus';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@/types/enums';
 import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-
-interface Document {
-    id: string;
-    name: string;
-    fileKey: string;
-    userId: string;
-    status: DocumentStatus;
-    mimeType: string;
-    size: number;
-    createdAt: string;
-    updatedAt: string;
-}
+import { Document } from '@/types/interfaces';
 
 function DocumentViewPage() {
     const router = useRouter();
@@ -120,7 +109,7 @@ function DocumentViewPage() {
         );
     }
 
-    const statusConfig = documentStatusConfig[document.status];
+    const statusConfig = documentStatusConfig[document.status as keyof typeof documentStatusConfig];
 
     return (
         <div className="h-full overflow-y-auto">
@@ -205,7 +194,7 @@ function DocumentViewPage() {
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500">Tamanho do arquivo</p>
-                                <p className="font-medium text-gray-900">{formatFileSize(document.size)}</p>
+                                <p className="font-medium text-gray-900">{document.size && formatFileSize(document.size)}</p>
                             </div>
                         </div>
                     </div>

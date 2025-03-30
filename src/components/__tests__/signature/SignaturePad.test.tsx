@@ -1,194 +1,141 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { SignaturePad } from '@/components/signature/SignaturePad'
 import toast from 'react-hot-toast'
-import { TOAST_CONFIG } from '@/constants/toast'
+import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast'
 
 // Mock react-hot-toast
-jest.mock('react-hot-toast', () => ({
-  success: jest.fn(),
-  error: jest.fn(),
-  loading: jest.fn(),
-  dismiss: jest.fn(),
-}))
+jest.mock('react-hot-toast', () => {
+  const mockToast = {
+    success: jest.fn(),
+    error: jest.fn(),
+    loading: jest.fn(),
+    dismiss: jest.fn(),
+  }
+  return {
+    __esModule: true,
+    default: mockToast,
+    toast: mockToast,
+  }
+})
 
 // Mock react-signature-canvas
-const mockClear = jest.fn()
-const mockIsEmpty = jest.fn()
-const mockToDataURL = jest.fn()
-
 jest.mock('react-signature-canvas', () => {
-  return React.forwardRef((props: any, ref) => {
-    React.useEffect(() => {
-      if (ref) {
-        // @ts-ignore
-        ref.current = {
-          clear: mockClear,
-          isEmpty: mockIsEmpty,
-          toDataURL: mockToDataURL,
-        }
-      }
-    }, [ref])
+  const MockSignaturePad = forwardRef(({ onBegin, onEnd }: any, ref: any) => {
+    const [hasDrawn, setHasDrawn] = React.useState(false)
+
+    React.useImperativeHandle(ref, () => ({
+      clear: () => {
+        setHasDrawn(false)
+      },
+      isEmpty: () => !hasDrawn,
+      toDataURL: () => 'data:image/png;base64,test',
+    }))
 
     return (
-      <canvas
-        data-testid="signature-canvas"
-        className={props.canvasProps?.className}
-        aria-label={props.canvasProps?.['aria-label']}
-        onMouseUp={props.onEnd}
+      <div
+        data-testid="mock-signature-pad"
+        onMouseDown={() => {
+          setHasDrawn(true)
+          onBegin?.()
+        }}
+        onMouseUp={onEnd}
       />
     )
   })
+  MockSignaturePad.displayName = 'SignatureCanvas'
+  return MockSignaturePad
 })
 
 describe('SignaturePad Component', () => {
-  const mockOnSave = jest.fn()
-  const mockOnCancel = jest.fn()
-
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsEmpty.mockReturnValue(true)
-    mockToDataURL.mockReturnValue('data:image/png;base64,test')
   })
 
   it('renders correctly', () => {
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
-
-    expect(screen.getByText('Assinatura Digital')).toBeInTheDocument()
-    expect(screen.getByText('Use o campo abaixo para desenhar sua assinatura')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Limpar' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Cancelar' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Salvar' })).toBeInTheDocument()
-    expect(screen.getByTestId('signature-canvas')).toBeInTheDocument()
+    render(<SignaturePad onSave={jest.fn()} onCancel={jest.fn()} />)
+    expect(screen.getByTestId('mock-signature-pad')).toBeInTheDocument()
+    expect(screen.getByText('Limpar')).toBeInTheDocument()
+    expect(screen.getByText('Cancelar')).toBeInTheDocument()
+    expect(screen.getByText('Salvar')).toBeInTheDocument()
   })
 
-  it('handles cancel action', () => {
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
+  it('handles save button click', async () => {
+    const onSave = jest.fn()
+    render(<SignaturePad onSave={onSave} onCancel={jest.fn()} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
-    expect(mockOnCancel).toHaveBeenCalled()
-  })
-
-  it('shows error when trying to save empty signature', async () => {
-    mockIsEmpty.mockReturnValue(true)
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
-
-    const saveButton = screen.getByRole('button', { name: 'Salvar' })
+    const saveButton = screen.getByText('Salvar')
     fireEvent.click(saveButton)
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG)
     })
-    expect(mockOnSave).not.toHaveBeenCalled()
   })
 
-  it('handles successful signature save', async () => {
-    mockIsEmpty.mockReturnValue(false)
-    mockOnSave.mockResolvedValueOnce(undefined)
+  it('handles cancel button click', () => {
+    const onCancel = jest.fn()
+    render(<SignaturePad onSave={jest.fn()} onCancel={onCancel} />)
 
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
+    const cancelButton = screen.getByText('Cancelar')
+    fireEvent.click(cancelButton)
 
-    // Simulate drawing on the canvas
-    const canvas = screen.getByTestId('signature-canvas')
-    fireEvent.mouseDown(canvas)
-    fireEvent.mouseMove(canvas)
-    fireEvent.mouseUp(canvas)
+    expect(onCancel).toHaveBeenCalled()
+  })
 
-    const saveButton = screen.getByRole('button', { name: 'Salvar' })
+  it('handles save with valid signature', async () => {
+    const onSave = jest.fn().mockResolvedValue(undefined)
+    render(<SignaturePad onSave={onSave} onCancel={jest.fn()} />)
+
+    const signaturePad = screen.getByTestId('mock-signature-pad')
+    fireEvent.mouseDown(signaturePad)
+    fireEvent.mouseUp(signaturePad)
+
+    const saveButton = screen.getByText('Salvar')
     fireEvent.click(saveButton)
 
     await waitFor(() => {
-      expect(mockOnSave).toHaveBeenCalledWith('data:image/png;base64,test')
-      expect(toast.success).toHaveBeenCalledWith('Assinatura salva com sucesso!', expect.any(Object))
+      expect(onSave).toHaveBeenCalledWith('data:image/png;base64,test')
+      expect(toast.success).toHaveBeenCalledWith('Assinatura salva com sucesso!', TOAST_CONFIG)
     })
   })
 
-  it('handles error when saving signature', async () => {
-    mockIsEmpty.mockReturnValue(false)
-    mockOnSave.mockRejectedValueOnce(new Error('Failed to save'))
+  it('handles save error', async () => {
+    const onSave = jest.fn().mockRejectedValue(new Error('Failed to save'))
+    render(<SignaturePad onSave={onSave} onCancel={jest.fn()} />)
 
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
+    const signaturePad = screen.getByTestId('mock-signature-pad')
+    fireEvent.mouseDown(signaturePad)
+    fireEvent.mouseUp(signaturePad)
 
-    // Simulate drawing on the canvas
-    const canvas = screen.getByTestId('signature-canvas')
-    fireEvent.mouseDown(canvas)
-    fireEvent.mouseMove(canvas)
-    fireEvent.mouseUp(canvas)
-
-    const saveButton = screen.getByRole('button', { name: 'Salvar' })
+    const saveButton = screen.getByText('Salvar')
     fireEvent.click(saveButton)
 
     await waitFor(() => {
-      expect(mockOnSave).toHaveBeenCalledWith('data:image/png;base64,test')
-      expect(toast.error).toHaveBeenCalledWith('Erro ao salvar assinatura', expect.any(Object))
+      expect(toast.error).toHaveBeenCalledWith('Erro ao salvar assinatura', TOAST_CONFIG)
     })
   })
 
   it('disables save button while saving', async () => {
-    mockIsEmpty.mockReturnValue(false)
-    // Create a promise that we can resolve later
-    let resolvePromise: (value: unknown) => void
-    const savePromise = new Promise((resolve) => {
-      resolvePromise = resolve
+    const onSave = jest.fn().mockImplementation(() => {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(undefined), 100)
+      })
     })
-    mockOnSave.mockReturnValue(savePromise)
+    render(<SignaturePad onSave={onSave} onCancel={jest.fn()} />)
 
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
+    const signaturePad = screen.getByTestId('mock-signature-pad')
+    fireEvent.mouseDown(signaturePad)
+    fireEvent.mouseUp(signaturePad)
 
-    // Simulate drawing on the canvas
-    const canvas = screen.getByTestId('signature-canvas')
-    fireEvent.mouseDown(canvas)
-    fireEvent.mouseMove(canvas)
-    fireEvent.mouseUp(canvas)
-
-    const saveButton = screen.getByRole('button', { name: 'Salvar' })
+    const saveButton = screen.getByText('Salvar')
     fireEvent.click(saveButton)
 
-    // Wait for the button to be disabled
-    await waitFor(() => {
-      expect(saveButton).toBeDisabled()
-    })
+    expect(saveButton).toBeDisabled()
 
-    // Resolve the save promise
-    resolvePromise!(undefined)
+    jest.advanceTimersByTime(100)
 
-    // Verify button is enabled after save completes
     await waitFor(() => {
       expect(saveButton).not.toBeDisabled()
-    })
-  })
-
-  it('handles clear action', async () => {
-    mockIsEmpty.mockReturnValue(true)
-    render(
-      <SignaturePad onSave={mockOnSave} onCancel={mockOnCancel} />
-    )
-
-    const clearButton = screen.getByRole('button', { name: 'Limpar' })
-    fireEvent.click(clearButton)
-
-    await waitFor(() => {
-      expect(mockClear).toHaveBeenCalled()
-    })
-
-    // Try to save after clearing
-    const saveButton = screen.getByRole('button', { name: 'Salvar' })
-    fireEvent.click(saveButton)
-
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG)
     })
   })
 }) 

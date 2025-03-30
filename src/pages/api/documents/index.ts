@@ -1,6 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "@/lib/prisma";
+import type { Document } from "@prisma/client";
+
+type SignatureSelect = {
+    id: string;
+    documentId: string;
+    signatureImg: string;
+    signedAt: Date | null;
+}
 
 export default async function handler(
     req: NextApiRequest,
@@ -29,7 +37,7 @@ export default async function handler(
         const signatures = await prisma.signature.findMany({
             where: {
                 documentId: {
-                    in: documents.map(doc => doc.id),
+                    in: documents.map((doc: Document) => doc.id),
                 },
             },
             select: {
@@ -41,9 +49,9 @@ export default async function handler(
         });
 
         // Combine documents with their signatures
-        const documentsWithSignatures = documents.map(doc => ({
+        const documentsWithSignatures = documents.map((doc: Document) => ({
             ...doc,
-            signature: signatures.find(sig => sig.documentId === doc.id),
+            signature: signatures.find((sig: SignatureSelect) => sig.documentId === doc.id),
         }));
 
         return res.status(200).json(documentsWithSignatures);

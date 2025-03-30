@@ -21,13 +21,16 @@ const FormField: React.FC<FormFieldProps> = ({
     error,
     register
 }) => {
+    const inputId = `field-${name}`;
+    
     return (
         <div>
-            <label className={commonStyles.label}>
+            <label htmlFor={inputId} className={commonStyles.label}>
                 {label}
             </label>
             <div className="relative">
                 <input
+                    id={inputId}
                     {...register(name)}
                     type={type}
                     className={commonStyles.input}
@@ -39,6 +42,8 @@ const FormField: React.FC<FormFieldProps> = ({
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
+                        data-testid={type === 'password' ? 'password-icon' : 'default-icon'}
+                        aria-hidden="true"
                     >
                         {type === 'password' ? (
                             <path
@@ -59,7 +64,7 @@ const FormField: React.FC<FormFieldProps> = ({
                 )}
             </div>
             {error && (
-                <p className={commonStyles.error}>{error}</p>
+                <p className={commonStyles.error} role="alert">{error}</p>
             )}
         </div>
     );

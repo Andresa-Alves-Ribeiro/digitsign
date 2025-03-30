@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { commonStyles } from "@/constants/styles";
 
 interface LogoutButtonProps {
     className?: string;
@@ -49,13 +48,13 @@ export default function LogoutButton({
                         <div className="flex justify-end space-x-3">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className={commonStyles.button.secondary}
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200 cursor-pointer"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleLogout}
-                                className={commonStyles.button.danger}
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                 disabled={isLoading}
                                 aria-label="Confirmar logout"
                             >
@@ -78,7 +77,7 @@ export default function LogoutButton({
                 <button
                     onClick={handleClick}
                     aria-label="Sair da conta"
-                    className={`${commonStyles.button.danger} ${className}`}
+                    className={`flex items-center gap-2 text-red-600 hover:text-red-700 cursor-pointer transition-colors duration-200 ${className}`}
                     disabled={isLoading}
                 >
                     {children}

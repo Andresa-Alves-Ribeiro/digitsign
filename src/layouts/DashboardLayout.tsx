@@ -5,7 +5,7 @@ import logo from '@/assets/images/logo.png';
 import {
   HomeIcon,
   DocumentArrowUpIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 
 interface DashboardLayoutProps {
@@ -16,7 +16,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ activePage = 'dashboard', children }: DashboardLayoutProps) {
   return (
     <div className="flex h-full w-full">
-      <div className="hidden md:block w-64 bg-white shadow-lg fixed h-screen">
+      {/* Sidebar - Hidden on mobile, visible on tablet and up */}
+      <div className="hidden lg:block fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
         <div className="p-4 border-b border-gray-100">
           <Link href="/" className="flex items-center justify-center">
             <Image
@@ -63,14 +64,16 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
           </nav>
         </div>
 
-        <div className="p-4 border-t border-gray-100 absolute bottom-0" style={{ width: 'inherit' }}>
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
           <div className="flex items-center justify-between text-sm text-gray-500">
             <span>Made by <a href="https://github.com/Andresa-Alves-Ribeiro" target="_blank" className="text-green-500 hover:text-green-600">Andresa A. R.</a></span>
             <span>© 2025</span>
           </div>
         </div>
       </div>
-      <div className="flex-1 md:ml-64">
+
+      {/* Main content */}
+      <div className="flex-1 lg:ml-64 min-h-screen">
         {children}
       </div>
     </div>

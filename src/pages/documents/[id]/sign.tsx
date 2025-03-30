@@ -65,9 +65,9 @@ function SignDocumentPage() {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className="flex min-h-screen">
             <div className="flex-1 flex flex-col bg-zinc-100">
-                <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-auto">
+                <div className="flex-1 px-2 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-4 md:py-6 overflow-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -75,30 +75,32 @@ function SignDocumentPage() {
                         className="h-full"
                     >
                         <div>
-                            <div className="mb-10">
-                                <div className="flex items-center space-x-4">
-                                    <div className="bg-green-50 p-3 rounded-full">
-                                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="mb-4 sm:mb-6 md:mb-10">
+                                <div className="flex items-center space-x-4 py-4 sm:py-6">
+                                    <div className="bg-green-50 p-2 sm:p-3 rounded-full w-fit">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 className="text-2xl font-bold text-gray-900">Assinar Documento</h1>
-                                        <div className="flex items-center space-x-2 mt-1">
+                                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Assinar Documento</h1>
+                                        <div className="flex flex-wrap items-center space-x-2 mt-1">
                                             <span className="text-sm text-gray-500">ID do Documento:</span>
-                                            <span className="text-sm font-medium text-gray-700 bg-green-100 px-2 py-0.5 rounded">{documentId}</span>
+                                            <span className="text-sm font-medium text-gray-700 bg-green-100 px-2 py-0.5 rounded break-all">{documentId}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <SignaturePad
-                                onSave={handleSaveSignature}
-                                onCancel={() => router.back()}
-                            />
+                            <div className="w-full max-w-full">
+                                <SignaturePad
+                                    onSave={handleSaveSignature}
+                                    onCancel={() => router.back()}
+                                />
+                            </div>
 
                             {error && (
-                                <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">
+                                <div className="mt-4 p-3 sm:p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">
                                     <div className="flex">
                                         <div className="flex-shrink-0">
                                             <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -106,16 +108,16 @@ function SignDocumentPage() {
                                             </svg>
                                         </div>
                                         <div className="ml-3">
-                                            <p className="text-sm">{error}</p>
+                                            <p className="text-sm break-words">{error}</p>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
                             {isSubmitting && (
-                                <div className="mt-6 flex items-center justify-center space-x-3">
-                                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent"></div>
-                                    <span className="text-gray-600 font-medium">Processando assinatura...</span>
+                                <div className="mt-4 sm:mt-6 flex items-center justify-center space-x-3">
+                                    <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-blue-500 border-t-transparent"></div>
+                                    <span className="text-sm sm:text-base text-gray-600 font-medium">Processando assinatura...</span>
                                 </div>
                             )}
                         </div>

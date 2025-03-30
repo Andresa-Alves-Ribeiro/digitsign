@@ -1,9 +1,21 @@
 import { useSession } from "next-auth/react";
 import LogoutButton from "@/features/auth/LogoutButton";
 import { useState, useEffect, useRef } from "react";
-import { UserIcon, LogoutIcon, DropDownIcon } from "@/assets/icons";
+import Link from "next/link";
+import {
+  HomeIcon,
+  DocumentArrowUpIcon,
+  DocumentTextIcon,
+  UserIcon,
+  ChevronDownIcon,
+  ArrowLeftOnRectangleIcon
+} from '@heroicons/react/24/outline';
 
-export default function Header() {
+interface HeaderProps {
+  activePage?: 'dashboard' | 'upload' | 'pending' | 'signed' | 'documents';
+}
+
+export default function Header({ activePage = 'dashboard' }: HeaderProps) {
     const { data: session } = useSession();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -33,22 +45,60 @@ export default function Header() {
                 ? 'bg-white/80 backdrop-blur-md shadow-md'
                 : 'bg-white shadow-sm'
             }`}>
-            <div className="mx-auto px-4 sm:px-6 lg:px-4">
-                <div className="flex justify-end items-center h-16">
-                    <div className="relative" ref={dropdownRef}>
+            <div className="mx-auto px-2 sm:px-4 lg:px-6">
+                <div className="flex justify-between items-center h-14 sm:h-16">
+                    {/* Mobile and Tablet Navigation */}
+                    <div className="flex items-center space-x-4 lg:hidden">
+                        <Link
+                            href="/"
+                            className={`p-2 rounded-lg transition-colors duration-200 ${
+                                activePage === 'dashboard' 
+                                    ? 'bg-green-50 text-green-600' 
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                            }`}
+                            title="Dashboard"
+                        >
+                            <HomeIcon className="w-5 h-5" />
+                        </Link>
+                        <Link
+                            href="/documents/upload"
+                            className={`p-2 rounded-lg transition-colors duration-200 ${
+                                activePage === 'upload' 
+                                    ? 'bg-green-50 text-green-600' 
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                            }`}
+                            title="Upload de Documentos"
+                        >
+                            <DocumentArrowUpIcon className="w-5 h-5" />
+                        </Link>
+                        <Link
+                            href="/documents"
+                            className={`p-2 rounded-lg transition-colors duration-200 ${
+                                activePage === 'documents' 
+                                    ? 'bg-green-50 text-green-600' 
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                            }`}
+                            title="Todos os Documentos"
+                        >
+                            <DocumentTextIcon className="w-5 h-5" />
+                        </Link>
+                    </div>
+
+                    {/* User Menu */}
+                    <div className="relative lg:ml-auto" ref={dropdownRef}>
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center space-x-2 focus:outline-none px-3 py-2 rounded-lg transition-all duration-200 group"
+                            className="flex items-center space-x-2 focus:outline-none px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all duration-200 group"
                         >
                             <div className="relative">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center ring-2 ring-white shadow-sm transition-transform duration-200">
-                                    <UserIcon className="w-5 h-5 text-white" />
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center ring-2 ring-white shadow-sm transition-transform duration-200">
+                                    <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                 </div>
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full border-2 border-white"></div>
                             </div>
 
-                            <DropDownIcon
-                                className={`w-4 h-4 text-gray-500 cursor-pointer transition-all duration-200 group-hover:text-green-600 ${isDropdownOpen ? 'transform rotate-180' : ''
+                            <ChevronDownIcon
+                                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 cursor-pointer transition-all duration-200 group-hover:text-green-600 ${isDropdownOpen ? 'transform rotate-180' : ''
                                     }`}
                             />
                         </button>
@@ -76,7 +126,7 @@ export default function Header() {
                                     className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all duration-200 group"
                                     onLogout={() => setIsDropdownOpen(false)}
                                 >
-                                    <LogoutIcon className="w-4 h-4 mr-3 group-hover:transform group-hover:translate-x-1 transition-transform duration-200" />
+                                    <ArrowLeftOnRectangleIcon className="w-4 h-4 mr-3 group-hover:transform group-hover:translate-x-1 transition-transform duration-200" />
                                     Sair
                                 </LogoutButton>
                             </div>

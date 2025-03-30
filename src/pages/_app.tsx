@@ -43,7 +43,7 @@ export default function App({ Component, pageProps: { session, ...pageProps }, r
         ) : (
           <DashboardLayout activePage={activePage}>
             <div className="flex-1 flex flex-col">
-              <Header />
+              <Header activePage={activePage} />
               <main className="flex-1 bg-zinc-50">
                 <Component {...pageProps} />
               </main>

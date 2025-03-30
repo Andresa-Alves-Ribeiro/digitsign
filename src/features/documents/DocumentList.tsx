@@ -63,16 +63,16 @@ const DocumentList = () => {
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Nome
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Tamanho
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Ações
                         </th>
                     </tr>
@@ -85,21 +85,21 @@ const DocumentList = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-medium text-gray-900">{document.name}</div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-left">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
                                 <div className="text-sm text-gray-500">
                                     {document.size ? formatFileSizeInMB(document.size) : '-'}
                                 </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-left">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${documentStatusConfig[document.status as DocumentStatus].color}`}>
                                     {documentStatusConfig[document.status as DocumentStatus].icon}
                                     <span className="ml-1">{documentStatusConfig[document.status as DocumentStatus].label}</span>
                                 </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <Link
                                     href={`/documents/${document.id}`}
                                     className="text-blue-600 hover:text-blue-900"

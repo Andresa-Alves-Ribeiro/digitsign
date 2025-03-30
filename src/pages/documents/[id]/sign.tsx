@@ -16,27 +16,43 @@ function SignDocumentPage() {
     const [error, setError] = useState<string | null>(null);
 
     const handleSaveSignature = async (signatureData: string) => {
-        if (!signatureData) {
+        if (!signatureData || signatureData.trim() === "") {
             setError("Por favor, desenhe sua assinatura antes de salvar.");
+            return;
+        }
+
+        if (!signatureData.startsWith('data:image/png;base64,')) {
+            console.error("Invalid signature format:", signatureData.substring(0, 50) + "...");
+            setError("Formato de assinatura inválido. Tente novamente.");
             return;
         }
 
         setIsSubmitting(true);
         setError(null);
         try {
+            console.log("Sending signature data...");
+            console.log("Signature data length:", signatureData.length);
+            console.log("Signature data preview:", signatureData.substring(0, 100) + "...");
+            
+            const requestBody = {
+                signatureData: signatureData,
+            };
+            console.log("Request body:", requestBody);
+
             const response = await fetch(`/api/documents/${documentId}/sign`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    signatureImg: signatureData,
-                }),
+                body: JSON.stringify(requestBody),
             });
 
+            const data = await response.json();
+            console.log("API Response:", data);
+            console.log("Response status:", response.status);
+
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Erro ao salvar assinatura");
+                throw new Error(data.error || "Erro ao salvar assinatura");
             }
 
             router.push(`/documents/${documentId}`);
@@ -50,11 +66,7 @@ function SignDocumentPage() {
 
     return (
         <div className="flex h-screen">
-            <DashboardLayout activePage="documents" />
-
             <div className="flex-1 flex flex-col bg-zinc-100">
-                <Header />
-
                 <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-auto">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

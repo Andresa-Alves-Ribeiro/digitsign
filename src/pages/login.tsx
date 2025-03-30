@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../../public/logo.png";
-import loginBackground from "../../public/login-background.png";
+import logo from "@/assets/images/logo.png";
+import loginBackground from "@/assets/images/login-background.png";
 import Loading from "@/components/Loading";
 import FormField from "@/components/FormField";
 import AuthGuard from "@/components/AuthGuard";
@@ -84,7 +84,8 @@ export default function LoginPage() {
                             >
                                 {isLoading ? (
                                     <div className="flex items-center justify-center">
-                                        <Loading text="Entrando..." />
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                        Entrando...
                                     </div>
                                 ) : (
                                     "Entrar"

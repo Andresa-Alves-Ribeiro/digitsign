@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import Header from '@/layouts/Header';
 import { motion } from 'framer-motion';
 import {
   DocumentArrowUpIcon,
@@ -13,7 +12,7 @@ import {
   ClipboardDocumentListIcon,
   DocumentCheckIcon
 } from '@heroicons/react/24/outline';
-import DashboardLayout from '@/layouts/DashboardLayout';
+import Loading from '../components/Loading';
 
 interface DashboardStats {
   pending: number;
@@ -21,7 +20,7 @@ interface DashboardStats {
   total: number;
 }
 
-export default function Home() {
+export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({ pending: 0, signed: 0, total: 0 });
@@ -56,7 +55,7 @@ export default function Home() {
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <Loading text="Carregando dashboard..." />
       </div>
     );
   }
@@ -64,13 +63,9 @@ export default function Home() {
   if (status === 'authenticated') {
     return (
       <div className="flex h-screen">
-          {/* Sidebar */}
-          <DashboardLayout />
-
-          {/* Main Content */}
-          <div className="flex-1 flex flex-col bg-zinc-100">
-            <Header />
-            <div className="flex-1 px-4 md:px-6 py-6 overflow-auto">
+        <div className="flex-1 flex flex-col bg-zinc-100">
+          <div className="flex-1 px-4 md:px-6 py-6 overflow-auto">
+            <div className="space-y-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -151,7 +146,7 @@ export default function Home() {
                 >
                   <div className="p-6">
                     <div className="flex items-center mb-4">
-                      <ClipboardDocumentListIcon className="w-6 h-6 text-green-500 mr-2" />
+                      <ClipboardDocumentListIcon className="w-6 h-6 text-yellow-500 mr-2" />
                       <h3 className="text-lg font-medium text-gray-900">Documentos Pendentes</h3>
                     </div>
                     <p className="text-sm text-gray-500 mb-4">
@@ -159,7 +154,7 @@ export default function Home() {
                     </p>
                     <Link
                       href="/documents"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition-colors duration-200"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 transition-colors duration-200"
                     >
                       <ClockIcon className="w-4 h-4 mr-2" />
                       Ver Pendentes
@@ -174,15 +169,15 @@ export default function Home() {
                 >
                   <div className="p-6">
                     <div className="flex items-center mb-4">
-                      <DocumentCheckIcon className="w-6 h-6 text-purple-500 mr-2" />
+                      <DocumentCheckIcon className="w-6 h-6 text-green-500 mr-2" />
                       <h3 className="text-lg font-medium text-gray-900">Documentos Assinados</h3>
                     </div>
                     <p className="text-sm text-gray-500 mb-4">
-                      Acesse o histórico de documentos assinados
+                      Acesse documentos já assinados
                     </p>
                     <Link
-                      href="/documents"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-purple-600 hover:bg-purple-700 transition-colors duration-200"
+                      href="/documents/signed"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition-colors duration-200"
                     >
                       <CheckCircleIcon className="w-4 h-4 mr-2" />
                       Ver Assinados
@@ -192,6 +187,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
       </div>
     );
   }

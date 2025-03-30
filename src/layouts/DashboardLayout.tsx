@@ -1,12 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import logo from '../../public/logo.png';
+import logo from '@/assets/images/logo.png';
 import {
   HomeIcon,
   DocumentArrowUpIcon,
-  ClockIcon,
-  CheckCircleIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
@@ -17,10 +15,8 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ activePage = 'dashboard', children }: DashboardLayoutProps) {
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="hidden md:block w-64 bg-white shadow-lg">
-        {/* Sidebar Header */}
+    <div className="flex h-full w-full">
+      <div className="hidden md:block w-64 bg-white shadow-lg fixed h-screen">
         <div className="p-4 border-b border-gray-100">
           <Link href="/" className="flex items-center justify-center">
             <Image
@@ -67,15 +63,16 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
           </nav>
         </div>
 
-        {/* Sidebar Footer */}
-        <div className="fixed bottom-0 p-4 border-t border-gray-100" style={{ width: 'inherit' }}>
+        <div className="p-4 border-t border-gray-100 absolute bottom-0" style={{ width: 'inherit' }}>
           <div className="flex items-center justify-between text-sm text-gray-500">
             <span>Made by <a href="https://github.com/Andresa-Alves-Ribeiro" target="_blank" className="text-green-500 hover:text-green-600">Andresa A. R.</a></span>
             <span>© 2025</span>
           </div>
         </div>
       </div>
-      {children}
+      <div className="flex-1 md:ml-64">
+        {children}
+      </div>
     </div>
   );
 } 

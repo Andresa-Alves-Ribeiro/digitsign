@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     HomeIcon,
     DocumentArrowUpIcon,
-    DocumentTextIcon,
     UserIcon,
     ChevronDownIcon,
     ArrowRightStartOnRectangleIcon
@@ -77,7 +76,7 @@ export default function Header({ activePage = 'dashboard' }: HeaderProps) {
                                 }`}
                             title="Todos os Documentos"
                         >
-                            <DocumentTextIcon className="w-5 h-5" />
+                            <DocumentArrowUpIcon className="w-5 h-5" />
                         </Link>
                     </div>
 

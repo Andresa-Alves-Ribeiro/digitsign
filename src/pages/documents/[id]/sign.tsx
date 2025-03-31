@@ -9,9 +9,14 @@ import { motion } from "framer-motion";
 function SignDocumentPage() {
     const router = useRouter();
     const params = useParams();
-    const documentId = params.id as string;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    
+    if (!params?.id) {
+        return <div>Documento não encontrado</div>;
+    }
+
+    const documentId = params.id as string;
 
     const handleSaveSignature = async (signatureData: string) => {
         if (!signatureData || signatureData.trim() === "") {

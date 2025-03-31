@@ -16,6 +16,7 @@ interface RegisterData extends LoginData {
 
 interface ApiError {
     message: string;
+    error?: string;
 }
 
 export const useAuth = () => {
@@ -49,7 +50,10 @@ export const useAuth = () => {
     const register = async (data: RegisterData) => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/register', {
+            const apiUrl = `${window.location.origin}/api/register`;
+            console.log('Registration URL:', apiUrl);
+            
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,12 +65,31 @@ export const useAuth = () => {
                 }),
             });
 
+            console.log('Response status:', response.status);
+            
+            // Handle specific HTTP status codes
+            if (response.status === 405) {
+                throw new Error('Registration endpoint not available. Please try again later.');
+            }
+
+            // Try to read the response body only once
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let errorData: ApiError;
+            try {
+                errorData = JSON.parse(responseText);
+            } catch (e) {
+                console.error('Failed to parse response:', e);
+                throw new Error(`Server response error: ${response.status} - ${response.statusText}`);
+            }
+
             if (!response.ok) {
-                const errorData = await response.json() as ApiError;
-                console.error('Registration error:', errorData.message);
+                console.error('Registration error:', errorData);
                 throw new Error(errorData.message || TOAST_MESSAGES.auth.registerError);
             }
 
+            console.log('Registration successful, attempting to sign in...');
             const signInResult = await signIn("credentials", {
                 redirect: false,
                 email: data.email,

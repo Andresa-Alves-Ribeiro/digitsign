@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 import toast from 'react-hot-toast'
-import { TOAST_CONFIG } from '@/constants/toast'
 
 interface SignaturePadProps {
   onSave: (signature: string) => Promise<void>
@@ -34,7 +33,7 @@ const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
     if (!signatureRef.current) return
 
     if (!hasDrawn || signatureRef.current.isEmpty()) {
-      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG)
+      toast.error('Por favor, desenhe uma assinatura antes de salvar')
       return
     }
 
@@ -42,10 +41,10 @@ const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
       setIsSaving(true)
       const signature = signatureRef.current.toDataURL()
       await onSave(signature)
-      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG)
+      toast.success('Assinatura salva com sucesso!')
     } catch (err) {
       console.error('Erro ao salvar assinatura:', err)
-      toast.error('Erro ao salvar assinatura', TOAST_CONFIG)
+      toast.error('Erro ao salvar assinatura')
     } finally {
       setIsSaving(false)
     }

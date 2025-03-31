@@ -26,6 +26,18 @@ export default function Home() {
     signedDocuments: 0,
   });
 
+  const calculateStats = useCallback((documents: Document[]) => {
+    const total = documents.length;
+    const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
+    const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
+
+    setStats({
+      totalDocuments: total,
+      pendingDocuments: pending,
+      signedDocuments: signed,
+    });
+  }, []);
+
   const loadDocuments = useCallback(async () => {
     try {
       setLoading(true);
@@ -33,23 +45,14 @@ export default function Home() {
       if (!response.ok) throw new Error('Erro ao carregar documentos');
       const data: Document[] = await response.json();
       setDocuments(data);
-      
-      // Calculate stats after setting documents
-      const total = data.length;
-      const pending = data.filter((doc: Document) => doc.status === DocumentStatus.PENDING).length;
-      const signed = data.filter((doc: Document) => doc.status === DocumentStatus.SIGNED).length;
-
-      setStats({
-        totalDocuments: total,
-        pendingDocuments: pending,
-        signedDocuments: signed,
-      });
-    } catch {
+      calculateStats(data);
+    } catch (error) {
+      console.error('Error loading documents:', error);
       toast.error('Erro ao carregar documentos');
     } finally {
       setLoading(false);
     }
-  }, [setDocuments, setLoading]);
+  }, [setDocuments, setLoading, calculateStats]);
 
   useEffect(() => {
     loadDocuments();

@@ -45,7 +45,7 @@ describe('Prisma Service', () => {
       expect(client).toBeDefined()
     })
 
-    it('should reuse the same instance in development', () => {
+    it('should reuse the same instance in development', async () => {
       const originalEnv = process.env.NODE_ENV
       Object.defineProperty(process.env, 'NODE_ENV', {
         value: 'development',

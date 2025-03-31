@@ -1,10 +1,9 @@
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
-import { commonStyles } from '@/constants/styles';
+import { UseFormRegister, Path } from 'react-hook-form';
 
 interface FormFieldProps<T extends Record<string, unknown>> {
     label: string;
-    name: keyof T & string;
+    name: Path<T>;
     type?: string;
     placeholder?: string;
     icon?: React.ReactNode;
@@ -25,7 +24,7 @@ const FormField = <T extends Record<string, unknown>>({
     
     return (
         <div>
-            <label htmlFor={inputId} className={commonStyles.label}>
+            <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
                 {label}
             </label>
             <div className="relative">

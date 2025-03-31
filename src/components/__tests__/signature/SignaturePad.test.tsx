@@ -27,7 +27,7 @@ interface SignaturePadProps {
 
 // Mock react-signature-canvas
 jest.mock('react-signature-canvas', () => {
-  const MockSignaturePad = forwardRef<{
+  const MockSignaturePad = React.forwardRef<{
     clear: () => void;
     isEmpty: () => boolean;
     toDataURL: () => string;

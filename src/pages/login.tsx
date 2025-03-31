@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import FormField from '@/components/FormField';
 import { Button } from '@/components/Button';
-import { toast } from 'react-hot-toast';
 import background from '@/assets/images/background.png';
 
 const loginSchema = z.object({
@@ -37,7 +36,7 @@ export default function Login() {
       await login(data);
       router.push('/');
     } catch (error) {
-      // Error toast is already handled in useAuth hook
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }

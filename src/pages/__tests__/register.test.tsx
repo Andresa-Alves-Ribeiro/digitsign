@@ -1,54 +1,40 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import RegisterPage from '../register';
 import { useAuth } from '@/hooks/useAuth';
 import { renderWithProviders } from '@/test-utils';
-import { v4 as uuidv4 } from 'uuid';
 
-// Mock dos módulos
+// Mock do next/router
 jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn()
 }));
 
+// Mock do hook de autenticação
 jest.mock('@/hooks/useAuth', () => ({
-  useAuth: jest.fn(),
+  useAuth: jest.fn()
 }));
 
 // Mock do next/image
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => {
-    const { fill, priority, ...restProps } = props;
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => {
+    const { ...restProps } = props;
     // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
     return <img {...restProps} />;
   },
 }));
 
-// Mock do uuid
-jest.mock('uuid', () => ({
-  v4: jest.fn(),
-}));
-
 describe('RegisterPage', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
-
   const mockRegister = jest.fn();
-  const mockUuid = 'test-uuid';
+  const mockRouter = { push: jest.fn() };
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useAuth as jest.Mock).mockReturnValue({
       register: mockRegister,
-      isLoading: false,
+      isLoading: false
     });
-    (uuidv4 as jest.Mock).mockReturnValue(mockUuid);
-    
-    // Clear mock calls between tests
-    mockRouter.push.mockClear();
-    mockRegister.mockClear();
   });
 
   afterEach(() => {
@@ -56,18 +42,18 @@ describe('RegisterPage', () => {
   });
 
   it('renders register page correctly', async () => {
-    await act(async () => {
-      renderWithProviders(<RegisterPage />);
-    });
+    renderWithProviders(<RegisterPage />);
 
-    expect(screen.getByText('Criar conta')).toBeInTheDocument();
+    expect(screen.getByText('Criar uma conta')).toBeInTheDocument();
+    expect(screen.getByText('Preencha os dados abaixo para começar')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Seu nome')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('seu@email.com')).toBeInTheDocument();
-    expect(screen.getByLabelText('Senha')).toBeInTheDocument();
-    expect(screen.getByLabelText('Confirmar Senha')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Confirme sua senha')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /criar conta/i })).toBeInTheDocument();
   });
 
-  it('shows loading state when submitting form', async () => {
+  it('shows loading state when submitting', async () => {
     (useAuth as jest.Mock).mockReturnValue({
       register: jest.fn(() => new Promise(resolve => setTimeout(resolve, 100))),
       isLoading: false
@@ -77,10 +63,10 @@ describe('RegisterPage', () => {
 
     const nameInput = screen.getByRole('textbox', { name: /nome/i });
     const emailInput = screen.getByRole('textbox', { name: /email/i });
-    const passwordInput = screen.getByLabelText(/^senha$/i);
-    const confirmPasswordInput = screen.getByLabelText(/confirmar senha/i);
+    const passwordInput = screen.getByLabelText(/senha/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirme sua senha/i);
     
-    fireEvent.change(nameInput, { target: { value: 'Test User' } });
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: '123456' } });
     fireEvent.change(confirmPasswordInput, { target: { value: '123456' } });
@@ -93,39 +79,30 @@ describe('RegisterPage', () => {
   });
 
   it('handles form submission correctly', async () => {
-    await act(async () => {
-      renderWithProviders(<RegisterPage />);
-    });
+    renderWithProviders(<RegisterPage />);
 
-    const nameInput = screen.getByLabelText('Nome');
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Senha');
-    const confirmPasswordInput = screen.getByLabelText('Confirmar Senha');
+    const nameInput = screen.getByPlaceholderText('Seu nome');
+    const emailInput = screen.getByPlaceholderText('seu@email.com');
+    const passwordInput = screen.getByPlaceholderText('••••••••');
+    const confirmPasswordInput = screen.getByPlaceholderText('Confirme sua senha');
     const submitButton = screen.getByRole('button', { name: /criar conta/i });
 
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: 'Test User' } });
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'password123' } });
-      fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
-    });
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
+    fireEvent.click(submitButton);
 
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-
-    await waitFor(() => {
-      expect(mockRegister).toHaveBeenCalledWith({
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123'
-      });
+    expect(mockRegister).toHaveBeenCalledWith({
+      name: 'John Doe',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123'
     });
   });
 
   it('shows validation errors for invalid form submission', async () => {
-    render(<RegisterPage />);
+    renderWithProviders(<RegisterPage />);
 
     const submitButton = screen.getByRole('button', { name: /criar conta/i });
     fireEvent.click(submitButton);
@@ -134,38 +111,38 @@ describe('RegisterPage', () => {
       expect(screen.getByText('O nome deve ter no mínimo 3 caracteres')).toBeInTheDocument();
       expect(screen.getByText('Email inválido')).toBeInTheDocument();
       expect(screen.getByText('A senha deve ter no mínimo 6 caracteres')).toBeInTheDocument();
-      expect(mockRegister).not.toHaveBeenCalled();
     });
+
+    expect(mockRegister).not.toHaveBeenCalled();
   });
 
   it('shows error when passwords do not match', async () => {
-    render(<RegisterPage />);
+    renderWithProviders(<RegisterPage />);
 
-    const nameInput = screen.getByLabelText('Nome');
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Senha');
-    const confirmPasswordInput = screen.getByLabelText('Confirmar Senha');
-    const submitButton = screen.getByRole('button', { name: /criar conta/i });
-
-    fireEvent.change(nameInput, { target: { value: 'Test User' } });
+    const nameInput = screen.getByPlaceholderText('Seu nome');
+    const emailInput = screen.getByPlaceholderText('seu@email.com');
+    const passwordInput = screen.getByPlaceholderText('••••••••');
+    const confirmPasswordInput = screen.getByPlaceholderText('Confirme sua senha');
+    
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'differentpassword' } });
+    fireEvent.change(confirmPasswordInput, { target: { value: 'different' } });
+
+    const submitButton = screen.getByRole('button', { name: /criar conta/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText('As senhas não coincidem')).toBeInTheDocument();
-      expect(mockRegister).not.toHaveBeenCalled();
     });
+
+    expect(mockRegister).not.toHaveBeenCalled();
   });
 
   it('navigates to login page when clicking login link', async () => {
-    render(<RegisterPage />);
+    renderWithProviders(<RegisterPage />);
 
-    const loginLink = screen.getByText('Faça login');
-    fireEvent.click(loginLink);
-
-    // Since we're using Next.js Link component, we need to check the href attribute
+    const loginLink = screen.getByText('Já tem uma conta?');
     expect(loginLink).toHaveAttribute('href', '/login');
   });
 }); 

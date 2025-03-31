@@ -1,7 +1,6 @@
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useAuth } from '../useAuth'
 import { signIn, signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast'
 
@@ -43,6 +42,19 @@ jest.mock('next/navigation', () => ({
 // Mock fetch
 global.fetch = jest.fn()
 
+// Mock implementations
+const createDelayedPromise = function<T>(value: T, delay: number): Promise<T> {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(value), delay)
+  })
+}
+
+const mockDelayedSignIn = () => createDelayedPromise({ ok: true }, 100)
+const mockDelayedFetch = () => createDelayedPromise({
+  ok: true,
+  json: () => Promise.resolve({ message: 'User registered' })
+}, 100)
+
 describe('useAuth Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -53,10 +65,7 @@ describe('useAuth Hook', () => {
       ;(signIn as jest.Mock).mockResolvedValueOnce({ ok: true })
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.login({ email: 'test@test.com', password: 'password' })
-      })
+      await result.current.login({ email: 'test@test.com', password: 'password' })
 
       expect(signIn).toHaveBeenCalledWith('credentials', {
         email: 'test@test.com',
@@ -71,10 +80,7 @@ describe('useAuth Hook', () => {
       ;(signIn as jest.Mock).mockResolvedValueOnce({ error: 'Invalid credentials' })
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.login({ email: 'test@test.com', password: 'wrong' })
-      })
+      await result.current.login({ email: 'test@test.com', password: 'wrong' })
 
       expect(toast.error).toHaveBeenCalledWith(TOAST_MESSAGES.auth.loginError, TOAST_CONFIG)
     })
@@ -89,13 +95,11 @@ describe('useAuth Hook', () => {
       ;(signIn as jest.Mock).mockResolvedValueOnce({ ok: true })
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.register({
-          name: 'Test User',
-          email: 'test@test.com',
-          password: 'password',
-        })
+      await result.current.register({
+        name: 'Test User',
+        email: 'test@test.com',
+        password: 'password',
+        confirmPassword: 'password',
       })
 
       expect(signIn).toHaveBeenCalledWith('credentials', {
@@ -111,13 +115,11 @@ describe('useAuth Hook', () => {
       ;(global.fetch as jest.Mock).mockRejectedValueOnce(new Error(TOAST_MESSAGES.auth.registerError))
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.register({
-          name: 'Test User',
-          email: 'test@test.com',
-          password: 'password',
-        })
+      await result.current.register({
+        name: 'Test User',
+        email: 'test@test.com',
+        password: 'password',
+        confirmPassword: 'password',
       })
 
       expect(toast.error).toHaveBeenCalledWith(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG)
@@ -129,10 +131,7 @@ describe('useAuth Hook', () => {
       ;(signOut as jest.Mock).mockResolvedValueOnce(undefined)
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.logout()
-      })
+      await result.current.logout()
 
       expect(signOut).toHaveBeenCalled()
       expect(toast.success).toHaveBeenCalledWith(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG)
@@ -143,10 +142,7 @@ describe('useAuth Hook', () => {
       ;(signOut as jest.Mock).mockRejectedValueOnce(new Error('Logout failed'))
 
       const { result } = renderHook(() => useAuth())
-
-      await act(async () => {
-        await result.current.logout()
-      })
+      await result.current.logout()
 
       expect(toast.error).toHaveBeenCalledWith(TOAST_MESSAGES.auth.logoutError, TOAST_CONFIG)
     })
@@ -154,60 +150,45 @@ describe('useAuth Hook', () => {
 
   describe('manages loading state correctly', () => {
     it('updates loading state during login', async () => {
-      const mockSignIn = jest.fn().mockImplementation(() => {
-        return new Promise(resolve => {
-          setTimeout(() => resolve({ ok: true }), 100)
-        })
-      })
-      ;(signIn as jest.Mock).mockImplementation(mockSignIn)
+      ;(signIn as jest.Mock).mockImplementation(mockDelayedSignIn)
 
       const { result } = renderHook(() => useAuth())
+      const loginPromise = result.current.login({ email: 'test@test.com', password: 'password' })
 
-      let loginPromise: Promise<void>
-      await act(async () => {
-        loginPromise = result.current.login({ email: 'test@test.com', password: 'password' })
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(true)
       })
-
-      expect(result.current.isLoading).toBe(true)
 
       jest.advanceTimersByTime(100)
+      await loginPromise
 
-      await act(async () => {
-        await loginPromise
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
       })
-
-      expect(result.current.isLoading).toBe(false)
     })
 
     it('updates loading state during registration', async () => {
-      const mockFetch = jest.fn().mockImplementation(() => {
-        return new Promise(resolve => {
-          setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({ message: 'User registered' }) }), 100)
-        })
-      })
-      ;(global.fetch as jest.Mock).mockImplementation(mockFetch)
+      ;(global.fetch as jest.Mock).mockImplementation(mockDelayedFetch)
       ;(signIn as jest.Mock).mockResolvedValueOnce({ ok: true })
 
       const { result } = renderHook(() => useAuth())
-
-      let registerPromise: Promise<void>
-      await act(async () => {
-        registerPromise = result.current.register({
-          name: 'Test User',
-          email: 'test@test.com',
-          password: 'password',
-        })
+      const registerPromise = result.current.register({
+        name: 'Test User',
+        email: 'test@test.com',
+        password: 'password',
+        confirmPassword: 'password',
       })
 
-      expect(result.current.isLoading).toBe(true)
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(true)
+      })
 
       jest.advanceTimersByTime(100)
+      await registerPromise
 
-      await act(async () => {
-        await registerPromise
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
       })
-
-      expect(result.current.isLoading).toBe(false)
     })
   })
 }) 

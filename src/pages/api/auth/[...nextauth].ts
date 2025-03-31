@@ -6,13 +6,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { Session as SessionInterface } from '@/types/interfaces';
-
-interface User {
-    id: string;
-    email: string;
-    name: string;
-}
 
 declare module "next-auth" {
     interface Session {
@@ -78,7 +71,14 @@ export const authOptions = {
         error: "/login",
     },
     callbacks: {
-        async jwt({ token, user }: { token: JWT; user: User | undefined }) {
+        async jwt({ token, user }: { 
+            token: JWT; 
+            user: { 
+                id: string;
+                email?: string | null;
+                name?: string | null;
+            } | null; 
+        }) {
             if (user) {
                 token.id = user.id;
             }

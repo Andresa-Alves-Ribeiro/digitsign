@@ -1,59 +1,59 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { Button } from '@/components/Button';
-import DocumentCards from '@/components/documents/DocumentCards';
-import DocumentTable from '@/components/documents/DocumentTable';
 import { toast } from 'react-hot-toast';
-import { Document, DashboardStats } from '@/types/interfaces';
+import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
 import { DocumentArrowUpIcon, ClipboardDocumentListIcon, DocumentCheckIcon, ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
+interface DashboardStats {
+  totalDocuments: number;
+  pendingDocuments: number;
+  signedDocuments: number;
+}
+
 export default function Home() {
   const router = useRouter();
-  const { documents, setDocuments, setLoading } = useDocumentStore();
+  const { setDocuments, setLoading } = useDocumentStore();
   const [stats, setStats] = useState<DashboardStats>({
     totalDocuments: 0,
     pendingDocuments: 0,
     signedDocuments: 0,
   });
 
-  useEffect(() => {
-    loadDocuments();
-  }, []);
-
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/documents');
       if (!response.ok) throw new Error('Erro ao carregar documentos');
-      const data = await response.json();
+      const data: Document[] = await response.json();
       setDocuments(data);
-      calculateStats();
-    } catch (error) {
+      
+      // Calculate stats after setting documents
+      const total = data.length;
+      const pending = data.filter((doc: Document) => doc.status === DocumentStatus.PENDING).length;
+      const signed = data.filter((doc: Document) => doc.status === DocumentStatus.SIGNED).length;
+
+      setStats({
+        totalDocuments: total,
+        pendingDocuments: pending,
+        signedDocuments: signed,
+      });
+    } catch {
       toast.error('Erro ao carregar documentos');
     } finally {
       setLoading(false);
     }
-  };
+  }, [setDocuments, setLoading]);
 
-  const calculateStats = () => {
-    const total = documents.length;
-    const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
-    const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
-
-    setStats({
-      totalDocuments: total,
-      pendingDocuments: pending,
-      signedDocuments: signed,
-    });
-  };
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
 
   const handleUpload = () => {
     router.push('/documents/upload');

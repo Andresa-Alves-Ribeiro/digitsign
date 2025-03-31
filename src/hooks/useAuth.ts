@@ -50,9 +50,10 @@ export const useAuth = () => {
     const register = async (data: RegisterData) => {
         try {
             setIsLoading(true);
-            console.log('Sending registration request...');
+            const apiUrl = `${window.location.origin}/api/register`;
+            console.log('Registration URL:', apiUrl);
             
-            const response = await fetch('/api/register', {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +70,9 @@ export const useAuth = () => {
                 errorData = await response.json();
             } catch (e) {
                 console.error('Failed to parse response:', e);
-                throw new Error('Server response was not in the expected format');
+                console.error('Response status:', response.status);
+                console.error('Response text:', await response.text());
+                throw new Error(`Server response error: ${response.status} - ${response.statusText}`);
             }
 
             if (!response.ok) {

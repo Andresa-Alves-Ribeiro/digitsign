@@ -1,61 +1,52 @@
-import { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "./prisma";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { prisma } from "@/lib/prisma";
+import { compare } from "bcryptjs";
 
-// Login schema validation
-const loginSchema = z.object({
-    email: z.string().email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "text" },
-                password: { label: "Password", type: "password" },
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                try {
-                    const validatedData = loginSchema.parse(credentials);
-
-                    const user = await prisma.user.findUnique({
-                        where: { email: validatedData.email },
-                    });
-
-                    if (!user) throw new Error("User not found");
-
-                    const isValid = await bcrypt.compare(
-                        validatedData.password,
-                        user.password
-                    );
-
-                    if (!isValid) throw new Error("Invalid password");
-
-                    return {
-                        id: user.id,
-                        email: user.email,
-                        name: user.name,
-                    };
-                } catch (error) {
-                    console.error("Auth error:", error);
-                    throw new Error(error instanceof Error ? error.message : "Authentication error");
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("Invalid credentials");
                 }
-            },
-        }),
+
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: credentials.email
+                    }
+                });
+
+                if (!user || !user.password) {
+                    throw new Error("Invalid credentials");
+                }
+
+                const isPasswordValid = await compare(credentials.password, user.password);
+
+                if (!isPasswordValid) {
+                    throw new Error("Invalid credentials");
+                }
+
+                return {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                };
+            }
+        })
     ],
     session: {
-        strategy: "jwt",
+        strategy: "jwt"
     },
-    secret: process.env.NEXTAUTH_SECRET,
     pages: {
-        signIn: "/login",
-        error: "/login",
+        signIn: "/auth/login",
     },
     callbacks: {
         async jwt({ token, user }) {
@@ -69,6 +60,6 @@ export const authOptions: AuthOptions = {
                 session.user.id = token.id as string;
             }
             return session;
-        },
-    },
+        }
+    }
 }; 

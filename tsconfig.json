@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "esnext",
+    "module": "Node16",
     "moduleResolution": "node16",
     "strict": true,
     "noEmit": true,

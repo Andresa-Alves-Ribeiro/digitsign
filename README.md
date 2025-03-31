@@ -65,8 +65,6 @@ SuperSign is a modern web application built with Next.js that allows users to up
 
 ## 🚀 How to Run
 
-Vercel deployment in construction
-
 1. Clone the repository:
 
    ```bash
@@ -111,10 +109,8 @@ Vercel deployment in construction
 
 ## 🌐 Live Demo
 
-The application is deployed on Vercel and can be accessed at:
-[SuperSign Demo](https://supersign-demo.vercel.app)
+Vercel deployment in construction
 
-> Note: This is a mock link. Replace it with your actual Vercel deployment URL once the project is deployed.
 
 ## 📁 Project Structure
 

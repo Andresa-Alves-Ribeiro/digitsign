@@ -1,6 +1,5 @@
 import NextAuth, { AuthOptions } from "next-auth";
-import type { JWT } from "next-auth/jwt";
-import type { Session, SessionStrategy, User } from "next-auth";
+import type { SessionStrategy, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../../lib/prisma";

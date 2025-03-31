@@ -31,6 +31,13 @@ SuperSign is a modern web application that I developed as part of a technical as
 - 🔍 Document Status Tracking
 - 🎨 Modern UI with Material-UI and Tailwind CSS
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="/screenshots/desktop.PNG" alt="Versão Desktop" width="400"/>
+  <img src="/screenshots/mobile.png" alt="Versão Mobile" width="400"/>
+</p>
+
 ## 🛠️ Technologies
 
 - **Frontend:**
@@ -175,6 +182,7 @@ Hi there! 👋 I'm Andresa Alves Ribeiro, a passionate Front-end/Full-Stack deve
 This project was developed as part of a technical assessment, showcasing my skills in modern web development, particularly with Next.js, TypeScript, and full-stack development practices.
 
 ### Connect with me:
+
 <p align="center">
   <a href="mailto:andresa_15ga@hotmail.com"><img src="https://img.shields.io/static/v1?logoWidth=15&logoColor=ff69b4&logo=gmail&label=Email&message=andresa_15ga@hotmail.com&color=ff69b4" target="_blank"></a>
   <a href="https://www.linkedin.com/in/andresa-alves-ribeiro/"><img alt="LinkedIn Profile" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=0A66C2&logo=LinkedIn&label=LinkedIn&message=andresa-alves-ribeiro&color=0A66C2"></a>

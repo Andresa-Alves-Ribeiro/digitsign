@@ -15,7 +15,9 @@ const nextConfig: NextConfig = {
     // Exclude __tests__ directory
     config.watchOptions = {
       ...config.watchOptions,
-      ignored: [...(config.watchOptions?.ignored || []), '**/__tests__/**'],
+      ignored: Array.isArray(config.watchOptions?.ignored) 
+        ? [...config.watchOptions.ignored, '**/__tests__/**']
+        : ['**/__tests__/**'],
     };
     
     return config;

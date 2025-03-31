@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    console.log('=== Iniciando rota de visualização do documento ===');
+    console.log('=== Iniciando rota de metadados do documento ===');
     console.log('URL da requisição:', request.url);
     
     const session = await getServerSession(authOptions);
@@ -39,9 +38,14 @@ export async function GET(
             where: { id },
             select: {
                 id: true,
+                name: true,
                 fileKey: true,
                 userId: true,
                 mimeType: true,
+                size: true,
+                status: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -55,9 +59,12 @@ export async function GET(
 
         console.log('Documento encontrado:', {
             id: document.id,
+            name: document.name,
             fileKey: document.fileKey,
             userId: document.userId,
-            mimeType: document.mimeType
+            mimeType: document.mimeType,
+            size: document.size,
+            status: document.status
         });
 
         if (document.userId !== session.user.id) {
@@ -68,35 +75,8 @@ export async function GET(
             );
         }
 
-        console.log('Iniciando download do arquivo do Supabase...');
-        // Busca o arquivo do Supabase Storage
-        const { data: fileData, error: fileError } = await supabase
-            .storage
-            .from('documents')
-            .download(document.fileKey);
-
-        if (fileError) {
-            console.error('Erro ao buscar arquivo do Supabase:', fileError);
-            return NextResponse.json(
-                { error: "Erro ao buscar arquivo" },
-                { status: 500 }
-            );
-        }
-
-        console.log('Arquivo encontrado no Supabase, convertendo para buffer...');
-        // Converte o arquivo para buffer
-        const buffer = Buffer.from(await fileData.arrayBuffer());
-        console.log('Tamanho do buffer:', buffer.length);
-
-        console.log('Retornando arquivo com headers apropriados...');
-        // Retorna o arquivo
-        return new NextResponse(buffer, {
-            headers: {
-                'Content-Type': document.mimeType || 'application/pdf',
-                'Content-Disposition': `inline; filename="${document.fileKey}"`,
-                'Cache-Control': 'public, max-age=3600',
-            },
-        });
+        console.log('Retornando metadados do documento...');
+        return NextResponse.json(document);
     } catch (error) {
         console.error('Erro ao buscar documento:', error);
         if (error instanceof Error) {

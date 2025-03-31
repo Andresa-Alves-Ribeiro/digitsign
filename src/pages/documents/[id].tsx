@@ -23,16 +23,24 @@ function DocumentViewPage() {
 
     useEffect(() => {
         if (id && session) {
-            fetch(`/api/documents/${id}`)
+            console.log('=== Iniciando carregamento do documento ===');
+            console.log('ID do documento:', id);
+            console.log('Session:', session ? 'Autenticado' : 'Não autenticado');
+
+            fetch(`/api/documents/${id}/metadata`)
                 .then(res => {
+                    console.log('Status da resposta:', res.status);
                     if (!res.ok) {
+                        console.log('Erro na resposta:', res.statusText);
                         router.push('/documents');
                         return;
                     }
                     return res.json();
                 })
                 .then(data => {
+                    console.log('Dados recebidos:', data);
                     if (!data) {
+                        console.log('Nenhum dado recebido');
                         router.push('/documents');
                         return;
                     }
@@ -40,6 +48,7 @@ function DocumentViewPage() {
                     setIsLoading(false);
                 })
                 .catch(err => {
+                    console.error('Erro ao buscar documento:', err);
                     setError(err.message);
                     setIsLoading(false);
                 });
@@ -112,7 +121,7 @@ function DocumentViewPage() {
 
     return (
         <div className="overflow-y-auto">
-            <div className="container mx-auto px-4 md:px-6 py-6">
+            <div className="px-4 md:px-6 py-6 h-full bg-zinc-100">
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div className="flex justify-between items-start mb-6">
                         <h1 className="text-xl font-bold text-zinc-800">{document.name}</h1>
@@ -206,6 +215,9 @@ function DocumentViewPage() {
                         src={`/api/documents/${document.id}/view`}
                         className="w-full h-[700px]"
                         title={document.name}
+                        onError={(e) => {
+                            console.error('Erro no iframe:', e);
+                        }}
                     />
                 </div>
             </div>

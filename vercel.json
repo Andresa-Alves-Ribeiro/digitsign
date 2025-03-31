@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/documents/upload/*.ts": {
+    "src/app/api/documents/upload/*.ts": {
       "memory": 3008,
       "maxDuration": 60
     }

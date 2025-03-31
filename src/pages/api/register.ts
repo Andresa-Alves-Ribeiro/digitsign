@@ -5,8 +5,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    // Handle OPTIONS request for CORS
+    if (req.method === 'OPTIONS') {
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        return res.status(200).end();
+    }
+
     if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({ 
+            message: 'Method not allowed',
+            allowedMethods: ['POST']
+        });
     }
 
     try {

@@ -65,13 +65,22 @@ export const useAuth = () => {
                 }),
             });
 
+            console.log('Response status:', response.status);
+            
+            // Handle specific HTTP status codes
+            if (response.status === 405) {
+                throw new Error('Registration endpoint not available. Please try again later.');
+            }
+
+            // Try to read the response body only once
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
             let errorData: ApiError;
             try {
-                errorData = await response.json();
+                errorData = JSON.parse(responseText);
             } catch (e) {
                 console.error('Failed to parse response:', e);
-                console.error('Response status:', response.status);
-                console.error('Response text:', await response.text());
                 throw new Error(`Server response error: ${response.status} - ${response.statusText}`);
             }
 

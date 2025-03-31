@@ -1,26 +1,25 @@
-<h1 align="center"> 
-	 SuperSign Test
+<h1 align="center">
+	SuperSign - Document Signature Platform
 </h1>
 
-# SuperSign - Document Signature Platform
-
 <p align="center">
- <a href="#-about-the-project">About</a> •
- <a href="#-technologies">Technologies</a> •
- <a href="#-features">Features</a> •
- <a href="#-prerequisites">Prerequisites</a> •
- <a href="#-how-to-run">How to Run</a> •
- <a href="#-project-structure">Structure</a> •
- <a href="#-database">Database</a> •
- <a href="#-tests">Tests</a> •
- <a href="#-contributing">Contributing</a> •
- <a href="#-license">License</a> •
- <a href="#-author">Author</a>
+ <a href="#technologies">Technologies</a> •
+ <a href="#features">Features</a> •
+ <a href="#prerequisites">Prerequisites</a> •
+ <a href="#how-to-run">How to Run</a> •
+ <a href="#live-demo">Live Demo</a> •
+ <a href="#project-structure">Structure</a> •
+ <a href="#database">Database</a> •
+ <a href="#tests">Tests</a> •
+ <a href="#license">License</a> •
+ <a href="#author">Author</a>
 </p>
 
 ## 📝 About the Project
 
 SuperSign is a modern web application that I developed as part of a technical assessment. It's a document signature platform that allows users to upload documents and add digital signatures securely. The platform features a clean, intuitive interface and robust functionality for document management and signing.
+
+<a id="features"></a>
 
 ## ✨ Features
 
@@ -34,9 +33,14 @@ SuperSign is a modern web application that I developed as part of a technical as
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" width="400"/>
-  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/mobile.png" alt="Versão Mobile" width="400"/>
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" />
 </p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/mobile.png" alt="Versão Mobile" />
+</p>
+
+<a id="technologies"></a>
 
 ## 🛠️ Technologies
 
@@ -65,10 +69,14 @@ SuperSign is a modern web application that I developed as part of a technical as
   - React Testing Library
   - Jest DOM
 
+<a id="prerequisites"></a>
+
 ## 📋 Prerequisites
 
 - Node.js 18.x or later
 - npm or yarn package manager
+
+<a id="how-to-run"></a>
 
 ## 🚀 How to Run
 
@@ -114,9 +122,13 @@ SuperSign is a modern web application that I developed as part of a technical as
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+<a id="live-demo"></a>
+
 ## 🌐 Live Demo
 
 https://teste-tecnico-supersign.vercel.app/
+
+<a id="project-structure"></a>
 
 ## 📁 Project Structure
 
@@ -141,6 +153,8 @@ https://teste-tecnico-supersign.vercel.app/
 └── uploads/          # Uploaded documents storage
 ```
 
+<a id="database"></a>
+
 ## 💾 Database
 
 The application uses three main models:
@@ -148,6 +162,8 @@ The application uses three main models:
 - **User**: Stores user information
 - **Document**: Manages uploaded documents
 - **Signature**: Stores signature information for documents
+
+<a id="tests"></a>
 
 ## 🧪 Tests
 
@@ -163,17 +179,13 @@ For development with watch mode:
 npm run test:watch
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+<a id="license"></a>
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+<a id="author"></a>
 
 ## 🦸 Author
 

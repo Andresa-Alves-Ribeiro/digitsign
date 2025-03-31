@@ -34,8 +34,8 @@ SuperSign is a modern web application that I developed as part of a technical as
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="/screenshots/desktop.PNG" alt="Versão Desktop" width="400"/>
-  <img src="/screenshots/mobile.png" alt="Versão Mobile" width="400"/>
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" width="400"/>
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/mobile.png" alt="Versão Mobile" width="400"/>
 </p>
 
 ## 🛠️ Technologies

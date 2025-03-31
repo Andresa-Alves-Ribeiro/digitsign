@@ -45,27 +45,27 @@ const UploadComponent = () => {
             const res = await fetch("/api/documents/upload", {
                 method: "POST",
                 body: formData,
+                credentials: "include",
                 headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "multipart/form-data",
                 },
+                signal: AbortSignal.timeout(30000), // 30 second timeout
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                const errorMessage = data.message || data.error || "Erro ao fazer upload do documento";
-                const details = data.details ? `\nDetalhes: ${JSON.stringify(data.details, null, 2)}` : '';
-                throw new Error(errorMessage + details);
+                throw new Error(data.message || data.error || 'Erro ao fazer upload do arquivo');
             }
 
-            addDocument(data);
             setSuccess(true);
-            setTimeout(() => {
-                router.push("/documents");
-            }, 1500);
+            addDocument(data.document);
+            setFile(null);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : "Erro ao fazer upload do documento";
-            setError(errorMessage);
-            setStoreError(errorMessage);
+            console.error('Upload error:', error);
+            setError(error instanceof Error ? error.message : 'Erro ao fazer upload do arquivo');
+            setStoreError(error instanceof Error ? error.message : 'Erro ao fazer upload do arquivo');
         } finally {
             setLoading(false);
         }

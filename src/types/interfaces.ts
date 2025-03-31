@@ -1,3 +1,5 @@
+import { DocumentStatus } from './enums';
+
 // User Domain
 export interface User {
   id: string;

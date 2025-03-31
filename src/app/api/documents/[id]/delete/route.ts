@@ -7,9 +7,15 @@ import path from 'path';
 import { Session } from 'next-auth';
 import { NextRequest } from 'next/server';
 
+interface RouteContext {
+    params: {
+        id: string;
+    };
+}
+
 export async function DELETE(
     request: NextRequest,
-    context: { params: { id: string } }
+    context: RouteContext
 ) {
     try {
         const session = await getServerSession(authOptions) as Session;

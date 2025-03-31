@@ -3,7 +3,7 @@
 import React, { useRef } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 import toast from 'react-hot-toast'
-import { TOAST_CONFIG } from '../../constants/toast.js'
+import { TOAST_CONFIG } from '@/constants/toast';
 
 interface SignaturePadProps {
   onSave: (signature: string) => Promise<void>

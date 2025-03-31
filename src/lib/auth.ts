@@ -1,65 +1,93 @@
-import { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import type { JWT } from "next-auth/jwt";
+import type { Session, SessionStrategy } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
-import { compare } from "bcryptjs";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "./prisma";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
 
-export const authOptions: NextAuthOptions = {
+declare module "next-auth" {
+    interface Session {
+        user: {
+            id: string;
+            name?: string | null;
+            email?: string | null;
+            image?: string | null;
+        }
+    }
+}
+
+// Esquema de validação para login
+const loginSchema = z.object({
+    email: z.string().email("E-mail inválido"),
+    password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+});
+
+export const authOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "email" },
-                password: { label: "Password", type: "password" }
+                email: { label: "Email", type: "text" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Invalid credentials");
+                try {
+                    const validatedData = loginSchema.parse(credentials);
+
+                    const user = await prisma.user.findUnique({
+                        where: { email: validatedData.email },
+                    });
+
+                    if (!user) throw new Error("Usuário não encontrado");
+
+                    const isValid = await bcrypt.compare(
+                        validatedData.password,
+                        user.password
+                    );
+
+                    if (!isValid) throw new Error("Senha incorreta");
+
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                    };
+                } catch (error) {
+                    console.error("Auth error:", error);
+                    throw new Error(error instanceof Error ? error.message : "Erro na autenticação");
                 }
-
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials.email
-                    }
-                });
-
-                if (!user || !user.password) {
-                    throw new Error("Invalid credentials");
-                }
-
-                const isPasswordValid = await compare(credentials.password, user.password);
-
-                if (!isPasswordValid) {
-                    throw new Error("Invalid credentials");
-                }
-
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                };
-            }
-        })
+            },
+        }),
     ],
     session: {
-        strategy: "jwt"
+        strategy: "jwt" as SessionStrategy,
     },
+    secret: process.env.NEXTAUTH_SECRET,
     pages: {
-        signIn: "/auth/login",
+        signIn: "/login",
+        error: "/login",
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { 
+            token: JWT; 
+            user: { 
+                id: string;
+                email?: string | null;
+                name?: string | null;
+            } | null; 
+        }) {
             if (user) {
                 token.id = user.id;
             }
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token }: { session: Session; token: JWT }) {
             if (session.user) {
                 session.user.id = token.id as string;
             }
             return session;
-        }
-    }
+        },
+    },
 }; 

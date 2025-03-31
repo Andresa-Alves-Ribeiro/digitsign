@@ -5,10 +5,11 @@ import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 import { Session } from 'next-auth';
+import { NextRequest } from 'next/server';
 
 export async function DELETE(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    context: { params: { id: string } }
 ) {
     try {
         const session = await getServerSession(authOptions) as Session;
@@ -20,7 +21,7 @@ export async function DELETE(
         }
 
         const document = await prisma.document.findUnique({
-            where: { id: params.id }
+            where: { id: context.params.id }
         });
 
         if (!document) {
@@ -46,7 +47,7 @@ export async function DELETE(
 
         // Excluir o registro do banco de dados
         await prisma.document.delete({
-            where: { id: params.id }
+            where: { id: context.params.id }
         });
 
         return NextResponse.json(

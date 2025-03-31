@@ -3,16 +3,16 @@ import LogoutButton from "@/features/auth/LogoutButton";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
-  HomeIcon,
-  DocumentArrowUpIcon,
-  DocumentTextIcon,
-  UserIcon,
-  ChevronDownIcon,
-  ArrowLeftOnRectangleIcon
+    HomeIcon,
+    DocumentArrowUpIcon,
+    DocumentTextIcon,
+    UserIcon,
+    ChevronDownIcon,
+    ArrowRightStartOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
 interface HeaderProps {
-  activePage?: 'dashboard' | 'upload' | 'pending' | 'signed' | 'documents';
+    activePage?: 'dashboard' | 'upload' | 'pending' | 'signed' | 'documents';
 }
 
 export default function Header({ activePage = 'dashboard' }: HeaderProps) {
@@ -42,8 +42,8 @@ export default function Header({ activePage = 'dashboard' }: HeaderProps) {
 
     return (
         <header className={`left-0 sticky right-0 top-0 transition-all duration-300 ${isScrolled
-                ? 'bg-white/80 backdrop-blur-md shadow-md'
-                : 'bg-white shadow-sm'
+            ? 'bg-white/80 backdrop-blur-md shadow-md'
+            : 'bg-white shadow-sm'
             }`}>
             <div className="mx-auto px-2 sm:px-4 lg:px-6">
                 <div className="flex justify-between items-center h-14 sm:h-16">
@@ -51,33 +51,30 @@ export default function Header({ activePage = 'dashboard' }: HeaderProps) {
                     <div className="flex items-center space-x-4 lg:hidden">
                         <Link
                             href="/"
-                            className={`p-2 rounded-lg transition-colors duration-200 ${
-                                activePage === 'dashboard' 
-                                    ? 'bg-green-50 text-green-600' 
+                            className={`p-2 rounded-lg transition-colors duration-200 ${activePage === 'dashboard'
+                                    ? 'bg-green-50 text-green-600'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                            }`}
+                                }`}
                             title="Dashboard"
                         >
                             <HomeIcon className="w-5 h-5" />
                         </Link>
                         <Link
                             href="/documents/upload"
-                            className={`p-2 rounded-lg transition-colors duration-200 ${
-                                activePage === 'upload' 
-                                    ? 'bg-green-50 text-green-600' 
+                            className={`p-2 rounded-lg transition-colors duration-200 ${activePage === 'upload'
+                                    ? 'bg-green-50 text-green-600'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                            }`}
+                                }`}
                             title="Upload de Documentos"
                         >
                             <DocumentArrowUpIcon className="w-5 h-5" />
                         </Link>
                         <Link
                             href="/documents"
-                            className={`p-2 rounded-lg transition-colors duration-200 ${
-                                activePage === 'documents' 
-                                    ? 'bg-green-50 text-green-600' 
+                            className={`p-2 rounded-lg transition-colors duration-200 ${activePage === 'documents'
+                                    ? 'bg-green-50 text-green-600'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                            }`}
+                                }`}
                             title="Todos os Documentos"
                         >
                             <DocumentTextIcon className="w-5 h-5" />
@@ -105,8 +102,8 @@ export default function Header({ activePage = 'dashboard' }: HeaderProps) {
 
                         <div
                             className={`absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl py-1 z-50 transform transition-all duration-300 ease-in-out ${isDropdownOpen
-                                    ? 'opacity-100 translate-y-0 visible'
-                                    : 'opacity-0 -translate-y-2 invisible'
+                                ? 'opacity-100 translate-y-0 visible'
+                                : 'opacity-0 -translate-y-2 invisible'
                                 }`}
                         >
                             <div className="px-4 py-3 border-b border-gray-100">
@@ -126,7 +123,7 @@ export default function Header({ activePage = 'dashboard' }: HeaderProps) {
                                     className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all duration-200 group"
                                     onLogout={() => setIsDropdownOpen(false)}
                                 >
-                                    <ArrowLeftOnRectangleIcon className="w-4 h-4 mr-3 group-hover:transform group-hover:translate-x-1 transition-transform duration-200" />
+                                    <ArrowRightStartOnRectangleIcon className="w-4 h-4 mr-3 group-hover:transform group-hover:translate-x-1 transition-transform duration-200" />
                                     Sair
                                 </LogoutButton>
                             </div>

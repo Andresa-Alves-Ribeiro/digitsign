@@ -19,6 +19,7 @@ export const TOAST_MESSAGES = {
         loginError: "Erro ao fazer login. Confira seus dados e tente novamente.",
         registerSuccess: "Cadastro realizado com sucesso!",
         registerError: "Erro ao fazer cadastro. Tente novamente mais tarde.",
+        logoutSuccess: "Logout realizado com sucesso!",
         logoutError: "Erro ao fazer logout. Por favor, tente novamente.",
     },
     document: {

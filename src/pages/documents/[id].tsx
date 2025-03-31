@@ -6,22 +6,10 @@ import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatFileSize } from '@/utils/file';
-import { documentStatusConfig } from '@/constants/documentStatus';
-import { DocumentStatus } from '@/types/enums/document';
-import Link from "next/link";
+import { getStatusConfig } from '@/constants/documentStatus';
+import { DocumentStatus } from '@/types/enums';
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-
-interface Document {
-    id: string;
-    name: string;
-    fileKey: string;
-    userId: string;
-    status: DocumentStatus;
-    mimeType: string;
-    size: number;
-    createdAt: string;
-    updatedAt: string;
-}
+import { Document } from '@/types/interfaces';
 
 function DocumentViewPage() {
     const router = useRouter();
@@ -63,7 +51,7 @@ function DocumentViewPage() {
 
         setIsSigning(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulação
+            await new Promise(resolve => setTimeout(resolve, 1000));
             setDocument(prev => prev ? { ...prev, status: DocumentStatus.SIGNED } : null);
         } catch (error) {
             console.error('Erro ao assinar documento:', error);
@@ -106,7 +94,7 @@ function DocumentViewPage() {
 
     if (error) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex justify-center items-center h-full">
                 <div className="text-red-500">{error}</div>
             </div>
         );
@@ -114,16 +102,16 @@ function DocumentViewPage() {
 
     if (!document) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex justify-center items-center h-full">
                 <div>Documento não encontrado</div>
             </div>
         );
     }
 
-    const statusConfig = documentStatusConfig[document.status];
+    const statusConfig = getStatusConfig(document.status);
 
     return (
-        <div className="h-full overflow-y-auto">
+        <div className="overflow-y-auto">
             <div className="container mx-auto px-4 md:px-6 py-6">
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div className="flex justify-between items-start mb-6">
@@ -131,7 +119,6 @@ function DocumentViewPage() {
 
                         <div className="flex items-center gap-2">
                             {(() => {
-                                console.log('Document status:', document.status);
                                 return document.status === 'PENDING' && (
                                     <button
                                         onClick={handleSignDocument}
@@ -170,13 +157,13 @@ function DocumentViewPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-gray-50 rounded-lg p-4 flex items-center space-x-3">
-                            <div className={`p-2 rounded-lg ${statusConfig.color} bg-opacity-20`}>
+                            <div className={`p-2 border-none bg-green-400 rounded-lg ${statusConfig.color} bg-opacity-20`}>
                                 {statusConfig.icon}
                             </div>
 
                             <div>
                                 <p className="text-sm text-gray-500">Status</p>
-                                <p className={`font-medium ${statusConfig.color}`}>
+                                <p className={`font-medium border-none px-1 ${statusConfig.color}`}>
                                     {statusConfig.label}
                                 </p>
                             </div>
@@ -205,7 +192,7 @@ function DocumentViewPage() {
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500">Tamanho do arquivo</p>
-                                <p className="font-medium text-gray-900">{formatFileSize(document.size)}</p>
+                                <p className="font-medium text-gray-900">{document.size && formatFileSize(document.size)}</p>
                             </div>
                         </div>
                     </div>

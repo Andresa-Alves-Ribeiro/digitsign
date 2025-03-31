@@ -128,70 +128,60 @@ const UploadComponent = () => {
                                     <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <div className="relative flex flex-col items-center justify-center px-8 py-12 border-2 border-dashed border-gray-300 rounded-lg bg-white group-hover:border-transparent transition-all duration-300">
                                         <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-green-600/5 rounded-lg"></div>
-                                        <div className="relative space-y-4 text-center">
-                                            <div className="flex justify-center">
-                                                <div className="p-3 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors duration-300">
-                                                    <svg
-                                                        className="h-8 w-8 text-green-500 group-hover:text-green-600 transition-colors duration-300"
-                                                        stroke="currentColor"
-                                                        fill="none"
-                                                        viewBox="0 0 48 48"
-                                                        aria-hidden="true"
-                                                    >
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            strokeWidth={2}
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col items-center space-y-1">
-                                                <label
-                                                    htmlFor="file"
-                                                    className="relative cursor-pointer rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
+                                        <div className="flex justify-center">
+                                            <div className="p-3 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors duration-300">
+                                                <svg
+                                                    className="h-8 w-8 text-green-500 group-hover:text-green-600 transition-colors duration-300"
+                                                    stroke="currentColor"
+                                                    fill="none"
+                                                    viewBox="0 0 48 48"
+                                                    aria-hidden="true"
                                                 >
-                                                    <span className="text-base">Selecione um arquivo</span>
-                                                    <input
-                                                        id="file"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        onChange={(e) => {
-                                                            const selectedFile = e.target.files?.[0];
-                                                            if (selectedFile) {
-                                                                if (selectedFile.size > MAX_FILE_SIZE) {
-                                                                    setError(`O arquivo deve ter no máximo ${MAX_FILE_SIZE_MB}MB`);
-                                                                    e.target.value = "";
-                                                                    setFile(null);
-                                                                } else if (!selectedFile.name.toLowerCase().endsWith('.pdf')) {
-                                                                    setError("Por favor, selecione apenas arquivos PDF");
-                                                                    e.target.value = "";
-                                                                    setFile(null);
-                                                                } else {
-                                                                    setFile(selectedFile);
-                                                                    setError(null);
-                                                                }
-                                                            } else {
-                                                                setFile(null);
-                                                            }
-                                                        }}
-                                                        className="sr-only"
-                                                        required
+                                                    <path
+                                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                        strokeWidth={2}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
                                                     />
-                                                </label>
-                                                <p className="text-sm text-gray-500">ou arraste e solte</p>
-                                            </div>
-                                            <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
-                                                <span>PDF até 30MB</span>
                                             </div>
                                         </div>
+                                        <label
+                                            htmlFor="file"
+                                            className="relative cursor-pointer rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
+                                        >
+                                            <span className="text-base">Selecione um arquivo</span>
+                                            <input
+                                                id="file"
+                                                type="file"
+                                                accept=".pdf"
+                                                onChange={(e) => {
+                                                    const selectedFile = e.target.files?.[0];
+                                                    if (selectedFile) {
+                                                        if (selectedFile.size > MAX_FILE_SIZE) {
+                                                            setError(`O arquivo deve ter no máximo ${MAX_FILE_SIZE_MB}MB`);
+                                                            e.target.value = "";
+                                                            setFile(null);
+                                                        } else if (!selectedFile.name.toLowerCase().endsWith('.pdf')) {
+                                                            setError("Por favor, selecione apenas arquivos PDF");
+                                                            e.target.value = "";
+                                                            setFile(null);
+                                                        } else {
+                                                            setFile(selectedFile);
+                                                            setError(null);
+                                                        }
+                                                    } else {
+                                                        setFile(null);
+                                                    }
+                                                }}
+                                                className="sr-only"
+                                                required
+                                            />
+                                        </label>
                                     </div>
                                 </div>
                             </div>
+
                             {file && (
                                 <div className="mt-4 flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="flex items-center space-x-3">
@@ -228,7 +218,7 @@ const UploadComponent = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className={`${commonStyles.button.primary} flex items-center`}
+                                className={`w-max bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer flex items-center`}
                             >
                                 {isLoading ? (
                                     <>

@@ -43,10 +43,10 @@ export default async function handler(
             uploadDir,
             keepExtensions: true,
             maxFileSize: MAX_FILE_SIZE,
-            filter: (part) => {
-                return part.mimetype ? part.mimetype.includes("pdf") : true;
+            filter: ({ mimetype }) => {
+                return mimetype ? mimetype.includes("pdf") : false;
             },
-            filename: (name, ext, part) => {
+            filename: (_, ext) => {
                 const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
                 return `${uniqueSuffix}${ext}`;
             }
@@ -76,20 +76,26 @@ export default async function handler(
             try {
                 const fileContent = await fs.readFile(file.filepath, { encoding: 'utf8', flag: 'r' });
                 isPDFByContent = fileContent.startsWith('%PDF-');
-            } catch (error) {
-                // Ignora erro de leitura do arquivo
+            } catch (err) {
+                console.error('Error reading file content:', err);
             }
         }
 
         if (!isPDFByMimeType && !isPDFByExtension && !isPDFByContent) {
+            // Remove o arquivo se não for um PDF válido
+            try {
+                await fs.unlink(file.filepath);
+            } catch (err) {
+                console.error('Error removing invalid file:', err);
+            }
+
             return res.status(400).json({ 
                 message: "Tipo de arquivo não permitido. Apenas PDFs são aceitos.",
                 details: {
                     mimetype: file.mimetype,
                     extension: fileExtension,
                     originalFilename: file.originalFilename,
-                    newFilename: file.newFilename,
-                    filepath: file.filepath
+                    newFilename: file.newFilename
                 }
             });
         }
@@ -119,11 +125,12 @@ export default async function handler(
             size: fileSize,
             mimeType: file.mimetype || 'application/pdf'
         });
-    } catch (error) {
-        if (error instanceof Error) {
+    } catch (err) {
+        console.error('Error in upload handler:', err);
+        if (err instanceof Error) {
             return res.status(500).json({ 
                 message: "Error uploading file",
-                error: error.message 
+                error: err.message 
             });
         }
         return res.status(500).json({ 

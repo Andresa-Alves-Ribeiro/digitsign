@@ -5,9 +5,15 @@ import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
+type Props = {
+    params: {
+        id: string;
+    };
+};
+
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: Props
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -18,7 +24,7 @@ export async function DELETE(
             );
         }
 
-        const { id } = params;
+        const { id } = context.params;
         if (!id) {
             return NextResponse.json(
                 { error: 'ID do documento inválido' },

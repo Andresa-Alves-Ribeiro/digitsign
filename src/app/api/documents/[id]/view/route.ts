@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import path from 'path';
-import fs from 'fs';
 import { authOptions } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(
     request: Request,
@@ -56,26 +55,25 @@ export async function GET(
             );
         }
 
-        // Caminho do arquivo no diretório de uploads
-        const filePath = path.join(process.cwd(), 'uploads', document.fileKey);
-        console.log('Caminho do arquivo:', filePath);
+        // Busca o arquivo do Supabase Storage
+        const { data: fileData, error: fileError } = await supabase
+            .storage
+            .from('documents')
+            .download(document.fileKey);
 
-        // Verificar se o arquivo existe
-        if (!fs.existsSync(filePath)) {
-            console.error('Arquivo não encontrado no caminho:', filePath);
+        if (fileError) {
+            console.error('Erro ao buscar arquivo do Supabase:', fileError);
             return NextResponse.json(
-                { error: "Arquivo não encontrado" },
-                { status: 404 }
+                { error: "Erro ao buscar arquivo" },
+                { status: 500 }
             );
         }
 
-        console.log('Arquivo encontrado, enviando...');
+        // Converte o arquivo para buffer
+        const buffer = Buffer.from(await fileData.arrayBuffer());
 
-        // Ler o arquivo
-        const fileBuffer = fs.readFileSync(filePath);
-
-        // Criar a resposta com o arquivo
-        return new NextResponse(fileBuffer, {
+        // Retorna o arquivo
+        return new NextResponse(buffer, {
             headers: {
                 'Content-Type': document.mimeType || 'application/pdf',
                 'Content-Disposition': `inline; filename="${document.fileKey}"`,

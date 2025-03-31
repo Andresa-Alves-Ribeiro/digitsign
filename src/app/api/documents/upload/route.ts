@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { promises as fs } from "fs";
-import path from "path";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 // Tipos permitidos de arquivo
 const ALLOWED_FILE_TYPES = ['application/pdf', 'application/x-pdf'];
@@ -51,27 +50,34 @@ export async function POST(request: Request) {
             );
         }
 
-        const uploadDir = path.join(process.cwd(), "uploads");
-        
-        // Cria o diretório de uploads se não existir
-        try {
-            await fs.access(uploadDir);
-        } catch {
-            await fs.mkdir(uploadDir, { recursive: true });
-        }
-
         // Gera um nome único para o arquivo
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
         const fileName = `${uniqueSuffix}.pdf`;
-        const filePath = path.join(uploadDir, fileName);
 
-        // Converte o arquivo para buffer e salva
+        // Converte o arquivo para buffer
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        await fs.writeFile(filePath, buffer);
+
+        // Faz upload do arquivo para o Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('documents')
+            .upload(fileName, buffer, {
+                contentType: file.type,
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (uploadError) {
+            console.error('Error uploading to Supabase:', uploadError);
+            return NextResponse.json(
+                { message: "Erro ao fazer upload do arquivo", error: uploadError.message },
+                { status: 500 }
+            );
+        }
 
         // Salvar metadados no banco de dados
-        await prisma.document.create({
+        const document = await prisma.document.create({
             data: {
                 name: file.name,
                 fileKey: fileName,
@@ -84,10 +90,13 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ 
             message: "File uploaded successfully",
-            fileName: fileName,
-            originalName: file.name,
-            size: file.size,
-            mimeType: file.type
+            document: {
+                id: document.id,
+                name: document.name,
+                fileKey: document.fileKey,
+                size: document.size,
+                mimeType: document.mimeType
+            }
         });
     } catch (err) {
         console.error('Error in upload handler:', err);

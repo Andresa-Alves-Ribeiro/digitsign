@@ -23,7 +23,7 @@ function DocumentViewPage() {
 
     useEffect(() => {
         if (id && session) {
-            fetch(`/api/documents/${id}`)
+            fetch(`/api/documents/${id}/view`)
                 .then(res => {
                     if (!res.ok) {
                         router.push('/documents');

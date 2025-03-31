@@ -5,8 +5,7 @@ import UploadComponent from "@/features/upload/UploadComponent";
 
 function UploadPage() {
     return (
-        <div className="px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">Upload de Documento</h1>
+        <div className="px-4 py-8 h-full bg-zinc-100">
             <UploadComponent />
         </div>
     );

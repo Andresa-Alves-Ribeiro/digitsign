@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '@/assets/images/logo.png';
+import Header from './Header';
 import {
   HomeIcon,
   DocumentArrowUpIcon,
@@ -73,8 +74,11 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
       </div>
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64 min-h-screen">
-        {children}
+      <div className="flex-1 lg:ml-64 min-h-screen flex flex-col">
+        <Header activePage={activePage} />
+        <main className="flex-1">
+          {children}
+        </main>
       </div>
     </div>
   );

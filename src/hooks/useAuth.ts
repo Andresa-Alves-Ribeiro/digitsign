@@ -16,6 +16,7 @@ interface RegisterData extends LoginData {
 
 interface ApiError {
     message: string;
+    error?: string;
 }
 
 export const useAuth = () => {
@@ -49,6 +50,8 @@ export const useAuth = () => {
     const register = async (data: RegisterData) => {
         try {
             setIsLoading(true);
+            console.log('Sending registration request...');
+            
             const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: {
@@ -61,12 +64,20 @@ export const useAuth = () => {
                 }),
             });
 
+            let errorData: ApiError;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                console.error('Failed to parse response:', e);
+                throw new Error('Server response was not in the expected format');
+            }
+
             if (!response.ok) {
-                const errorData = await response.json() as ApiError;
-                console.error('Registration error:', errorData.message);
+                console.error('Registration error:', errorData);
                 throw new Error(errorData.message || TOAST_MESSAGES.auth.registerError);
             }
 
+            console.log('Registration successful, attempting to sign in...');
             const signInResult = await signIn("credentials", {
                 redirect: false,
                 email: data.email,

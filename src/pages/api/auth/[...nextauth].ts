@@ -1,13 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import type { JWT } from "next-auth/jwt";
-import type { Session, SessionStrategy } from "next-auth";
+import type { Session, SessionStrategy, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-interface User {
+interface CustomUser extends User {
     id: string;
     email: string;
     name: string;
@@ -30,7 +30,7 @@ const loginSchema = z.object({
     password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
 });
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
@@ -77,13 +77,13 @@ export const authOptions = {
         error: "/login",
     },
     callbacks: {
-        async jwt({ token, user }: { token: JWT; user: User | undefined }) {
+        async jwt({ token, user, account }) {
             if (user) {
-                token.id = user.id;
+                token.id = (user as CustomUser).id;
             }
             return token;
         },
-        async session({ session, token }: { session: Session; token: JWT }) {
+        async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.id as string;
             }

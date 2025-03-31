@@ -7,29 +7,47 @@ import { Document as DocumentType } from '@/types/interfaces';
 import { DocumentStatus } from '@/types/enums';
 import { documentStatusConfig } from '@/constants/documentStatus';
 import { formatFileSizeInMB } from '@/utils/file';
+import { toast } from 'react-hot-toast';
 
 const DocumentList = () => {
     const { documents, isLoading, error, setDocuments, setLoading, setError } = useDocumentStore();
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchDocuments = async () => {
+            if (isLoading) return; // Prevent multiple simultaneous requests
+            
             setLoading(true);
             try {
                 const response = await fetch('/api/documents');
                 if (!response.ok) {
-                    throw new Error('Failed to fetch documents');
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Failed to fetch documents');
                 }
                 const data = await response.json();
-                setDocuments(data);
+                if (isMounted) {
+                    setDocuments(data);
+                }
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Error fetching documents');
+                console.error('Error fetching documents:', err);
+                if (isMounted) {
+                    setError(err instanceof Error ? err.message : 'Error fetching documents');
+                    toast.error('Failed to load documents. Please try again later.');
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchDocuments();
-    }, [setDocuments, setLoading, setError]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [setDocuments, setLoading, setError, isLoading]);
 
     if (isLoading) {
         return (
@@ -41,8 +59,14 @@ const DocumentList = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
                 <div className="text-red-500">{error}</div>
+                <button 
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                    Try Again
+                </button>
             </div>
         );
     }

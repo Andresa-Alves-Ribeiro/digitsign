@@ -5,10 +5,9 @@ import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 import { Session } from 'next-auth';
-import { NextRequest } from 'next/server';
 
 export async function DELETE(
-    request: NextRequest,
+    request: Request,
     { params }: { params: { id: string } }
 ) {
     try {
@@ -66,4 +65,4 @@ export async function DELETE(
             { status: 500 }
         );
     }
-} 
+}

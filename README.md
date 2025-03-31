@@ -34,6 +34,7 @@ SuperSign is a modern web application built with Next.js that allows users to up
 ## 🛠️ Technologies
 
 - **Frontend:**
+
   - Next.js 15
   - React 18
   - TypeScript
@@ -45,6 +46,7 @@ SuperSign is a modern web application built with Next.js that allows users to up
   - Zod (Schema Validation)
 
 - **Backend:**
+
   - Next.js API Routes
   - Prisma ORM
   - SQLite Database
@@ -63,13 +65,17 @@ SuperSign is a modern web application built with Next.js that allows users to up
 
 ## 🚀 How to Run
 
+Vercel deployment in construction
+
 1. Clone the repository:
+
    ```bash
    git clone [repository-url]
    cd teste-tecnico-supersign
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    # or
@@ -78,19 +84,23 @@ SuperSign is a modern web application built with Next.js that allows users to up
 
 3. Set up environment variables:
    Create a `.env` file in the root directory with the following variables:
+
    ```
-   DATABASE_URL="file:./dev.db"
-   NEXTAUTH_SECRET="your-secret-key"
+   DATABASE_URL="postgresql://postgres.grldgmzqdcsjbpqbzxao:aBTgAtweP09AJUdM@aws-0-sa-east-1.pooler.supabase.com:5432/postgres"
+   NEXTAUTH_SECRET="yD9d59S6Hh2rrTueb6+43DWnhMSJpeKRB41dvAWcAag="  # Gerado com: openssl rand -base64 32
    NEXTAUTH_URL="http://localhost:3000"
+   NEXT_PUBLIC_API_URL="http://localhost:3000"
    ```
 
 4. Set up the database:
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
 5. Run the development server:
+
    ```bash
    npm run dev
    # or

@@ -100,7 +100,6 @@ export async function POST(request: Request) {
             console.error('Supabase upload error:', {
                 message: uploadError.message,
                 name: uploadError.name,
-                status: uploadError.status,
                 details: uploadError.details
             });
             return NextResponse.json(

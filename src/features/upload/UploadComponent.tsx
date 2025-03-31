@@ -61,6 +61,9 @@ const UploadComponent = () => {
             setSuccess(true);
             addDocument(data.document);
             setFile(null);
+            setTimeout(() => {
+                router.push('/documents');
+            }, 1500);
         } catch (error) {
             console.error('Upload error:', error);
             setError(error instanceof Error ? error.message : 'Erro ao fazer upload do arquivo');

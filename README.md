@@ -20,7 +20,7 @@
 
 ## 📝 About the Project
 
-SuperSign is a modern web application built with Next.js that allows users to upload documents and add digital signatures. The platform provides a secure and user-friendly interface for document management and signing.
+SuperSign is a modern web application that I developed as part of a technical assessment. It's a document signature platform that allows users to upload documents and add digital signatures securely. The platform features a clean, intuitive interface and robust functionality for document management and signing.
 
 ## ✨ Features
 
@@ -109,7 +109,7 @@ SuperSign is a modern web application built with Next.js that allows users to up
 
 ## 🌐 Live Demo
 
-Vercel deployment in construction
+https://teste-tecnico-supersign.vercel.app/
 
 ## 📁 Project Structure
 
@@ -170,10 +170,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🦸 Author
 
-Hi, I'm Andresa A Ribeiro, a Front-end/Full-Stack developer, Information Systems student, and always eager to learn more.
+Hi there! 👋 I'm Andresa Alves Ribeiro, a passionate Front-end/Full-Stack developer and Information Systems student. I love creating elegant solutions to complex problems and am always excited to learn new technologies.
 
+This project was developed as part of a technical assessment, showcasing my skills in modern web development, particularly with Next.js, TypeScript, and full-stack development practices.
+
+### Connect with me:
 <p align="center">
-  <a href="mailto:andresa_15ga@hotmail.com"><img src="https://img.shields.io/static/v1?logoWidth=15&logoColor=ff69b4&logo=gmail&label=Outlook&message=andresa_15ga@hotmail.com&color=ff69b4" target="_blank">
-  <a href= "https://www.linkedin.com/in/andresa-alves-ribeiro/"><img alt="profile linkedin Andresa Alves" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=0A66C2&logo=LinkedIn&label=LinkedIn&message=andresa-alves-ribeiro&color=0A66C2"></a>
-  <a href= "https://www.instagram.com/dresa.alves/"><img alt="profile instagram Andresa Alves" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=E4405F&logo=Instagram&label=Instagram&message=@dresa.alves&color=E4405F"></a>
+  <a href="mailto:andresa_15ga@hotmail.com"><img src="https://img.shields.io/static/v1?logoWidth=15&logoColor=ff69b4&logo=gmail&label=Email&message=andresa_15ga@hotmail.com&color=ff69b4" target="_blank"></a>
+  <a href="https://www.linkedin.com/in/andresa-alves-ribeiro/"><img alt="LinkedIn Profile" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=0A66C2&logo=LinkedIn&label=LinkedIn&message=andresa-alves-ribeiro&color=0A66C2"></a>
+  <a href="https://www.instagram.com/dresa.alves/"><img alt="Instagram Profile" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=E4405F&logo=Instagram&label=Instagram&message=@dresa.alves&color=E4405F"></a>
 </p>

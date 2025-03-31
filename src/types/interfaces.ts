@@ -1,8 +1,9 @@
 // User Domain
 export interface User {
   id: string;
-  email: string;
   name: string;
+  email: string;
+  password: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,10 +20,12 @@ export interface Document {
   fileKey: string;
   userId: string;
   status: DocumentStatus;
-  mimeType: string | null;
-  size: number | null;
+  mimeType?: string | null;
+  size?: number | null;
   createdAt: Date;
   updatedAt: Date;
+  user?: User;
+  signature?: Signature;
 }
 
 export interface DocumentUploadResponse {
@@ -36,7 +39,7 @@ export interface DocumentUploadResponse {
 
 export interface DocumentState {
   documents: Document[];
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
@@ -45,8 +48,9 @@ export interface Signature {
   id: string;
   documentId: string;
   userId: string;
-  signatureData: string;
+  signatureImage: string;
   createdAt: Date;
+  updatedAt: Date;
   document?: Document;
   user?: User;
 }
@@ -57,13 +61,14 @@ export interface SignaturePadProps {
 }
 
 // Auth Domain
-export interface LoginData {
+export interface AuthCredentials {
   email: string;
   password: string;
 }
 
-export interface RegisterData extends LoginData {
+export interface RegisterData extends AuthCredentials {
   name: string;
+  confirmPassword: string;
 }
 
 export interface Session {
@@ -84,10 +89,9 @@ export interface FormFieldProps {
   label: string;
   name: string;
   type?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
   error?: string;
-  icon?: React.ReactNode;
+  required?: boolean;
 }
 
 export interface LoadingProps {
@@ -113,11 +117,13 @@ export interface LogoutButtonProps {
 export interface DocumentCardsProps {
   documents: Document[];
   onDelete: (id: string) => void;
+  onSign: (id: string) => void;
 }
 
 export interface DocumentTableProps {
   documents: Document[];
   onDelete: (id: string) => void;
+  onSign: (id: string) => void;
 }
 
 export interface IconProps {
@@ -136,10 +142,66 @@ export interface DashboardStats {
   totalDocuments: number;
   pendingDocuments: number;
   signedDocuments: number;
-  rejectedDocuments: number;
 }
 
 // Extended Types
 export interface ExtendedCanvasProps extends React.CanvasHTMLAttributes<HTMLCanvasElement> {
   ref?: React.RefObject<HTMLCanvasElement>;
+}
+
+export interface ButtonProps {
+  type?: 'button' | 'submit' | 'reset';
+  variant?: 'primary' | 'secondary' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+}
+
+export interface CardProps {
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+  onClick?: () => void;
+  children?: React.ReactNode;
+}
+
+export interface StatsCardProps {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  trend?: {
+    value: number;
+    isPositive: boolean;
+  };
+}
+
+export interface DocumentCardProps {
+  document: Document;
+  onView?: () => void;
+  onDelete?: () => void;
+  onSign?: () => void;
+}
+
+export interface SignatureCardProps {
+  signature: Signature;
+  onView?: () => void;
+  onDelete?: () => void;
+}
+
+export interface UserMenuProps {
+  user: User;
+  onLogout: () => void;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+export interface ExtendedDocument extends Document {
+  signatureCount: number;
+  lastSignatureDate?: Date;
 } 

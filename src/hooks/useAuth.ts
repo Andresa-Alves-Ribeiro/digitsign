@@ -14,6 +14,10 @@ interface RegisterData extends LoginData {
     confirmPassword: string;
 }
 
+interface ApiError {
+    message: string;
+}
+
 export const useAuth = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -27,12 +31,15 @@ export const useAuth = () => {
             });
 
             if (result?.error) {
+                console.error('Login error:', result.error);
                 toast.error(TOAST_MESSAGES.auth.loginError, TOAST_CONFIG);
-            } else {
-                toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
-                router.push("/documents");
+                return;
             }
-        } catch (error) {
+
+            toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
+            router.push("/documents");
+        } catch (err) {
+            console.error('Login error:', err);
             toast.error(TOAST_MESSAGES.auth.loginError, TOAST_CONFIG);
         } finally {
             setIsLoading(false);
@@ -55,11 +62,11 @@ export const useAuth = () => {
             });
 
             if (!response.ok) {
-                const result = await response.json();
-                throw new Error(TOAST_MESSAGES.auth.registerError);
+                const errorData = await response.json() as ApiError;
+                console.error('Registration error:', errorData.message);
+                throw new Error(errorData.message || TOAST_MESSAGES.auth.registerError);
             }
 
-            // After successful registration, sign in the user
             const signInResult = await signIn("credentials", {
                 redirect: false,
                 email: data.email,
@@ -67,14 +74,18 @@ export const useAuth = () => {
             });
 
             if (signInResult?.error) {
+                console.error('Post-registration sign in error:', signInResult.error);
                 throw new Error(TOAST_MESSAGES.auth.registerError);
             }
 
             toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
             router.push("/documents");
-        } catch (error: any) {
-            toast.error(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG);
-            // Error is already handled by toast notification
+        } catch (err) {
+            console.error('Registration error:', err);
+            toast.error(
+                err instanceof Error ? err.message : TOAST_MESSAGES.auth.registerError,
+                TOAST_CONFIG
+            );
         } finally {
             setIsLoading(false);
         }
@@ -89,7 +100,8 @@ export const useAuth = () => {
             });
             toast.success(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG);
             router.push("/login");
-        } catch (error) {
+        } catch (err) {
+            console.error('Logout error:', err);
             toast.error(TOAST_MESSAGES.auth.logoutError, TOAST_CONFIG);
         } finally {
             setIsLoading(false);

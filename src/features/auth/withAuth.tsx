@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Loading from "@/components/Loading";
 
-const withAuth = (WrappedComponent: React.ComponentType) => {
-  return function WithAuthComponent(props: any) {
+const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+  return function WithAuthComponent(props: P) {
     const { status } = useSession();
     const router = useRouter();
 

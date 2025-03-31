@@ -10,8 +10,9 @@ import Loading from "@/components/Loading";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import DocumentCards from "@/components/documents/DocumentCards";
 import DocumentTable from "@/components/documents/DocumentTable";
-import { DocumentStatus } from '../../constants/documentStatus';
 import { Document } from '@/types/interfaces';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 
 function DocumentsPage() {
     const router = useRouter();
@@ -35,6 +36,7 @@ function DocumentsPage() {
                 const response = await fetch('/api/documents');
                 if (!response.ok) throw new Error('Erro ao carregar documentos');
                 const data = await response.json();
+                console.log('Documentos carregados:', data);
                 setDocuments(data);
             } catch (error) {
                 toast.error('Erro ao carregar documentos');
@@ -59,7 +61,7 @@ function DocumentsPage() {
 
     if (status === 'authenticated') {
         return (
-            <div className="min-h-screen bg-zinc-100">
+            <div className="bg-zinc-100 h-full">
                 <div className="max-w-full">
                     <div className="px-4 py-4 sm:py-6">
                         <div className="space-y-4 sm:space-y-6">
@@ -87,11 +89,13 @@ function DocumentsPage() {
 
                             <DocumentCards 
                                 documents={documents} 
-                                onDeleteClick={(docId) => setDeleteConfirmation({ show: true, docId })} 
+                                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })} 
+                                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
                             />
                             <DocumentTable 
                                 documents={documents} 
-                                onDeleteClick={(docId) => setDeleteConfirmation({ show: true, docId })} 
+                                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })} 
+                                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
                             />
                         </div>
                     </div>
@@ -128,5 +132,24 @@ function DocumentsPage() {
 
     return null;
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {
+            session,
+        },
+    };
+};
 
 export default withAuth(DocumentsPage); 

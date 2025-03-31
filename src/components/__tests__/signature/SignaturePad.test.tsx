@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { SignaturePad } from '@/components/signature/SignaturePad'
+import SignaturePad from '@/components/signature/SignaturePad'
 import toast from 'react-hot-toast'
 import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast'
 
@@ -19,9 +19,18 @@ jest.mock('react-hot-toast', () => {
   }
 })
 
+interface SignaturePadProps {
+  onBegin?: () => void;
+  onEnd?: () => void;
+}
+
 // Mock react-signature-canvas
 jest.mock('react-signature-canvas', () => {
-  const MockSignaturePad = forwardRef(({ onBegin, onEnd }: any, ref: any) => {
+  const MockSignaturePad = forwardRef<{
+    clear: () => void;
+    isEmpty: () => boolean;
+    toDataURL: () => string;
+  }, SignaturePadProps>((props, ref) => {
     const [hasDrawn, setHasDrawn] = React.useState(false)
 
     React.useImperativeHandle(ref, () => ({
@@ -37,9 +46,9 @@ jest.mock('react-signature-canvas', () => {
         data-testid="mock-signature-pad"
         onMouseDown={() => {
           setHasDrawn(true)
-          onBegin?.()
+          props.onBegin?.()
         }}
-        onMouseUp={onEnd}
+        onMouseUp={props.onEnd}
       />
     )
   })

@@ -1,8 +1,6 @@
 export enum DocumentStatus {
   PENDING = 'PENDING',
-  SIGNED = 'SIGNED',
-  REJECTED = 'REJECTED',
-  EXPIRED = 'EXPIRED'
+  SIGNED = 'SIGNED'
 }
 
 export enum LoadingSize {

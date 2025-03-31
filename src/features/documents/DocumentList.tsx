@@ -8,13 +8,6 @@ import { DocumentStatus } from '@/types/enums';
 import { documentStatusConfig } from '@/constants/documentStatus';
 import { formatFileSizeInMB } from '@/utils/file';
 
-interface DocumentListProps {
-    documents: DocumentType[];
-    onView: (id: string) => void;
-    onSign: (id: string) => void;
-    onDelete: (id: string) => void;
-}
-
 const DocumentList = () => {
     const { documents, isLoading, error, setDocuments, setLoading, setError } = useDocumentStore();
 
@@ -74,37 +67,42 @@ const DocumentList = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {documents.map((document: DocumentType, index) => (
-                        <motion.tr
-                            key={document.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.1 }}
-                        >
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">{document.name}</div>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
-                                <div className="text-sm text-gray-500">
-                                    {document.size ? formatFileSizeInMB(document.size) : '-'}
-                                </div>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
-                                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${documentStatusConfig[document.status as DocumentStatus].color}`}>
-                                    {documentStatusConfig[document.status as DocumentStatus].icon}
-                                    <span className="ml-1">{documentStatusConfig[document.status as DocumentStatus].label}</span>
-                                </span>
-                            </td>
-                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <Link
-                                    href={`/documents/${document.id}`}
-                                    className="text-blue-600 hover:text-blue-900"
-                                >
-                                    Visualizar
-                                </Link>
-                            </td>
-                        </motion.tr>
-                    ))}
+                    {documents.map((document: DocumentType, index) => {
+                        const status = document.status as DocumentStatus;
+                        const statusConfig = documentStatusConfig[status];
+
+                        return (
+                            <motion.tr
+                                key={document.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                            >
+                                <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm font-medium text-gray-900">{document.name}</div>
+                                </td>
+                                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
+                                    <div className="text-sm text-gray-500">
+                                        {document.size ? formatFileSizeInMB(document.size) : '-'}
+                                    </div>
+                                </td>
+                                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-left">
+                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig.color}`}>
+                                        {statusConfig.icon}
+                                        <span className="ml-1">{statusConfig.label}</span>
+                                    </span>
+                                </td>
+                                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <Link
+                                        href={`/documents/${document.id}`}
+                                        className="text-blue-600 hover:text-blue-900"
+                                    >
+                                        Visualizar
+                                    </Link>
+                                </td>
+                            </motion.tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>

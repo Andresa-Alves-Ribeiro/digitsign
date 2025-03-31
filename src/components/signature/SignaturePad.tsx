@@ -14,7 +14,7 @@ interface ExtendedCanvasProps extends React.CanvasHTMLAttributes<HTMLCanvasEleme
   'data-testid'?: string
 }
 
-export const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
+const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
   const signatureRef = useRef<SignatureCanvas>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [hasDrawn, setHasDrawn] = useState(false)
@@ -43,7 +43,8 @@ export const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
       const signature = signatureRef.current.toDataURL()
       await onSave(signature)
       toast.success('Assinatura salva com sucesso!', TOAST_CONFIG)
-    } catch (error) {
+    } catch (err) {
+      console.error('Erro ao salvar assinatura:', err)
       toast.error('Erro ao salvar assinatura', TOAST_CONFIG)
     } finally {
       setIsSaving(false)
@@ -88,7 +89,7 @@ export const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
           type="button"
           onClick={handleSave}
           disabled={isSaving}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSaving ? 'Salvando...' : 'Salvar'}
         </button>
@@ -96,3 +97,5 @@ export const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
     </div>
   )
 }
+
+export default SignaturePad;

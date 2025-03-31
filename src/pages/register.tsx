@@ -1,132 +1,122 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { v4 as uuidv4 } from 'uuid';
-import logo from "@/assets/images/logo.png";
-import loginBackground from "@/assets/images/login-background.png";
-import { toast } from "react-hot-toast";
-import Loading from "@/components/Loading";
-import FormField from "@/components/FormField";
-import AuthGuard from "@/components/AuthGuard";
-import { useAuth } from "@/hooks/useAuth";
-import { registerSchema } from "@/constants/schemas";
-import { commonStyles } from "@/constants/styles";
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useAuth } from '@/hooks/useAuth';
+import FormField from '@/components/FormField';
+import { Button } from '@/components/Button';
+import { toast } from 'react-hot-toast';
+import background from '@/assets/images/background.png';
 
-export default function RegisterPage() {
-    const router = useRouter();
-    const { register: registerUser, isLoading } = useAuth();
-    const { register, handleSubmit, formState } = useForm({
-        resolver: zodResolver(registerSchema),
-    });
+const registerSchema = z.object({
+  name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres'),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
+});
 
-    const onSubmit = async (data: any) => {
-        await registerUser({
-            ...data,
-            id: uuidv4(),
-        });
-    };
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-    return (
-        <AuthGuard>
-            <div className="min-h-screen flex">
-                {/* Left side - Background Image */}
-                <div className="hidden lg:flex lg:w-3/5 relative">
-                    <Image
-                        src={loginBackground}
-                        alt="Register Background"
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                </div>
+export default function Register() {
+  const router = useRouter();
+  const { register: registerUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-                {/* Right side - Register Form */}
-                <div className="w-full lg:w-2/5 flex items-center justify-center bg-white p-8 border-l">
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="w-full max-w-md"
-                    >
-                        <div className="text-center mb-8">
-                            <Image
-                                src={logo}
-                                alt="Logo"
-                                width={80}
-                                height={80}
-                                className="mx-auto mb-4 w-auto"
-                            />
-                            <h1 className="text-3xl font-bold text-gray-800">Criar conta</h1>
-                            <p className="text-gray-600 mt-2">Preencha seus dados para começar</p>
-                        </div>
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
-                                label="Nome"
-                                name="name"
-                                placeholder="Seu nome completo"
-                                register={register}
-                                error={formState.errors.name?.message}
-                            />
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      setIsLoading(true);
+      await registerUser(data);
+      router.push('/');
+      toast.success('Conta criada com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao criar conta. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-                            <FormField
-                                label="Email"
-                                name="email"
-                                placeholder="seu@email.com"
-                                register={register}
-                                error={formState.errors.email?.message}
-                            />
-
-                            <FormField
-                                label="Senha"
-                                name="password"
-                                type="password"
-                                placeholder="••••••••"
-                                register={register}
-                                error={formState.errors.password?.message}
-                            />
-
-                            <FormField
-                                label="Confirmar Senha"
-                                name="confirmPassword"
-                                type="password"
-                                placeholder="••••••••"
-                                register={register}
-                                error={formState.errors.confirmPassword?.message}
-                            />
-
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                disabled={isLoading}
-                                className={commonStyles.button.primary}
-                            >
-                                {isLoading ? (
-                                    <div className="flex items-center justify-center">
-                                        <Loading text="Cadastrando..." />
-                                    </div>
-                                ) : (
-                                    "Cadastrar"
-                                )}
-                            </motion.button>
-                        </form>
-
-                        <div className="mt-6 text-center">
-                            <p className="text-sm text-gray-600">
-                                Já tem uma conta?{" "}
-                                <Link href="/login" className={commonStyles.link}>
-                                    Faça login
-                                </Link>
-                            </p>
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-        </AuthGuard>
-    );
+  return (
+    <div className="min-h-screen flex">
+      <div className="hidden lg:block lg:w-1/2 bg-gray-900 relative">
+        <Image
+            src={background}
+            alt="Background"
+          fill
+          className="object-cover opacity-50"
+          priority
+        />
+      </div>
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Criar uma conta</h1>
+            <p className="mt-2 text-gray-600">Preencha os dados para se registrar</p>
+          </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <FormField<RegisterFormData>
+              label="Nome"
+              name="name"
+              type="text"
+              placeholder="Seu nome completo"
+              error={errors.name?.message}
+              register={register}
+            />
+            <FormField<RegisterFormData>
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="seu@email.com"
+              error={errors.email?.message}
+              register={register}
+            />
+            <FormField<RegisterFormData>
+              label="Senha"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              register={register}
+            />
+            <FormField<RegisterFormData>
+              label="Confirmar Senha"
+              name="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              error={errors.confirmPassword?.message}
+              register={register}
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              isLoading={isLoading}
+              className="w-full"
+            >
+              Criar conta
+            </Button>
+          </form>
+          <p className="mt-4 text-center text-gray-600">
+            Já tem uma conta?{' '}
+            <Link href="/login" className="text-green-600 hover:text-green-700">
+              Faça login
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

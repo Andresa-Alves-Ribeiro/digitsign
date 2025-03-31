@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import withAuth from "../../../features/auth/withAuth";
 import SignaturePad from "../../../components/signature/SignaturePad";
-import DashboardLayout from "../../../layouts/DashboardLayout";
-import Header from "../../../layouts/Header";
 import { motion } from "framer-motion";
 
 function SignDocumentPage() {
@@ -76,7 +74,7 @@ function SignDocumentPage() {
                     >
                         <div>
                             <div className="mb-4 sm:mb-6 md:mb-10">
-                                <div className="flex items-center space-x-4 py-4 sm:py-6">
+                                <div className="flex items-center space-x-4">
                                     <div className="bg-green-50 p-2 sm:p-3 rounded-full w-fit">
                                         <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -116,7 +114,7 @@ function SignDocumentPage() {
 
                             {isSubmitting && (
                                 <div className="mt-4 sm:mt-6 flex items-center justify-center space-x-3">
-                                    <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-blue-500 border-t-transparent"></div>
+                                    <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-green-500 border-t-transparent"></div>
                                     <span className="text-sm sm:text-base text-gray-600 font-medium">Processando assinatura...</span>
                                 </div>
                             )}

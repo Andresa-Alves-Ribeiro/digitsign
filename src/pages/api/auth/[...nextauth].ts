@@ -8,6 +8,12 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Session as SessionInterface } from '@/types/interfaces';
 
+interface User {
+    id: string;
+    email: string;
+    name: string;
+}
+
 declare module "next-auth" {
     interface Session {
         user: {
@@ -58,7 +64,7 @@ export const authOptions = {
                     };
                 } catch (error) {
                     console.error("Auth error:", error);
-                    return null;
+                    throw new Error(error instanceof Error ? error.message : "Erro na autenticação");
                 }
             },
         }),
@@ -72,7 +78,7 @@ export const authOptions = {
         error: "/login",
     },
     callbacks: {
-        async jwt({ token, user }: { token: JWT; user: any }) {
+        async jwt({ token, user }: { token: JWT; user: User | undefined }) {
             if (user) {
                 token.id = user.id;
             }

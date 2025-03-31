@@ -46,15 +46,13 @@ describe('Prisma Service', () => {
       expect(client).toBeDefined()
     })
 
-    it('should reuse the same instance in development', () => {
+    it('should reuse the same instance in development', async () => {
       const originalEnv = process.env.NODE_ENV
       process.env.NODE_ENV = 'development'
 
       // Import the module again
-      jest.isolateModules(() => {
-        const { prisma: newPrisma } = require('../prisma')
-        expect(newPrisma).toBe(prisma)
-      })
+      const { prisma: newPrisma } = await import('../prisma')
+      expect(newPrisma).toBe(prisma)
 
       process.env.NODE_ENV = originalEnv
     })

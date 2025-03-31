@@ -43,6 +43,7 @@ export default function Register() {
       router.push('/');
       toast.success('Conta criada com sucesso!');
     } catch (error) {
+      console.error('Registration error:', error);
       toast.error('Erro ao criar conta. Tente novamente.');
     } finally {
       setIsLoading(false);

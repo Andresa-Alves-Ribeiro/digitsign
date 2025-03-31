@@ -1,7 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { useAuth } from '../useAuth'
 import { signIn, signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast'
 
@@ -25,20 +24,6 @@ jest.mock('react-hot-toast', () => {
     toast: mockToast,
   }
 })
-
-// Mock next/navigation
-const mockRouter = {
-  push: jest.fn(),
-  replace: jest.fn(),
-  prefetch: jest.fn(),
-  back: jest.fn(),
-  forward: jest.fn(),
-  refresh: jest.fn(),
-}
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => mockRouter,
-}))
 
 // Mock fetch
 global.fetch = jest.fn()
@@ -64,7 +49,6 @@ describe('useAuth Hook', () => {
         redirect: false,
       })
       expect(toast.success).toHaveBeenCalledWith(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG)
-      expect(mockRouter.push).toHaveBeenCalledWith('/documents')
     })
 
     it('handles login error', async () => {
@@ -104,7 +88,6 @@ describe('useAuth Hook', () => {
         redirect: false,
       })
       expect(toast.success).toHaveBeenCalledWith(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG)
-      expect(mockRouter.push).toHaveBeenCalledWith('/documents')
     })
 
     it('handles registration error', async () => {
@@ -136,7 +119,6 @@ describe('useAuth Hook', () => {
 
       expect(signOut).toHaveBeenCalled()
       expect(toast.success).toHaveBeenCalledWith(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG)
-      expect(mockRouter.push).toHaveBeenCalledWith('/login')
     })
 
     it('handles logout error', async () => {

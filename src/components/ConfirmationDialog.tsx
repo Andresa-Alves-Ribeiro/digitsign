@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { commonStyles } from "@/constants/styles";
+import { commonStyles } from '@/constants/styles';
 
 interface ConfirmationDialogProps {
     isOpen: boolean;

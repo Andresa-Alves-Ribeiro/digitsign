@@ -1,33 +1,34 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import Loading from './Loading';
 
 interface AuthGuardProps {
     children: React.ReactNode;
 }
 
-export default function AuthGuard({ children }: AuthGuardProps) {
+const AuthGuard = ({ children }: AuthGuardProps) => {
+    const { data: session, status } = useSession();
     const router = useRouter();
-    const { status } = useSession();
 
     useEffect(() => {
-        if (status === 'authenticated') {
-            router.push('/');
+        if (status === 'unauthenticated') {
+            router.push('/login');
         }
     }, [status, router]);
 
     if (status === 'loading') {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loading text="Carregando..." />
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
             </div>
         );
     }
 
-    if (status === 'unauthenticated') {
+    if (status === 'authenticated') {
         return <>{children}</>;
     }
 
     return null;
-} 
+};
+
+export default AuthGuard; 

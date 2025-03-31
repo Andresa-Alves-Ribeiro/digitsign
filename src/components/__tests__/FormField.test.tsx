@@ -1,14 +1,12 @@
 import { render, screen } from '@testing-library/react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import FormField from '../FormField'
 
 // Wrapper component to provide form context
 const FormWrapper = ({ children }: { children: React.ReactNode }) => {
   const methods = useForm()
   return (
-    <FormProvider {...methods}>
-      <form>{children}</form>
-    </FormProvider>
+    <form>{children}</form>
   )
 }
 

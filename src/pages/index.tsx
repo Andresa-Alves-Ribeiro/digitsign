@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { Button } from '@/components/Button';
-import DocumentCards from '@/components/documents/DocumentCards';
-import DocumentTable from '@/components/documents/DocumentTable';
 import { toast } from 'react-hot-toast';
-import { Document, DashboardStats } from '@/types/interfaces';
+import { DashboardStats } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
@@ -24,10 +20,6 @@ export default function Home() {
     signedDocuments: 0,
   });
 
-  useEffect(() => {
-    loadDocuments();
-  }, []);
-
   const loadDocuments = async () => {
     try {
       setLoading(true);
@@ -37,11 +29,16 @@ export default function Home() {
       setDocuments(data);
       calculateStats();
     } catch (error) {
+      console.error('Error loading documents:', error);
       toast.error('Erro ao carregar documentos');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
 
   const calculateStats = () => {
     const total = documents.length;

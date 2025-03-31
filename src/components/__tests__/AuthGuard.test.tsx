@@ -8,11 +8,6 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn()
 }))
 
-// Mock next-auth/react
-jest.mock('next-auth/react', () => ({
-  useSession: jest.fn()
-}))
-
 describe('AuthGuard Component', () => {
   const mockRouter = {
     push: jest.fn()

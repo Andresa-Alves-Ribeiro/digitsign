@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { Poppins } from "next/font/google";
-import DashboardLayout from "@/layouts/DashboardLayout";
 import Header from "@/layouts/Header";
 import Head from "next/head";
 
@@ -46,14 +45,12 @@ export default function App({ Component, pageProps: { session, ...pageProps }, r
         {isAuth ? (
           <Component {...pageProps} />
         ) : (
-          <DashboardLayout activePage={activePage}>
-            <div className="flex-1 flex flex-col h-screen">
-              <Header activePage={activePage} />
-              <main className="flex-1 bg-zinc-50 h-full">
-                <Component {...pageProps} />
-              </main>
-            </div>
-          </DashboardLayout>
+          <div className="flex-1 flex flex-col h-screen">
+            <Header activePage={activePage} />
+            <main className="flex-1 bg-zinc-50 h-full">
+              <Component {...pageProps} />
+            </main>
+          </div>
         )}
       </div>
       <Toaster />

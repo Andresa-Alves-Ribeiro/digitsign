@@ -47,8 +47,7 @@ const UploadComponent = () => {
                 body: formData,
                 credentials: "include",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "multipart/form-data",
+                    "Accept": "application/json"
                 },
                 signal: AbortSignal.timeout(30000), // 30 second timeout
             });

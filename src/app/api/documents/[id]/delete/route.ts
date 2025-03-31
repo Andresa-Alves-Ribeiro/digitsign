@@ -4,35 +4,23 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
+import { Session } from 'next-auth';
 
 export async function DELETE(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: { id: string } }
 ) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session) {
+        const session = await getServerSession(authOptions) as Session;
+        if (!session?.user?.id) {
             return NextResponse.json(
                 { error: 'Não autorizado' },
                 { status: 401 }
             );
         }
 
-        const { id } = await params;
-        if (!id) {
-            return NextResponse.json(
-                { error: 'ID do documento inválido' },
-                { status: 400 }
-            );
-        }
-
         const document = await prisma.document.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                fileKey: true,
-                userId: true,
-            }
+            where: { id: params.id }
         });
 
         if (!document) {
@@ -58,7 +46,7 @@ export async function DELETE(
 
         // Excluir o registro do banco de dados
         await prisma.document.delete({
-            where: { id }
+            where: { id: params.id }
         });
 
         return NextResponse.json(

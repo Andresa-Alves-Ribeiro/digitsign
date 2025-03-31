@@ -1,40 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+<h1 align="center"> 
+	 SuperSign Test
+</h1>
 
-## Getting Started
+# SuperSign - Document Signature Platform
 
-First, run the development server:
+<p align="center">
+ <a href="#-about-the-project">About</a> •
+ <a href="#-technologies">Technologies</a> •
+ <a href="#-features">Features</a> •
+ <a href="#-prerequisites">Prerequisites</a> •
+ <a href="#-how-to-run">How to Run</a> •
+ <a href="#-project-structure">Structure</a> •
+ <a href="#-database">Database</a> •
+ <a href="#-tests">Tests</a> •
+ <a href="#-contributing">Contributing</a> •
+ <a href="#-license">License</a> •
+ <a href="#-author">Author</a>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📝 About the Project
+
+SuperSign is a modern web application built with Next.js that allows users to upload documents and add digital signatures. The platform provides a secure and user-friendly interface for document management and signing.
+
+## ✨ Features
+
+- 🔐 User Authentication
+- 📄 Document Upload and Management
+- ✍️ Digital Signature Creation
+- 📱 Responsive Design
+- 🔍 Document Status Tracking
+- 🎨 Modern UI with Material-UI and Tailwind CSS
+
+## 🛠️ Technologies
+
+- **Frontend:**
+  - Next.js 15
+  - React 18
+  - TypeScript
+  - Material-UI
+  - Tailwind CSS
+  - React Query
+  - Zustand (State Management)
+  - React Hook Form
+  - Zod (Schema Validation)
+
+- **Backend:**
+  - Next.js API Routes
+  - Prisma ORM
+  - SQLite Database
+  - NextAuth.js
+  - bcryptjs (Password Hashing)
+
+- **Testing:**
+  - Jest
+  - React Testing Library
+  - Jest DOM
+
+## 📋 Prerequisites
+
+- Node.js 18.x or later
+- npm or yarn package manager
+
+## 🚀 How to Run
+
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd teste-tecnico-supersign
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   DATABASE_URL="file:./dev.db"
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+4. Set up the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🌐 Live Demo
+
+The application is deployed on Vercel and can be accessed at:
+[SuperSign Demo](https://supersign-demo.vercel.app)
+
+> Note: This is a mock link. Replace it with your actual Vercel deployment URL once the project is deployed.
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── app/           # Next.js app directory
+│   ├── components/    # Reusable components
+│   ├── lib/          # Utility functions and configurations
+│   └── types/        # TypeScript type definitions
+├── prisma/           # Database schema and migrations
+├── public/           # Static assets
+└── uploads/          # Uploaded documents storage
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💾 Database
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+The application uses three main models:
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- **User**: Stores user information
+- **Document**: Manages uploaded documents
+- **Signature**: Stores signature information for documents
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## 🧪 Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project includes a comprehensive test suite using Jest and React Testing Library. Run tests using:
 
-## Learn More
+```bash
+npm run test
+```
 
-To learn more about Next.js, take a look at the following resources:
+For development with watch mode:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+```bash
+npm run test:watch
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🦸 Author
+
+Hi, I'm Andresa A Ribeiro, a Front-end/Full-Stack developer, Information Systems student, and always eager to learn more.
+
+<p align="center">
+  <a href="mailto:andresa_15ga@hotmail.com"><img src="https://img.shields.io/static/v1?logoWidth=15&logoColor=ff69b4&logo=gmail&label=Outlook&message=andresa_15ga@hotmail.com&color=ff69b4" target="_blank">
+  <a href= "https://www.linkedin.com/in/andresa-alves-ribeiro/"><img alt="profile linkedin Andresa Alves" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=0A66C2&logo=LinkedIn&label=LinkedIn&message=andresa-alves-ribeiro&color=0A66C2"></a>
+  <a href= "https://www.instagram.com/dresa.alves/"><img alt="profile instagram Andresa Alves" src="https://img.shields.io/static/v1?logoWidth=15&logoColor=E4405F&logo=Instagram&label=Instagram&message=@dresa.alves&color=E4405F"></a>
+</p>

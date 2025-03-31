@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { Poppins } from "next/font/google";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Header from "@/layouts/Header";
+import Head from "next/head";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -37,6 +38,10 @@ export default function App({ Component, pageProps: { session, ...pageProps }, r
 
   return (
     <SessionProvider session={session}>
+      <Head>
+        <title>SuperSign - Assinatura Digital</title>
+        <meta name="description" content="Sistema de assinatura digital de documentos" />
+      </Head>
       <div className={poppins.variable}>
         {isAuth ? (
           <Component {...pageProps} />

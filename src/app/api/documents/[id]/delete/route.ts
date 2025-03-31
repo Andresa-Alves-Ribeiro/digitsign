@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession, Session } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
-import { Session } from 'next-auth';
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { [key: string]: string | string[] } }
 ) {
     try {
+        // Verificar se o ID existe nos parâmetros
+        if (!params.id || Array.isArray(params.id)) {
+            return NextResponse.json(
+                { error: 'ID do documento inválido' },
+                { status: 400 }
+            );
+        }
+
+        const documentId = params.id;
         const session = await getServerSession(authOptions) as Session;
+        
         if (!session?.user?.id) {
             return NextResponse.json(
                 { error: 'Não autorizado' },
@@ -20,7 +29,7 @@ export async function DELETE(
         }
 
         const document = await prisma.document.findUnique({
-            where: { id: params.id }
+            where: { id: documentId }
         });
 
         if (!document) {
@@ -46,7 +55,7 @@ export async function DELETE(
 
         // Excluir o registro do banco de dados
         await prisma.document.delete({
-            where: { id: params.id }
+            where: { id: documentId }
         });
 
         return NextResponse.json(
@@ -54,12 +63,6 @@ export async function DELETE(
         );
     } catch (error) {
         console.error('Erro ao excluir documento:', error);
-        if (error instanceof Error) {
-            return NextResponse.json(
-                { error: `Erro ao excluir documento: ${error.message}` },
-                { status: 500 }
-            );
-        }
         return NextResponse.json(
             { error: 'Erro interno ao excluir documento' },
             { status: 500 }

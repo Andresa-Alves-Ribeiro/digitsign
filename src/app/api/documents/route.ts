@@ -15,12 +15,14 @@ export async function GET() {
     try {
         const session = await getServerSession(authOptions);
         if (!session) {
+            console.log("No session found");
             return NextResponse.json(
                 { message: "Unauthorized" },
                 { status: 401 }
             );
         }
 
+        console.log("Fetching documents for user:", session.user.id);
         const documents = await prisma.document.findMany({
             where: {
                 userId: session.user.id,
@@ -30,11 +32,16 @@ export async function GET() {
             },
         });
 
+        console.log(`Found ${documents.length} documents`);
+
         // Fetch signatures for all documents
+        const documentIds = documents.map((doc: Document) => doc.id);
+        console.log("Fetching signatures for document IDs:", documentIds);
+        
         const signatures = await prisma.signature.findMany({
             where: {
                 documentId: {
-                    in: documents.map((doc: Document) => doc.id),
+                    in: documentIds,
                 },
             },
             select: {
@@ -45,6 +52,8 @@ export async function GET() {
             },
         });
 
+        console.log(`Found ${signatures.length} signatures`);
+
         // Combine documents with their signatures
         const documentsWithSignatures = documents.map((doc: Document) => ({
             ...doc,
@@ -54,8 +63,17 @@ export async function GET() {
         return NextResponse.json(documentsWithSignatures);
     } catch (error) {
         console.error("Error fetching documents:", error);
+        // Log more details about the error
+        if (error instanceof Error) {
+            console.error("Error name:", error.name);
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
         return NextResponse.json(
-            { message: "Internal server error" },
+            { 
+                message: "Internal server error",
+                error: error instanceof Error ? error.message : "Unknown error"
+            },
             { status: 500 }
         );
     }

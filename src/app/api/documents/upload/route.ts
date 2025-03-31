@@ -99,14 +99,12 @@ export async function POST(request: Request) {
         if (uploadError) {
             console.error('Supabase upload error:', {
                 message: uploadError.message,
-                name: uploadError.name,
-                details: uploadError.details
+                name: uploadError.name
             });
             return NextResponse.json(
                 { 
                     message: "Erro ao fazer upload do arquivo", 
-                    error: uploadError.message,
-                    details: uploadError.details
+                    error: uploadError.message
                 },
                 { status: 500 }
             );

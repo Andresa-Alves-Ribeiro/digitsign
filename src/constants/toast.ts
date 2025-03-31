@@ -1,14 +1,20 @@
 export const TOAST_CONFIG = {
-    duration: 4000,
-    position: "top-right" as const,
-    styles: {
-        success: {
-            background: "#22c55e",
-            color: "#fff",
+    duration: 3000,
+    position: 'top-right',
+    style: {
+        background: '#333',
+        color: '#fff',
+    },
+    success: {
+        duration: 3000,
+        theme: {
+            primary: '#4aed88',
         },
-        error: {
-            background: "#ef4444",
-            color: "#fff",
+    },
+    error: {
+        duration: 4000,
+        theme: {
+            primary: '#ff4b4b',
         },
     },
 } as const;

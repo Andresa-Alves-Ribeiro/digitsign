@@ -5,22 +5,28 @@ import Link from 'next/link';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { Button } from '@/components/Button';
 import { toast } from 'react-hot-toast';
-import { DashboardStats } from '@/types/interfaces';
+import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
 import { DocumentArrowUpIcon, ClipboardDocumentListIcon, DocumentCheckIcon, ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
+interface DashboardStats {
+  totalDocuments: number;
+  pendingDocuments: number;
+  signedDocuments: number;
+}
+
 export default function Home() {
   const router = useRouter();
-  const { documents, setDocuments, setLoading } = useDocumentStore();
+  const { setDocuments, setLoading } = useDocumentStore();
   const [stats, setStats] = useState<DashboardStats>({
     totalDocuments: 0,
     pendingDocuments: 0,
     signedDocuments: 0,
   });
 
-  const calculateStats = useCallback(() => {
+  const calculateStats = useCallback((documents: Document[]) => {
     const total = documents.length;
     const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
     const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
@@ -30,16 +36,16 @@ export default function Home() {
       pendingDocuments: pending,
       signedDocuments: signed,
     });
-  }, [documents]);
+  }, []);
 
   const loadDocuments = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/documents');
       if (!response.ok) throw new Error('Erro ao carregar documentos');
-      const data = await response.json();
+      const data: Document[] = await response.json();
       setDocuments(data);
-      calculateStats();
+      calculateStats(data);
     } catch (error) {
       console.error('Error loading documents:', error);
       toast.error('Erro ao carregar documentos');

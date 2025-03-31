@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import withAuth from "@/features/auth/withAuth";
-import { useSession } from 'next-auth/react';
+import { useSession, getSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -12,7 +12,6 @@ import DocumentCards from "@/components/documents/DocumentCards";
 import DocumentTable from "@/components/documents/DocumentTable";
 import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 
 function DocumentsPage() {
     const router = useRouter();
@@ -23,12 +22,6 @@ function DocumentsPage() {
         show: false,
         docId: null
     });
-
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-        }
-    }, [status, router]);
 
     useEffect(() => {
         const fetchDocuments = async () => {

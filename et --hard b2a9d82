@@ -1,0 +1,79 @@
+[33mbf1ac44[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/criando-readme[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33mb2a9d82[m[33m ([m[1;31morigin/feat/criando-readme[m[33m)[m HEAD@{1}: commit: fix: corrige erros de linting e remove imports não utilizados
+[33mbf1ac44[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/criando-readme[m[33m)[m HEAD@{2}: commit: fix: corrige configuração do Tailwind CSS e resolve dependência circular no grid
+[33m7e85d30[m HEAD@{3}: reset: moving to HEAD
+[33m7e85d30[m HEAD@{4}: checkout: moving from fix/resolvendo-erro-dashboard to feat/criando-readme
+[33m4e5104d[m[33m ([m[1;31morigin/fix/resolvendo-erro-dashboard[m[33m, [m[1;32mfix/resolvendo-erro-dashboard[m[33m)[m HEAD@{5}: reset: moving to HEAD
+[33m4e5104d[m[33m ([m[1;31morigin/fix/resolvendo-erro-dashboard[m[33m, [m[1;32mfix/resolvendo-erro-dashboard[m[33m)[m HEAD@{6}: commit: fix/resolvendo-erro-deploy-32
+[33m90ef2c1[m HEAD@{7}: commit: fix/resolvendo-erro-deploy-31
+[33m17d734c[m HEAD@{8}: commit: fix/resolvendo-erro-deploy-30
+[33mdb75db6[m HEAD@{9}: commit: fix/resolvendo-erro-deploy-29
+[33m749f151[m HEAD@{10}: commit: fix/resolvendo-erro-deploy-28
+[33m7acaf9f[m HEAD@{11}: commit: fix/resolvendo-erro-deploy-27
+[33m6e84113[m HEAD@{12}: commit: fix/resolvendo-erro-deploy-26
+[33ma292533[m HEAD@{13}: commit: fix/resolvendo-erro-deploy-25
+[33mf14fc05[m HEAD@{14}: commit: fix/resolvendo-erro-deploy-24
+[33maf87df7[m HEAD@{15}: commit: fix/resolvendo-erro-deploy-24
+[33mc1bd218[m HEAD@{16}: commit: fix/resolvendo-erro-deploy-23
+[33mf5c9f0b[m HEAD@{17}: commit: fix/resolvendo-erro-deploy-2
+[33m03d14dc[m HEAD@{18}: commit: fix/resolvendo-erro-deploy-21
+[33m6f73c3c[m HEAD@{19}: commit: fix/resolvendo-erro-deploy-20
+[33m1ad6f9e[m HEAD@{20}: commit: fix/resolvendo-erro-deploy-19
+[33m3c97baa[m HEAD@{21}: commit: fix/resolvendo-erro-deploy-18
+[33meff0100[m HEAD@{22}: commit: fix/resolvendo-erro-deploy-17
+[33m2ace6d2[m HEAD@{23}: commit: fix/resolvendo-erro-deploy-16
+[33m98842ed[m HEAD@{24}: commit: fix/resolvendo-erro-deploy-15
+[33md20212c[m HEAD@{25}: commit: fix/resolvendo-erro-deploy-14
+[33m296cd54[m HEAD@{26}: commit: fix/resolvendo-erro-deploy-13
+[33m8518d29[m HEAD@{27}: commit: fix/resolvendo-erro-deploy-12
+[33ma564617[m HEAD@{28}: commit: fix/resolvendo-erro-deploy-11
+[33mb7dcb72[m HEAD@{29}: commit: fix/resolvendo-erro-deploy-10
+[33mb7397c3[m HEAD@{30}: commit: fix/resolvendo-erro-deploy-9
+[33mfc0ab51[m HEAD@{31}: commit: fix/resolvendo-erro-deploy-8
+[33m77816a0[m HEAD@{32}: commit: fix/resolvendo-erro-deploy-7
+[33m05ea596[m HEAD@{33}: commit: fix/resolvendo-erro-deploy-6
+[33m41b3510[m HEAD@{34}: commit: fix/resolvendo-erro-deploy-5
+[33m4490792[m HEAD@{35}: commit: fix/resolvendo-erro-deploy-4
+[33m17f12aa[m HEAD@{36}: commit: fix/resolvendo-erro-deploy-3
+[33m8e7bb5f[m HEAD@{37}: commit: fix/resolvendo-erro-deploy-2
+[33mbe98b15[m HEAD@{38}: commit: fix/resolvendo-erro-deploy
+[33mb7581f9[m HEAD@{39}: commit: fix/reinserindo-dashboard
+[33m84b8473[m HEAD@{40}: commit: fix/reinserindo-dashboard
+[33m32edeb3[m[33m ([m[1;31morigin/fix/resolvendo-erros-vercel[m[33m, [m[1;32mfix/resolvendo-erros-vercel[m[33m)[m HEAD@{41}: checkout: moving from fix/resolvendo-erros-vercel to fix/resolvendo-erro-dashboard
+[33m32edeb3[m[33m ([m[1;31morigin/fix/resolvendo-erros-vercel[m[33m, [m[1;32mfix/resolvendo-erros-vercel[m[33m)[m HEAD@{42}: commit: fix/resolvendo-erros-da-vercel-11
+[33m2fd2ff2[m HEAD@{43}: commit: fix/resolvendo-erros-da-vercel-10
+[33mc22d986[m HEAD@{44}: commit: fix/resolvendo-erros-da-vercel-9
+[33m8bf2c50[m HEAD@{45}: commit: fix/resolvendo-erros-da-vercel-8
+[33m5b803bd[m HEAD@{46}: commit: fix/resolvendo-erros-da-vercel-7
+[33m9f19281[m HEAD@{47}: commit: fix/resolvendo-erros-da-vercel-6
+[33m84bc66a[m HEAD@{48}: commit: fix/resolvendo-erros-da-vercel-5
+[33m020ad5a[m HEAD@{49}: commit: fix/resolvendo-erros-da-vercel-4
+[33m1e8bb20[m HEAD@{50}: commit: fix/resolvendo-erros-da-vercel-3
+[33mcfb3306[m HEAD@{51}: commit: fix/resolvendo-erros-da-vercel-2
+[33m6cf8145[m HEAD@{52}: commit: fix/resolvendo-erros-da-vercel
+[33m5fa0ab3[m[33m ([m[1;31morigin/feat/editando-readme[m[33m, [m[1;32mfeat/editando-readme[m[33m)[m HEAD@{53}: checkout: moving from feat/editando-readme to fix/resolvendo-erros-vercel
+[33m5fa0ab3[m[33m ([m[1;31morigin/feat/editando-readme[m[33m, [m[1;32mfeat/editando-readme[m[33m)[m HEAD@{54}: commit: fix/resolvendo-erros-da-vercel
+[33m7e85d30[m HEAD@{55}: checkout: moving from feat/criando-readme to feat/editando-readme
+[33m7e85d30[m HEAD@{56}: commit: fix/atualizado readme
+[33mc13c4ff[m HEAD@{57}: commit: feat/criado readme
+[33m278f0c4[m[33m ([m[1;31morigin/fix/mlehorias-no-layout[m[33m, [m[1;32mfix/mlehorias-no-layout[m[33m)[m HEAD@{58}: checkout: moving from fix/mlehorias-no-layout to feat/criando-readme
+[33m278f0c4[m[33m ([m[1;31morigin/fix/mlehorias-no-layout[m[33m, [m[1;32mfix/mlehorias-no-layout[m[33m)[m HEAD@{59}: commit: style/finalizado ajustes de layout
+[33me953a5c[m HEAD@{60}: commit: feat/criando-arquivo-tipagem-interfaces-e-enums
+[33m1fdbf47[m[33m ([m[1;31morigin/fix/testes-funcionando[m[33m, [m[1;32mfix/testes-funcionando[m[33m)[m HEAD@{61}: checkout: moving from fix/testes-funcionando to fix/mlehorias-no-layout
+[33m1fdbf47[m[33m ([m[1;31morigin/fix/testes-funcionando[m[33m, [m[1;32mfix/testes-funcionando[m[33m)[m HEAD@{62}: commit: refactor: remove console.error calls and improve error handling
+[33m3d82207[m HEAD@{63}: commit: fix: resolve test errors and improve test setup
+[33me8f6a25[m HEAD@{64}: checkout: moving from e8f6a25ed11f66a7db1f9ad6edb5fff65efb9c9c to fix/testes-funcionando
+[33me8f6a25[m HEAD@{65}: checkout: moving from feat/aplicando-testes-com-jest to e8f6a25
+[33me62166a[m[33m ([m[1;31morigin/feat/aplicando-testes-com-jest[m[33m, [m[1;32mfeat/aplicando-testes-com-jest[m[33m)[m HEAD@{66}: reset: moving to HEAD
+[33me62166a[m[33m ([m[1;31morigin/feat/aplicando-testes-com-jest[m[33m, [m[1;32mfeat/aplicando-testes-com-jest[m[33m)[m HEAD@{67}: commit (merge): Merge: Resolve conflicts in Jest configuration files and dependencies
+[33me8f6a25[m HEAD@{68}: commit: tests/todos-os-testes-passaram
+[33ma83fe19[m[33m ([m[1;31morigin/feat/simulacao-de-assinatura-digital[m[33m, [m[1;32mfeat/simulacao-de-assinatura-digital[m[33m)[m HEAD@{69}: reset: moving to feat/simulacao-de-assinatura-digital
+[33m15bc835[m HEAD@{70}: reset: moving to HEAD
+[33m15bc835[m HEAD@{71}: checkout: moving from feat/simulacao-de-assinatura-digital to feat/aplicando-testes-com-jest
+[33ma83fe19[m[33m ([m[1;31morigin/feat/simulacao-de-assinatura-digital[m[33m, [m[1;32mfeat/simulacao-de-assinatura-digital[m[33m)[m HEAD@{72}: checkout: moving from feat/aplicando-testes-com-jest to feat/simulacao-de-assinatura-digital
+[33m15bc835[m HEAD@{73}: reset: moving to HEAD
+[33m15bc835[m HEAD@{74}: commit: test/criando arquivos de testes
+[33ma83fe19[m[33m ([m[1;31morigin/feat/simulacao-de-assinatura-digital[m[33m, [m[1;32mfeat/simulacao-de-assinatura-digital[m[33m)[m HEAD@{75}: checkout: moving from feat/simulacao-de-assinatura-digital to feat/aplicando-testes-com-jest
+[33ma83fe19[m[33m ([m[1;31morigin/feat/simulacao-de-assinatura-digital[m[33m, [m[1;32mfeat/simulacao-de-assinatura-digital[m[33m)[m HEAD@{76}: commit: style/aplicando responsividade em todas as paginas
+[33m91b4a28[m HEAD@{77}: commit: style/ajustando layouts e adicionando novos estilos
+[33m2ee4b9b[m HEAD@{78}: commit: style/mudando-cores-padroes-da-pagina-de-assinatura

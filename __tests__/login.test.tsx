@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import LoginPage from '../login';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,7 +18,8 @@ jest.mock('@/hooks/useAuth', () => ({
 // Mock do next/image
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => {
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => {
+    const { ...restProps } = props;
     // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
     return <img {...props} />;
   },
@@ -41,9 +42,7 @@ describe('LoginPage', () => {
   });
 
   it('renders login page correctly', async () => {
-    await act(async () => {
-      renderWithProviders(<LoginPage />);
-    });
+    renderWithProviders(<LoginPage />);
 
     expect(screen.getByText('Bem-vindo de volta!')).toBeInTheDocument();
     expect(screen.getByText('Faça login para continuar')).toBeInTheDocument();
@@ -74,19 +73,15 @@ describe('LoginPage', () => {
   });
 
   it('handles form submission correctly', async () => {
-    await act(async () => {
-      renderWithProviders(<LoginPage />);
-    });
+    renderWithProviders(<LoginPage />);
 
     const emailInput = screen.getByPlaceholderText('seu@email.com');
     const passwordInput = screen.getByPlaceholderText('••••••••');
     const submitButton = screen.getByRole('button', { name: /entrar/i });
 
-    await act(async () => {
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'password123' } });
-      fireEvent.click(submitButton);
-    });
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.click(submitButton);
 
     expect(mockLogin).toHaveBeenCalledWith({
       email: 'test@example.com',

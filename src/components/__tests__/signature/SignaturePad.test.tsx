@@ -1,8 +1,9 @@
+import '@testing-library/jest-dom'
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import SignaturePad from '@/components/signature/SignaturePad'
+import SignaturePad from '../../../components/signature/SignaturePad.jsx'
 import toast from 'react-hot-toast'
-import { TOAST_CONFIG } from '@/constants/toast'
+import { TOAST_CONFIG } from '../../../constants/toast.js'
 
 // Mock react-hot-toast
 jest.mock('react-hot-toast', () => {
@@ -42,13 +43,20 @@ jest.mock('react-signature-canvas', () => {
     }))
 
     return (
-      <div
+      <canvas
         data-testid="mock-signature-pad"
+        aria-label="Signature pad"
         onMouseDown={() => {
           setHasDrawn(true)
           props.onBegin?.()
         }}
         onMouseUp={props.onEnd}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            setHasDrawn(true)
+            props.onBegin?.()
+          }
+        }}
       />
     )
   })
@@ -125,11 +133,8 @@ describe('SignaturePad Component', () => {
   })
 
   it('disables save button while saving', async () => {
-    const onSave = jest.fn().mockImplementation(() => {
-      return new Promise(resolve => {
-        setTimeout(() => resolve(undefined), 100)
-      })
-    })
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+    const onSave = jest.fn().mockImplementation(() => delay(100))
     render(<SignaturePad onSave={onSave} onCancel={jest.fn()} />)
 
     const signaturePad = screen.getByTestId('mock-signature-pad')

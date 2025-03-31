@@ -1,30 +1,29 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User, Document, Signature } from '@prisma/client'
 import { prisma } from '../prisma'
 
 // Mock PrismaClient before importing prisma
 jest.mock('@prisma/client', () => ({
   PrismaClient: jest.fn().mockImplementation(() => ({
-    // Mock dos métodos do Prisma que você usa
     user: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findUnique: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      create: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      update: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      delete: jest.fn().mockImplementation(() => Promise.resolve(null)),
     },
     document: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findMany: jest.fn().mockImplementation(() => Promise.resolve([])),
+      findUnique: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      create: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      update: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      delete: jest.fn().mockImplementation(() => Promise.resolve(null)),
     },
     signature: {
-      create: jest.fn(),
-      findUnique: jest.fn(),
-      update: jest.fn(),
+      create: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      findUnique: jest.fn().mockImplementation(() => Promise.resolve(null)),
+      update: jest.fn().mockImplementation(() => Promise.resolve(null)),
     },
-    $connect: jest.fn(),
-    $disconnect: jest.fn(),
+    $connect: jest.fn().mockImplementation(() => Promise.resolve()),
+    $disconnect: jest.fn().mockImplementation(() => Promise.resolve()),
   })),
 }))
 
@@ -48,25 +47,36 @@ describe('Prisma Service', () => {
 
     it('should reuse the same instance in development', async () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true
+      })
 
       // Import the module again
-      const { prisma: newPrisma } = await import('../prisma')
-      expect(newPrisma).toBe(prisma)
+      jest.isolateModules(async () => {
+        const { prisma: newPrisma } = await import('../prisma')
+        expect(newPrisma).toBe(prisma)
+      })
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true
+      })
     })
   })
 
   describe('User Operations', () => {
-    const mockUser = {
+    const mockUser: User = {
       id: '1',
       email: 'test@example.com',
       name: 'Test User',
+      password: 'hashedpassword',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     it('should find a user by id', async () => {
-      mockPrismaClient.user.findUnique.mockResolvedValue(mockUser)
+      (mockPrismaClient.user.findUnique as jest.Mock).mockResolvedValue(mockUser)
 
       await prisma.user.findUnique({
         where: { id: '1' },
@@ -78,12 +88,13 @@ describe('Prisma Service', () => {
     })
 
     it('should create a new user', async () => {
-      mockPrismaClient.user.create.mockResolvedValue(mockUser)
+      (mockPrismaClient.user.create as jest.Mock).mockResolvedValue(mockUser)
 
       await prisma.user.create({
         data: {
           email: 'test@example.com',
           name: 'Test User',
+          password: 'hashedpassword',
         },
       })
 
@@ -91,21 +102,27 @@ describe('Prisma Service', () => {
         data: {
           email: 'test@example.com',
           name: 'Test User',
+          password: 'hashedpassword',
         },
       })
     })
   })
 
   describe('Document Operations', () => {
-    const mockDocument = {
+    const mockDocument: Document = {
       id: '1',
-      title: 'Test Document',
-      content: 'Test Content',
+      name: 'Test Document',
+      fileKey: 'test-file-key',
       userId: '1',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: 'DRAFT',
+      mimeType: 'application/pdf',
+      size: 1024,
     }
 
     it('should find documents by user id', async () => {
-      mockPrismaClient.document.findMany.mockResolvedValue([mockDocument])
+      (mockPrismaClient.document.findMany as jest.Mock).mockResolvedValue([mockDocument])
 
       await prisma.document.findMany({
         where: { userId: '1' },
@@ -117,34 +134,53 @@ describe('Prisma Service', () => {
     })
 
     it('should create a new document', async () => {
-      mockPrismaClient.document.create.mockResolvedValue(mockDocument)
+      (mockPrismaClient.document.create as jest.Mock).mockResolvedValue(mockDocument)
 
       await prisma.document.create({
-        data: mockDocument,
+        data: {
+          name: 'Test Document',
+          fileKey: 'test-file-key',
+          userId: '1',
+          status: 'DRAFT',
+          mimeType: 'application/pdf',
+          size: 1024,
+        },
       })
 
       expect(mockPrismaClient.document.create).toHaveBeenCalledWith({
-        data: mockDocument,
+        data: {
+          name: 'Test Document',
+          fileKey: 'test-file-key',
+          userId: '1',
+          status: 'DRAFT',
+          mimeType: 'application/pdf',
+          size: 1024,
+        },
       })
     })
 
     it('should update a document', async () => {
-      const updatedDocument = { ...mockDocument, title: 'Updated Title' }
-      mockPrismaClient.document.update.mockResolvedValue(updatedDocument)
+      const updatedDocument = {
+        ...mockDocument,
+        name: 'Updated Document',
+      } as Document
+
+      const mockUpdate = mockPrismaClient.document.update as jest.Mock
+      mockUpdate.mockResolvedValue(updatedDocument)
 
       await prisma.document.update({
         where: { id: '1' },
-        data: { title: 'Updated Title' },
+        data: { name: 'Updated Document' },
       })
 
-      expect(mockPrismaClient.document.update).toHaveBeenCalledWith({
+      expect(mockUpdate).toHaveBeenCalledWith({
         where: { id: '1' },
-        data: { title: 'Updated Title' },
+        data: { name: 'Updated Document' },
       })
     })
 
     it('should delete a document', async () => {
-      mockPrismaClient.document.delete.mockResolvedValue(mockDocument)
+      (mockPrismaClient.document.delete as jest.Mock).mockResolvedValue(mockDocument)
 
       await prisma.document.delete({
         where: { id: '1' },
@@ -157,27 +193,37 @@ describe('Prisma Service', () => {
   })
 
   describe('Signature Operations', () => {
-    const mockSignature = {
+    const mockSignature: Signature = {
       id: '1',
       documentId: '1',
       userId: '1',
-      signatureData: 'base64data',
+      signatureImg: 'base64data',
+      createdAt: new Date(),
+      signedAt: null,
     }
 
     it('should create a new signature', async () => {
-      mockPrismaClient.signature.create.mockResolvedValue(mockSignature)
+      (mockPrismaClient.signature.create as jest.Mock).mockResolvedValue(mockSignature)
 
       await prisma.signature.create({
-        data: mockSignature,
+        data: {
+          documentId: '1',
+          userId: '1',
+          signatureImg: 'base64data',
+        },
       })
 
       expect(mockPrismaClient.signature.create).toHaveBeenCalledWith({
-        data: mockSignature,
+        data: {
+          documentId: '1',
+          userId: '1',
+          signatureImg: 'base64data',
+        },
       })
     })
 
     it('should find a signature by id', async () => {
-      mockPrismaClient.signature.findUnique.mockResolvedValue(mockSignature)
+      (mockPrismaClient.signature.findUnique as jest.Mock).mockResolvedValue(mockSignature)
 
       await prisma.signature.findUnique({
         where: { id: '1' },
@@ -189,32 +235,39 @@ describe('Prisma Service', () => {
     })
 
     it('should update a signature', async () => {
-      const updatedSignature = { ...mockSignature, signatureData: 'newbase64data' }
-      mockPrismaClient.signature.update.mockResolvedValue(updatedSignature)
+      const updatedSignature = {
+        ...mockSignature,
+        signatureImg: 'newbase64data',
+      } as Signature
+
+      const mockUpdate = mockPrismaClient.signature.update as jest.Mock
+      mockUpdate.mockResolvedValue(updatedSignature)
 
       await prisma.signature.update({
         where: { id: '1' },
-        data: { signatureData: 'newbase64data' },
+        data: { signatureImg: 'newbase64data' },
       })
 
-      expect(mockPrismaClient.signature.update).toHaveBeenCalledWith({
+      expect(mockUpdate).toHaveBeenCalledWith({
         where: { id: '1' },
-        data: { signatureData: 'newbase64data' },
+        data: { signatureImg: 'newbase64data' },
       })
     })
   })
 
   describe('Error Handling', () => {
     it('should handle database connection errors', async () => {
-      const connectionError = new Error('Connection failed')
-      mockPrismaClient.$connect.mockRejectedValue(connectionError)
+      const mockConnect = mockPrismaClient.$connect as jest.Mock
+      const error = new Error('Connection failed')
+      mockConnect.mockRejectedValue(error)
 
       await expect(prisma.$connect()).rejects.toThrow('Connection failed')
     })
 
     it('should handle database operation errors', async () => {
-      const operationError = new Error('Operation failed')
-      mockPrismaClient.user.findUnique.mockRejectedValue(operationError)
+      const mockFindUnique = mockPrismaClient.user.findUnique as jest.Mock
+      const error = new Error('Operation failed')
+      mockFindUnique.mockRejectedValue(error)
 
       await expect(
         prisma.user.findUnique({

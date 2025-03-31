@@ -35,8 +35,7 @@ export default function Login() {
       setIsLoading(true);
       await login(data);
       router.push('/');
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
       // Error toast is already handled in useAuth hook
     } finally {
       setIsLoading(false);

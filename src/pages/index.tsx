@@ -32,25 +32,25 @@ export default function Home() {
     });
   }, [documents]);
 
-  useEffect(() => {
-    const loadDocuments = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/documents');
-        if (!response.ok) throw new Error('Erro ao carregar documentos');
-        const data = await response.json();
-        setDocuments(data);
-        calculateStats();
-      } catch (error) {
-        console.error('Error loading documents:', error);
-        toast.error('Erro ao carregar documentos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDocuments();
+  const loadDocuments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/documents');
+      if (!response.ok) throw new Error('Erro ao carregar documentos');
+      const data = await response.json();
+      setDocuments(data);
+      calculateStats();
+    } catch (error) {
+      console.error('Error loading documents:', error);
+      toast.error('Erro ao carregar documentos');
+    } finally {
+      setLoading(false);
+    }
   }, [setDocuments, setLoading, calculateStats]);
+
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
 
   const handleUpload = () => {
     router.push('/documents/upload');

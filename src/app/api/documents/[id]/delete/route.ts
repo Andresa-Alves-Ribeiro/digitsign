@@ -5,15 +5,9 @@ import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
-type RouteContext = {
-    params: {
-        id: string;
-    };
-};
-
 export async function DELETE(
     request: NextRequest,
-    { params }: RouteContext
+    { params }: { params: { id: string } }
 ) {
     try {
         const session = await getServerSession(authOptions);

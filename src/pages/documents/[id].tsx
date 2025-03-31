@@ -7,9 +7,9 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatFileSize } from '@/utils/file';
 import { getStatusConfig } from '@/constants/documentStatus';
-import { DocumentStatus } from '@/types/enums';
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Document } from '@/types/interfaces';
+import { useDocumentActions } from '@/utils/document';
 
 function DocumentViewPage() {
     const router = useRouter();
@@ -18,8 +18,9 @@ function DocumentViewPage() {
     const [document, setDocument] = useState<Document | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isSigning, setIsSigning] = useState(false);
+    const [isSigning] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { onSign } = useDocumentActions();
 
     useEffect(() => {
         if (id && session) {
@@ -54,21 +55,6 @@ function DocumentViewPage() {
                 });
         }
     }, [id, session, router]);
-
-    const handleSignDocument = async () => {
-        if (!document) return;
-
-        setIsSigning(true);
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setDocument(prev => prev ? { ...prev, status: DocumentStatus.SIGNED } : null);
-        } catch (error) {
-            console.error('Erro ao assinar documento:', error);
-            setError('Erro ao assinar o documento. Tente novamente.');
-        } finally {
-            setIsSigning(false);
-        }
-    };
 
     const handleDeleteDocument = async () => {
         if (!document) return;
@@ -130,7 +116,7 @@ function DocumentViewPage() {
                             {(() => {
                                 return document.status === 'PENDING' && (
                                     <button
-                                        onClick={handleSignDocument}
+                                        onClick={() => onSign(document.id)}
                                         disabled={isSigning}
                                         className="p-2 flex items-center gap-2 bg-green-100 text-green-700 text-sm rounded-md hover:bg-green-200 transition-colors duration-200 m-0 cursor-pointer"
                                     >

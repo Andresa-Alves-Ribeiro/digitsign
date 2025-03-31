@@ -23,16 +23,24 @@ function DocumentViewPage() {
 
     useEffect(() => {
         if (id && session) {
+            console.log('=== Iniciando carregamento do documento ===');
+            console.log('ID do documento:', id);
+            console.log('Session:', session ? 'Autenticado' : 'Não autenticado');
+
             fetch(`/api/documents/${id}/metadata`)
                 .then(res => {
+                    console.log('Status da resposta:', res.status);
                     if (!res.ok) {
+                        console.log('Erro na resposta:', res.statusText);
                         router.push('/documents');
                         return;
                     }
                     return res.json();
                 })
                 .then(data => {
+                    console.log('Dados recebidos:', data);
                     if (!data) {
+                        console.log('Nenhum dado recebido');
                         router.push('/documents');
                         return;
                     }
@@ -40,6 +48,7 @@ function DocumentViewPage() {
                     setIsLoading(false);
                 })
                 .catch(err => {
+                    console.error('Erro ao buscar documento:', err);
                     setError(err.message);
                     setIsLoading(false);
                 });
@@ -206,6 +215,9 @@ function DocumentViewPage() {
                         src={`/api/documents/${document.id}/view`}
                         className="w-full h-[700px]"
                         title={document.name}
+                        onError={(e) => {
+                            console.error('Erro no iframe:', e);
+                        }}
                     />
                 </div>
             </div>

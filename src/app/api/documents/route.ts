@@ -1,7 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import type { Document } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
 
 type SignatureSelect = {
     id: string;
@@ -10,18 +11,14 @@ type SignatureSelect = {
     signedAt: Date | null;
 }
 
-export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
-) {
-    if (req.method !== "GET") {
-        return res.status(405).json({ message: "Method not allowed" });
-    }
-
+export async function GET() {
     try {
-        const session = await getSession({ req });
+        const session = await getServerSession(authOptions);
         if (!session) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return NextResponse.json(
+                { message: "Unauthorized" },
+                { status: 401 }
+            );
         }
 
         const documents = await prisma.document.findMany({
@@ -54,9 +51,12 @@ export default async function handler(
             signature: signatures.find((sig: SignatureSelect) => sig.documentId === doc.id),
         }));
 
-        return res.status(200).json(documentsWithSignatures);
+        return NextResponse.json(documentsWithSignatures);
     } catch (error) {
         console.error("Error fetching documents:", error);
-        return res.status(500).json({ message: "Internal server error" });
+        return NextResponse.json(
+            { message: "Internal server error" },
+            { status: 500 }
+        );
     }
-}
+} 

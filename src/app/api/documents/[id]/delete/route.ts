@@ -7,7 +7,7 @@ import path from 'path';
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -18,7 +18,7 @@ export async function DELETE(
             );
         }
 
-        const { id } = params;
+        const { id } = context.params;
         if (!id) {
             return NextResponse.json(
                 { error: 'ID do documento inválido' },

@@ -100,7 +100,7 @@ function DocumentsPage() {
                     onConfirm={async () => {
                         if (!deleteConfirmation.docId) return;
                         try {
-                            const response = await fetch(`/api/documents/${deleteConfirmation.docId}/delete`, {
+                            const response = await fetch(`/api/documents/${deleteConfirmation.docId}`, {
                                 method: 'DELETE',
                             });
                             if (!response.ok) {

@@ -42,8 +42,8 @@ export default function Register() {
       await registerUser(data);
       router.push('/');
       toast.success('Conta criada com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao criar conta. Tente novamente.');
+    } catch {
+      // Error toast is already handled in useAuth hook
     } finally {
       setIsLoading(false);
     }

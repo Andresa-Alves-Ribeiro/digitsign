@@ -19,9 +19,8 @@ jest.mock('@/hooks/useAuth', () => ({
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props) => {
-    const { fill, priority, ...restProps } = props;
     // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
-    return <img {...restProps} />;
+    return <img {...props} />;
   },
 }));
 

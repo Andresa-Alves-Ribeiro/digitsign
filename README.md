@@ -113,7 +113,17 @@ The application is deployed on Vercel and can be accessed at:
 │   ├── app/           # Next.js app directory
 │   ├── components/    # Reusable components
 │   ├── lib/          # Utility functions and configurations
-│   └── types/        # TypeScript type definitions
+│   ├── types/        # TypeScript type definitions
+│   ├── pages/        # Next.js pages directory
+│   ├── utils/        # Utility functions
+│   ├── hooks/        # Custom React hooks
+│   ├── layouts/      # Layout components
+│   ├── services/     # API and external services
+│   ├── store/        # State management (Zustand)
+│   ├── assets/       # Static assets (images, icons)
+│   ├── constants/    # Constants and configuration
+│   ├── features/     # Feature-specific components and logic
+│   └── styles/       # Global styles and CSS modules
 ├── prisma/           # Database schema and migrations
 ├── public/           # Static assets
 └── uploads/          # Uploaded documents storage

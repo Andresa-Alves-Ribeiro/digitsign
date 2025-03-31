@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { documentStatusConfig, getStatusConfig } from '@/constants/documentStatus';
+import { getStatusConfig } from '@/constants/documentStatus';
 import { PdfIcon } from '@/assets/icons';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Document as DocumentType, DocumentTableProps as DocumentTablePropsType } from '@/types/interfaces';
+import { DocumentTableProps as DocumentTablePropsType } from '@/types/interfaces';
 import { DocumentStatus } from '@/types/enums';
 
 const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, onSign }) => {

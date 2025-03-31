@@ -1,8 +1,8 @@
-import React, { forwardRef } from 'react'
+import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import SignaturePad from '@/components/signature/SignaturePad'
 import toast from 'react-hot-toast'
-import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast'
+import { TOAST_CONFIG } from '@/constants/toast'
 
 // Mock react-hot-toast
 jest.mock('react-hot-toast', () => {
@@ -26,7 +26,7 @@ interface SignaturePadProps {
 
 // Mock react-signature-canvas
 jest.mock('react-signature-canvas', () => {
-  const MockSignaturePad = forwardRef<{
+  const MockSignaturePad = React.forwardRef<{
     clear: () => void;
     isEmpty: () => boolean;
     toDataURL: () => string;

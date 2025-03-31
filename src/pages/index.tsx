@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { Button } from '@/components/Button';
-import DocumentCards from '@/components/documents/DocumentCards';
-import DocumentTable from '@/components/documents/DocumentTable';
 import { toast } from 'react-hot-toast';
-import { Document, DashboardStats } from '@/types/interfaces';
+import { DashboardStats } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
@@ -24,26 +20,7 @@ export default function Home() {
     signedDocuments: 0,
   });
 
-  useEffect(() => {
-    loadDocuments();
-  }, []);
-
-  const loadDocuments = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/documents');
-      if (!response.ok) throw new Error('Erro ao carregar documentos');
-      const data = await response.json();
-      setDocuments(data);
-      calculateStats();
-    } catch (error) {
-      toast.error('Erro ao carregar documentos');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const calculateStats = () => {
+  const calculateStats = useCallback(() => {
     const total = documents.length;
     const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
     const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
@@ -53,7 +30,27 @@ export default function Home() {
       pendingDocuments: pending,
       signedDocuments: signed,
     });
-  };
+  }, [documents]);
+
+  const loadDocuments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/documents');
+      if (!response.ok) throw new Error('Erro ao carregar documentos');
+      const data = await response.json();
+      setDocuments(data);
+      calculateStats();
+    } catch (error) {
+      console.error('Error loading documents:', error);
+      toast.error('Erro ao carregar documentos');
+    } finally {
+      setLoading(false);
+    }
+  }, [setDocuments, setLoading, calculateStats]);
+
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
 
   const handleUpload = () => {
     router.push('/documents/upload');

@@ -1,13 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
+type RouteContext = {
+    params: {
+        id: string;
+    };
+};
+
 export async function DELETE(
-    request: Request,
-    context: { params: { id: string } }
+    request: NextRequest,
+    { params }: RouteContext
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -18,7 +24,7 @@ export async function DELETE(
             );
         }
 
-        const { id } = context.params;
+        const { id } = params;
         if (!id) {
             return NextResponse.json(
                 { error: 'ID do documento inválido' },

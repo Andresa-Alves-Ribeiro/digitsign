@@ -1,9 +1,9 @@
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, Path } from 'react-hook-form';
 
 interface FormFieldProps<T extends Record<string, unknown>> {
     label: string;
-    name: keyof T & string;
+    name: Path<T>;
     type?: string;
     placeholder?: string;
     icon?: React.ReactNode;

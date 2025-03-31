@@ -1,53 +1,39 @@
 "use client";
 
-import { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 import toast from 'react-hot-toast'
+import { TOAST_CONFIG } from '../../constants/toast.js'
 
 interface SignaturePadProps {
   onSave: (signature: string) => Promise<void>
   onCancel: () => void
 }
 
-interface ExtendedCanvasProps extends React.CanvasHTMLAttributes<HTMLCanvasElement> {
-  'data-testid'?: string
-}
-
-const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
-  const signatureRef = useRef<SignatureCanvas>(null)
-  const [isSaving, setIsSaving] = useState(false)
-  const [hasDrawn, setHasDrawn] = useState(false)
-
-  const handleClear = () => {
-    if (signatureRef.current) {
-      signatureRef.current.clear()
-      setHasDrawn(false)
-    }
-  }
-
-  const handleDraw = () => {
-    setHasDrawn(true)
-  }
+const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onCancel }) => {
+  const signaturePadRef = useRef<SignatureCanvas>(null)
+  const [isSaving, setIsSaving] = React.useState(false)
 
   const handleSave = async () => {
-    if (!signatureRef.current) return
-
-    if (!hasDrawn || signatureRef.current.isEmpty()) {
-      toast.error('Por favor, desenhe uma assinatura antes de salvar')
+    if (!signaturePadRef.current || signaturePadRef.current.isEmpty()) {
+      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG)
       return
     }
 
     try {
       setIsSaving(true)
-      const signature = signatureRef.current.toDataURL()
+      const signature = signaturePadRef.current.toDataURL()
       await onSave(signature)
-      toast.success('Assinatura salva com sucesso!')
-    } catch (err) {
-      console.error('Erro ao salvar assinatura:', err)
-      toast.error('Erro ao salvar assinatura')
+      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG)
+    } catch {
+      toast.error('Erro ao salvar assinatura', TOAST_CONFIG)
     } finally {
       setIsSaving(false)
     }
+  }
+
+  const handleClear = () => {
+    signaturePadRef.current?.clear()
   }
 
   return (
@@ -57,13 +43,11 @@ const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
       
       <div className="w-full border border-gray-300 rounded-lg mb-4">
         <SignatureCanvas
-          ref={signatureRef}
+          ref={signaturePadRef}
           canvasProps={{
             className: 'w-full h-40',
-            'data-testid': 'signature-canvas',
             'aria-label': 'Área para assinatura'
-          } as ExtendedCanvasProps}
-          onEnd={handleDraw}
+          }}
         />
       </div>
 

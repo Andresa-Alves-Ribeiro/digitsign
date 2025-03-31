@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    // Verifica se é uma requisição para a API
     if (request.nextUrl.pathname.startsWith('/api/')) {
         // Se for uma requisição OPTIONS, retorna imediatamente com os headers CORS
         if (request.method === 'OPTIONS') {

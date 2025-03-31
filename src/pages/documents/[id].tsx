@@ -121,7 +121,7 @@ function DocumentViewPage() {
 
     return (
         <div className="overflow-y-auto">
-            <div className="container mx-auto px-4 md:px-6 py-6">
+            <div className="px-4 md:px-6 py-6 h-full bg-zinc-100">
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div className="flex justify-between items-start mb-6">
                         <h1 className="text-xl font-bold text-zinc-800">{document.name}</h1>

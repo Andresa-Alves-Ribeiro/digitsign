@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
 
 export async function GET(
     request: Request,
@@ -31,9 +30,14 @@ export async function GET(
             where: { id },
             select: {
                 id: true,
+                name: true,
                 fileKey: true,
                 userId: true,
                 mimeType: true,
+                size: true,
+                status: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -55,31 +59,7 @@ export async function GET(
             );
         }
 
-        // Busca o arquivo do Supabase Storage
-        const { data: fileData, error: fileError } = await supabase
-            .storage
-            .from('documents')
-            .download(document.fileKey);
-
-        if (fileError) {
-            console.error('Erro ao buscar arquivo do Supabase:', fileError);
-            return NextResponse.json(
-                { error: "Erro ao buscar arquivo" },
-                { status: 500 }
-            );
-        }
-
-        // Converte o arquivo para buffer
-        const buffer = Buffer.from(await fileData.arrayBuffer());
-
-        // Retorna o arquivo
-        return new NextResponse(buffer, {
-            headers: {
-                'Content-Type': document.mimeType || 'application/pdf',
-                'Content-Disposition': `inline; filename="${document.fileKey}"`,
-                'Cache-Control': 'public, max-age=3600',
-            },
-        });
+        return NextResponse.json(document);
     } catch (error) {
         console.error('Erro ao buscar documento:', error);
         return NextResponse.json(

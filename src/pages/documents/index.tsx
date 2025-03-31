@@ -5,12 +5,13 @@ import { useSession, getSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, DocumentIcon, ChartBarIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import Loading from "@/components/Loading";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import DocumentCards from "@/components/documents/DocumentCards";
 import DocumentTable from "@/components/documents/DocumentTable";
 import { Document } from '@/types/interfaces';
+import { DocumentStatus } from '@/types/enums';
 import { GetServerSideProps } from 'next';
 
 function DocumentsPage() {
@@ -46,7 +47,7 @@ function DocumentsPage() {
 
     if (status === 'loading' || isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
                 <Loading text="Carregando documentos..." />
             </div>
         );
@@ -54,42 +55,106 @@ function DocumentsPage() {
 
     if (status === 'authenticated') {
         return (
-            <div className="bg-zinc-100 h-full">
-                <div className="max-w-full">
-                    <div className="px-4 py-4 sm:py-6">
-                        <div className="space-y-4 sm:space-y-6">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="mb-4 sm:mb-8"
+            <div className="h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Header Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mb-8"
+                    >
+                        <div className="flex sm:flex-row sm:items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+                                <p className="mt-2 text-sm text-gray-600">Bem-vindo ao seu painel de controle</p>
+                            </div>
+                            <Link
+                                href="/documents/new"
+                                className="inline-flex items-center w-max px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
                             >
-                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                                    <div>
-                                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Documentos</h2>
-                                        <p className="text-sm sm:text-base text-gray-600 mt-1">Gerencie seus documentos</p>
-                                    </div>
+                                <PlusIcon className="h-5 w-5 mr-2" />
+                                Novo Documento
+                            </Link>
+                        </div>
+                    </motion.div>
 
-                                    <Link
-                                        href="/documents/upload"
-                                        className="inline-flex w-max items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium text-white rounded-lg shadow-sm bg-green-600 hover:bg-green-700 transition-colors duration-200"
-                                    >
-                                        <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                                        Novo Documento
-                                    </Link>
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+                        >
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-green-100">
+                                    <DocumentIcon className="h-6 w-6 text-green-600" />
                                 </div>
-                            </motion.div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-600">Total de Documentos</p>
+                                    <p className="text-2xl font-semibold text-gray-900">{documents.length}</p>
+                                </div>
+                            </div>
+                        </motion.div>
 
-                            <DocumentCards 
-                                documents={documents} 
-                                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })} 
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+                        >
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-blue-100">
+                                    <ChartBarIcon className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-600">Documentos Pendentes</p>
+                                    <p className="text-2xl font-semibold text-gray-900">
+                                        {documents.filter(d => d.status === DocumentStatus.PENDING).length}
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+                        >
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-purple-100">
+                                    <UserGroupIcon className="h-6 w-6 text-purple-600" />
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-600">Assinaturas</p>
+                                    <p className="text-2xl font-semibold text-gray-900">
+                                        {documents.filter(d => d.signature).length}
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div className="px-6 py-4 border-b border-gray-100">
+                            <h2 className="text-lg font-semibold text-gray-900">Documentos Recentes</h2>
+                        </div>
+                        <div className="p-6">
+                            <DocumentCards
+                                documents={documents}
+                                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
                                 onSign={(docId) => router.push(`/documents/${docId}/sign`)}
                             />
-                            <DocumentTable 
-                                documents={documents} 
-                                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })} 
-                                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
-                            />
+                            <div>
+                                <DocumentTable
+                                    documents={documents}
+                                    onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
+                                    onSign={(docId) => router.push(`/documents/${docId}/sign`)}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -74,7 +74,7 @@ const UploadComponent = () => {
     };
 
     return (
-        <div className="flex-1 px-4 md:px-6 py-6 overflow-auto flex items-center justify-center">
+        <div className="h-full px-4 md:px-6 py-6 overflow-auto flex items-center justify-center">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -83,7 +83,7 @@ const UploadComponent = () => {
             >
                 <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload de Documento</h1>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Carregue seu documento</h1>
                         <p className="text-gray-600">Faça upload do seu documento PDF</p>
                     </div>
 

@@ -5,8 +5,11 @@ import { PdfIcon } from '@/assets/icons';
 import { CalendarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { DocumentCardsProps as DocumentCardsPropsType } from '@/types/interfaces';
 import { DocumentStatus } from '@/types/enums';
+import { useDocumentActions } from "@/utils/document";
 
-const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents, onDelete, onSign }) => {
+const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
+    const { onSign, onDelete } = useDocumentActions();
+
     return (
         <div className="lg:hidden space-y-4">
             {documents.map((doc, index) => (

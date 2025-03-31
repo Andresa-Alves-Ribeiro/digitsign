@@ -4,7 +4,7 @@ import FormField from '../FormField'
 
 // Wrapper component to provide form context
 const FormWrapper = ({ children }: { children: React.ReactNode }) => {
-  const methods = useForm()
+  useForm()
   return (
     <form>{children}</form>
   )

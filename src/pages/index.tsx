@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -20,27 +20,7 @@ export default function Home() {
     signedDocuments: 0,
   });
 
-  const loadDocuments = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/documents');
-      if (!response.ok) throw new Error('Erro ao carregar documentos');
-      const data = await response.json();
-      setDocuments(data);
-      calculateStats();
-    } catch (error) {
-      console.error('Error loading documents:', error);
-      toast.error('Erro ao carregar documentos');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadDocuments();
-  }, [loadDocuments]);
-
-  const calculateStats = () => {
+  const calculateStats = useCallback(() => {
     const total = documents.length;
     const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
     const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
@@ -50,7 +30,27 @@ export default function Home() {
       pendingDocuments: pending,
       signedDocuments: signed,
     });
-  };
+  }, [documents]);
+
+  useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/documents');
+        if (!response.ok) throw new Error('Erro ao carregar documentos');
+        const data = await response.json();
+        setDocuments(data);
+        calculateStats();
+      } catch (error) {
+        console.error('Error loading documents:', error);
+        toast.error('Erro ao carregar documentos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDocuments();
+  }, [setDocuments, setLoading, calculateStats]);
 
   const handleUpload = () => {
     router.push('/documents/upload');

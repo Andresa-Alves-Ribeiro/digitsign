@@ -16,7 +16,7 @@ import { getSession } from 'next-auth/react';
 
 function DocumentsPage() {
     const router = useRouter();
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; docId: string | null }>({

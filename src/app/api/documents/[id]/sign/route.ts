@@ -9,7 +9,7 @@ interface SignRequest {
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -20,7 +20,7 @@ export async function POST(
             );
         }
 
-        const { id } = params;
+        const { id } = await params;
         const { signatureData } = await request.json() as SignRequest;
 
         if (!signatureData) {

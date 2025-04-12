@@ -69,11 +69,7 @@ describe('RegisterPage', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockRegister).toHaveBeenCalledWith(expect.objectContaining({
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: 'password123'
-      }));
+      expect(mockRegister).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
     });
   });
 

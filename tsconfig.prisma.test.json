@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": ["node", "jest"]
+  },
+  "include": [
+    "src/services/__tests__/prisma.test.ts"
+  ]
+} 

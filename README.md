@@ -1,5 +1,5 @@
 <h1 align="center">
-	SuperSign - Document Signature Platform
+	DigitSign - Document Signature Platform
 </h1>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 ## 📝 About the Project
 
-SuperSign is a modern web application that I developed as part of a technical assessment. It's a document signature platform that allows users to upload documents and add digital signatures securely. The platform features a clean, intuitive interface and robust functionality for document management and signing.
+DigitSign is a modern web application that I developed as part of a technical assessment. It's a document signature platform that allows users to upload documents and add digital signatures securely. The platform features a clean, intuitive interface and robust functionality for document management and signing.
 
 <a id="features"></a>
 
@@ -33,11 +33,11 @@ SuperSign is a modern web application that I developed as part of a technical as
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" />
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-digitsign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-supersign/main/public/screenshots/mobile.png" alt="Versão Mobile" />
+  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-digitsign/main/public/screenshots/mobile.png" alt="Versão Mobile" />
 </p>
 
 <a id="technologies"></a>
@@ -84,7 +84,7 @@ SuperSign is a modern web application that I developed as part of a technical as
 
    ```bash
    git clone [repository-url]
-   cd teste-tecnico-supersign
+   cd digitsign
    ```
 
 2. Install dependencies:
@@ -100,7 +100,7 @@ SuperSign is a modern web application that I developed as part of a technical as
 
    ```
    DATABASE_URL="postgresql://postgres.grldgmzqdcsjbpqbzxao:aBTgAtweP09AJUdM@aws-0-sa-east-1.pooler.supabase.com:5432/postgres"
-   NEXTAUTH_SECRET="yD9d59S6Hh2rrTueb6+43DWnhMSJpeKRB41dvAWcAag="  # Gerado com: openssl rand -base64 32
+   NEXTAUTH_SECRET="yD9d59S6Hh2rrTueb6+43DWnhMSJpeKRB41dvAWcAag="
    NEXTAUTH_URL="http://localhost:3000"
    NEXT_PUBLIC_API_URL="http://localhost:3000"
    ```
@@ -126,7 +126,7 @@ SuperSign is a modern web application that I developed as part of a technical as
 
 ## 🌐 Live Demo
 
-https://teste-tecnico-supersign.vercel.app/
+https://digitsign.vercel.app/
 
 <a id="project-structure"></a>
 

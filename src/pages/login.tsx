@@ -17,7 +17,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function Login() {
+export default function Login(): JSX.Element {
   const router = useRouter();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData): Promise<void> => {
     try {
       setIsLoading(true);
       await login(data);

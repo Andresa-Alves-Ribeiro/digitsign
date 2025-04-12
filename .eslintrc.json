@@ -1,6 +1,54 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "next/typescript"
+    "next/typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_",
+      "caughtErrorsIgnorePattern": "^_"
+    }],
+    "no-console": ["warn", {
+      "allow": ["error", "warn"]
+    }],
+    "no-debugger": "error",
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "indent": ["error", 2],
+    "@typescript-eslint/explicit-function-return-type": ["warn", {
+      "allowExpressions": true,
+      "allowTypedFunctionExpressions": true,
+      "allowHigherOrderFunctions": true,
+      "allowDirectConstAssertionInArrowFunctions": true
+    }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unnecessary-type-assertion": "error",
+    "@typescript-eslint/no-unsafe-assignment": "error",
+    "@typescript-eslint/no-unsafe-member-access": "error",
+    "@typescript-eslint/no-unsafe-call": "error",
+    "@typescript-eslint/no-unsafe-return": "error",
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "no-useless-catch": "error"
+  },
+  "parserOptions": {
+    "project": ["./tsconfig.json", "./tsconfig.test.json", "./tsconfig.d.ts.json"],
+    "tsconfigRootDir": "."
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**/*.ts", "**/__tests__/**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off"
+      }
+    }
   ]
 }

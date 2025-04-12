@@ -1,32 +1,43 @@
-import { create } from 'zustand'
-import { Document } from '@/types/interfaces'
-import { DocumentState as DocumentStateType } from '@/types/interfaces'
+import { create } from 'zustand';
+import { Document } from '@prisma/client';
 
-interface DocumentStore extends DocumentStateType {
+interface DocumentState {
+  documents: Document[];
+  loading: boolean;
+  error: string | null;
   setDocuments: (documents: Document[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   addDocument: (document: Document) => void;
-  updateDocument: (document: Document) => void;
-  deleteDocument: (documentId: string) => void;
+  updateDocument: (documentId: string, updates: Partial<Document>) => void;
+  removeDocument: (documentId: string) => void;
 }
 
-export const useDocumentStore = create<DocumentStore>((set) => ({
+const useDocumentStore = create<DocumentState>((set) => ({
   documents: [],
-  isLoading: false,
+  loading: false,
   error: null,
+
   setDocuments: (documents) => set({ documents }),
-  setLoading: (loading) => set({ isLoading: loading }),
+  setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
-  addDocument: (document) => set((state) => ({ 
-    documents: [...state.documents, document] 
-  })),
-  updateDocument: (document) => set((state) => ({
-    documents: state.documents.map((doc) => 
-      doc.id === document.id ? document : doc
-    )
-  })),
-  deleteDocument: (documentId) => set((state) => ({
-    documents: state.documents.filter((doc) => doc.id !== documentId)
-  })),
-})) 
+
+  addDocument: (document) =>
+    set((state) => ({
+      documents: [...state.documents, document],
+    })),
+
+  updateDocument: (documentId, updates) =>
+    set((state) => ({
+      documents: state.documents.map((doc) =>
+        doc.id === documentId ? { ...doc, ...updates } : doc
+      ),
+    })),
+
+  removeDocument: (documentId) =>
+    set((state) => ({
+      documents: state.documents.filter((doc) => doc.id !== documentId),
+    })),
+}));
+
+export default useDocumentStore; 

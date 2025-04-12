@@ -1,40 +1,40 @@
-"use client";
+'use client';
 
-import React, { useRef } from 'react'
-import SignatureCanvas from 'react-signature-canvas'
-import toast from 'react-hot-toast'
+import React, { useRef, useState } from 'react';
+import SignatureCanvas from 'react-signature-canvas';
+import toast from 'react-hot-toast';
 import { TOAST_CONFIG } from '@/constants/toast';
 
 interface SignaturePadProps {
-  onSave: (signature: string) => Promise<void>
-  onCancel: () => void
+  onSave: (signature: string) => Promise<void>;
+  onCancel: () => void;
 }
 
-const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onCancel }) => {
-  const signaturePadRef = useRef<SignatureCanvas>(null)
-  const [isSaving, setIsSaving] = React.useState(false)
+const SignaturePad = ({ onSave, onCancel }: SignaturePadProps): JSX.Element => {
+  const signaturePadRef = useRef<SignatureCanvas>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     if (!signaturePadRef.current || signaturePadRef.current.isEmpty()) {
-      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG)
-      return
+      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG);
+      return;
     }
 
     try {
-      setIsSaving(true)
-      const signature = signaturePadRef.current.toDataURL()
-      await onSave(signature)
-      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG)
-    } catch {
-      toast.error('Erro ao salvar assinatura', TOAST_CONFIG)
+      setIsSaving(true);
+      const signature = signaturePadRef.current.toDataURL();
+      await onSave(signature);
+      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG);
+    } catch (_error) {
+      toast.error('Erro ao salvar assinatura', TOAST_CONFIG);
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
-  const handleClear = () => {
-    signaturePadRef.current?.clear()
-  }
+  const handleClear = (): void => {
+    signaturePadRef.current?.clear();
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-md">
@@ -78,7 +78,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onCancel }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default SignaturePad;

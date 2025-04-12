@@ -1,90 +1,59 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
+import { authOptions } from '@/lib/auth';
 
 export async function GET(
-    request: Request,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    console.log('=== Iniciando rota de metadados do documento ===');
-    console.log('URL da requisição:', request.url);
-    
+  request: Request,
+  { params }: { params: { id: string } }
+): Promise<Response> {
+  try {
     const session = await getServerSession(authOptions);
-    console.log('Session:', session ? 'Autenticado' : 'Não autenticado');
-    
+        
     if (!session) {
-        console.log('Erro: Usuário não autenticado');
-        return NextResponse.json(
-            { error: "Não autorizado" },
-            { status: 401 }
-        );
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const { id } = await params;
-    console.log('ID do documento:', id);
-
+    const id = params.id;
     if (!id) {
-        console.log('Erro: ID do documento inválido');
-        return NextResponse.json(
-            { error: "ID do documento inválido" },
-            { status: 400 }
-        );
+      return new Response(JSON.stringify({ error: 'Document ID is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    try {
-        console.log('Buscando documento no banco de dados...');
-        const document = await prisma.document.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                name: true,
-                fileKey: true,
-                userId: true,
-                mimeType: true,
-                size: true,
-                status: true,
-                createdAt: true,
-                updatedAt: true,
-            }
-        });
+    const document = await prisma.document.findUnique({
+      where: { id },
+      include: {
+        signature: true,
+      },
+    });
 
-        if (!document) {
-            console.log('Erro: Documento não encontrado no banco de dados');
-            return NextResponse.json(
-                { error: "Documento não encontrado" },
-                { status: 404 }
-            );
-        }
-
-        console.log('Documento encontrado:', {
-            id: document.id,
-            name: document.name,
-            fileKey: document.fileKey,
-            userId: document.userId,
-            mimeType: document.mimeType,
-            size: document.size,
-            status: document.status
-        });
-
-        if (document.userId !== session.user.id) {
-            console.log('Erro: Acesso negado - usuário não é o dono do documento');
-            return NextResponse.json(
-                { error: "Acesso negado" },
-                { status: 403 }
-            );
-        }
-
-        console.log('Retornando metadados do documento...');
-        return NextResponse.json(document);
-    } catch (error) {
-        console.error('Erro ao buscar documento:', error);
-        if (error instanceof Error) {
-            console.error('Stack trace:', error.stack);
-        }
-        return NextResponse.json(
-            { error: "Erro interno ao buscar documento" },
-            { status: 500 }
-        );
+    if (!document) {
+      return new Response(JSON.stringify({ error: 'Document not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
+
+    if (document.userId !== session.user.id) {
+      return new Response(JSON.stringify({ error: 'Access denied' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify(document), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error fetching document metadata:', error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 } 

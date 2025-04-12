@@ -6,10 +6,10 @@ export enum DocumentStatus {
 }
 
 export const statusLabels: Record<DocumentStatus, string> = {
-    [DocumentStatus.PENDING]: 'Pendente',
-    [DocumentStatus.SIGNED]: 'Assinado',
-    [DocumentStatus.REJECTED]: 'Rejeitado',
-    [DocumentStatus.EXPIRED]: 'Expirado'
+  [DocumentStatus.PENDING]: 'Pendente',
+  [DocumentStatus.SIGNED]: 'Assinado',
+  [DocumentStatus.REJECTED]: 'Rejeitado',
+  [DocumentStatus.EXPIRED]: 'Expirado'
 };
 
 export interface Document {

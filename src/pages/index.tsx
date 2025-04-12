@@ -1,16 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useDocumentStore } from '@/store/useDocumentStore';
+import useDocumentStore from '@/store/useDocumentStore';
 import { toast } from 'react-hot-toast';
-import { Document } from '@/types/interfaces';
+import { Document } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
 import { 
-  DocumentArrowUpIcon, 
   ClipboardDocumentListIcon, 
-  DocumentCheckIcon, 
   ClockIcon, 
   CheckCircleIcon,
   ArrowUpIcon,
@@ -18,6 +16,7 @@ import {
   DocumentTextIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline';
+import Logger from '@/utils/logger';
 
 interface DashboardStats {
   totalDocuments: number;
@@ -26,7 +25,11 @@ interface DashboardStats {
   recentDocuments: Document[];
 }
 
-export default function Home() {
+interface ApiErrorResponse {
+  message: string;
+}
+
+export default function Home(): JSX.Element {
   const { data: session } = useSession();
   const { setDocuments, setLoading } = useDocumentStore();
   const [stats, setStats] = useState<DashboardStats>({
@@ -36,7 +39,7 @@ export default function Home() {
     recentDocuments: [],
   });
 
-  const calculateStats = useCallback((documents: Document[]) => {
+  const calculateStats = useCallback((documents: Document[]): void => {
     const total = documents.length;
     const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
     const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
@@ -50,24 +53,32 @@ export default function Home() {
     });
   }, []);
 
-  const loadDocuments = useCallback(async () => {
+  const loadDocuments = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       const response = await fetch('/api/documents');
-      if (!response.ok) throw new Error('Erro ao carregar documentos');
-      const data: Document[] = await response.json();
+      
+      if (!response.ok) {
+        const errorData = await response.json() as ApiErrorResponse;
+        throw new Error(errorData.message ?? 'Erro ao carregar documentos');
+      }
+      
+      const data = await response.json() as Document[];
       setDocuments(data);
       calculateStats(data);
     } catch (error) {
-      console.error('Error loading documents:', error);
-      toast.error('Erro ao carregar documentos');
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Erro desconhecido ao carregar documentos';
+      Logger.error('Error loading documents:', errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   }, [setDocuments, setLoading, calculateStats]);
 
   useEffect(() => {
-    loadDocuments();
+    void loadDocuments();
   }, [loadDocuments]);
 
   return (
@@ -196,7 +207,7 @@ export default function Home() {
         >
           <div className="p-6">
             <div className="flex items-center mb-4">
-              <DocumentArrowUpIcon className="w-6 h-6 text-blue-500 mr-2" />
+              <DocumentTextIcon className="w-6 h-6 text-blue-500 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Upload de Documento</h3>
             </div>
             <p className="text-sm text-gray-500 mb-4">
@@ -206,7 +217,7 @@ export default function Home() {
               href="/documents/upload"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
             >
-              <DocumentArrowUpIcon className="w-4 h-4 mr-2" />
+              <DocumentTextIcon className="w-4 h-4 mr-2" />
               Upload
             </Link>
           </div>
@@ -228,7 +239,7 @@ export default function Home() {
               href="/documents"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 transition-colors duration-200"
             >
-              <ClockIcon className="w-4 h-4 mr-2" />
+              <ClipboardDocumentListIcon className="w-4 h-4 mr-2" />
               Ver Pendentes
             </Link>
           </div>
@@ -240,7 +251,7 @@ export default function Home() {
         >
           <div className="p-6">
             <div className="flex items-center mb-4">
-              <DocumentCheckIcon className="w-6 h-6 text-green-500 mr-2" />
+              <CheckCircleIcon className="w-6 h-6 text-green-500 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Documentos Assinados</h3>
             </div>
             <p className="text-sm text-gray-500 mb-4">

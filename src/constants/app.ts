@@ -1,4 +1,4 @@
-export const APP_NAME = 'SuperSign';
+export const APP_NAME = 'DigitSign';
 export const APP_DESCRIPTION = 'Document Management System';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';

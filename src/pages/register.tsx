@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import FormField from '@/components/FormField';
 import { Button } from '@/components/Button';
-import { toast } from 'react-hot-toast';
 import background from '@/assets/images/background.png';
 
 const registerSchema = z.object({
@@ -17,13 +16,13 @@ const registerSchema = z.object({
   password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "As senhas não coincidem",
-  path: ["confirmPassword"],
+  message: 'As senhas não coincidem',
+  path: ['confirmPassword'],
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function Register() {
+export default function Register(): JSX.Element {
   const router = useRouter();
   const { register: registerUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,12 +35,11 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormData): Promise<void> => {
     try {
       setIsLoading(true);
-      await registerUser(data);
+      await registerUser(data.name, data.email, data.password);
       router.push('/');
-      toast.success('Conta criada com sucesso!');
     } catch {
       // Error toast is already handled in useAuth hook
     } finally {
@@ -53,8 +51,8 @@ export default function Register() {
     <div className="min-h-screen flex">
       <div className="hidden lg:block lg:w-1/2 bg-gray-900 relative">
         <Image
-            src={background}
-            alt="Background"
+          src={background}
+          alt="Background"
           fill
           className="object-cover opacity-50"
           priority

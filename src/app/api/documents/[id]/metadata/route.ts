@@ -3,9 +3,15 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import { NextRequest } from 'next/server';
 
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: Props
 ): Promise<Response> {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +23,7 @@ export async function GET(
       });
     }
 
-    const id = context.params.id;
+    const id = params.id;
     if (!id) {
       return new Response(JSON.stringify({ error: 'Document ID is required' }), {
         status: 400,

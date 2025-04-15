@@ -1,4 +1,5 @@
 /* eslint-disable indent */
+import { User } from 'next-auth';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
@@ -10,21 +11,40 @@ interface LoginData {
   password: string;
 }
 
-export function useAuth(): {
-  isAuthenticated: boolean;
+interface RegisterResponse {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface LoginResponse {
+  error?: string;
+  ok: boolean;
+  url?: string;
+}
+
+interface UseAuthReturn {
+  user: User | null;
   loading: boolean;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  login: (data: LoginData) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<RegisterResponse>;
+  login: (data: LoginData) => Promise<LoginResponse>;
   logout: () => Promise<void>;
-} {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+}
+
+interface RegisterApiResponse {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const register = async (name: string, email: string, password: string): Promise<void> => {
+  const register = async (name: string, email: string, password: string): Promise<RegisterResponse> => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost/api/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,16 +56,21 @@ export function useAuth(): {
         throw new Error('Registration failed');
       }
 
-      const result = await signIn('credentials', {
+      const result = (await response.json()) as RegisterApiResponse;
+      const signInResult = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
 
-      if (result?.ok) {
-        setIsAuthenticated(true);
+      if (signInResult?.ok) {
         router.push('/documents');
         toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
+        return {
+          id: result.id,
+          name: result.name,
+          email: result.email,
+        };
       } else {
         throw new Error('Login after registration failed');
       }
@@ -58,25 +83,30 @@ export function useAuth(): {
     }
   };
 
-  const login = async (data: LoginData): Promise<void> => {
+  const login = async (data: LoginData): Promise<LoginResponse> => {
     try {
       setLoading(true);
       const result = await signIn('credentials', {
+        ...data,
         redirect: false,
-        email: data.email,
-        password: data.password,
       });
 
       if (result?.ok) {
-        setIsAuthenticated(true);
+        router.push('/documents');
         toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
+        return {
+          ok: true,
+        };
       } else {
         throw new Error('Login failed');
       }
     } catch (error) {
       console.error('Login failed:', error);
       toast.error(TOAST_MESSAGES.auth.loginError, TOAST_CONFIG);
-      throw error;
+      return {
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
+        ok: false,
+      };
     } finally {
       setLoading(false);
     }
@@ -84,25 +114,17 @@ export function useAuth(): {
 
   const logout = async (): Promise<void> => {
     try {
-      setLoading(true);
-      await signOut({
-        redirect: false,
-        callbackUrl: '/login',
-      });
-      setIsAuthenticated(false);
+      await signOut();
       router.push('/login');
       toast.success(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG);
     } catch (error) {
       console.error('Logout failed:', error);
       toast.error(TOAST_MESSAGES.auth.logoutError, TOAST_CONFIG);
-      throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   return {
-    isAuthenticated,
+    user: null, // We'll handle the user state properly with useSession later
     loading,
     register,
     login,

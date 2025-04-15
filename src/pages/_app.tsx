@@ -7,7 +7,6 @@ import Head from 'next/head';
 import { Session } from 'next-auth';
 import { ComponentType } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/router';
 
 const poppins = Poppins({
   subsets: ['latin'],

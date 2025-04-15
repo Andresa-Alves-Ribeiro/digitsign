@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import logo from '@/assets/images/logo3.png';
+import logo from '@/assets/images/logo.png';
 import Header from './Header';
 import {
   HomeIcon,

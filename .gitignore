@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/__tests__
+jest.config.js
+jest.setup.js
+tsconfig.test.json
+tsconfig.prisma.test.json
 
 # next.js
 /.next/

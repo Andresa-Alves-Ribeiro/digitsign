@@ -24,11 +24,49 @@ DigitSign is a modern web application that I developed as part of a technical as
 ## ✨ Features
 
 - 🔐 User Authentication
-- 📄 Document Upload and Management
-- ✍️ Digital Signature Creation
+  - Email/Password login
+  - Session management
+  - Protected routes
+  - Secure password hashing
+
+- 📄 Document Management
+  - Document upload
+  - File type validation
+  - Document listing
+  - Document status tracking
+  - Document deletion
+
+- ✍️ Digital Signature
+  - Signature pad integration
+  - Signature creation
+  - Signature verification
+  - Multiple signatures per document
+
+- 🎨 UI/UX
+  - Responsive design
+  - Tailwind CSS styling
+  - Smooth animations with Framer Motion
+  - Toast notifications
+  - Loading states
+  - Error handling
+
+- 🔍 Document Status
+  - Real-time status updates
+  - Signature tracking
+  - Document history
+
+- 🛡️ Security
+  - Secure authentication
+  - Protected API routes
+  - File upload validation
+  - Data validation with Zod
+  - Environment variable protection
+
 - 📱 Responsive Design
-- 🔍 Document Status Tracking
-- 🎨 Modern UI with Material-UI and Tailwind CSS
+  - Mobile-first approach
+  - Desktop optimization
+  - Tablet support
+  - Adaptive layouts
 
 ## 📸 Screenshots
 
@@ -45,29 +83,40 @@ DigitSign is a modern web application that I developed as part of a technical as
 ## 🛠️ Technologies
 
 - **Frontend:**
-
   - Next.js 15
   - React 18
   - TypeScript
-  - Material-UI
   - Tailwind CSS
-  - React Query
+  - React Query (TanStack Query)
   - Zustand (State Management)
   - React Hook Form
   - Zod (Schema Validation)
+  - Framer Motion (Animations)
+  - React Signature Canvas
+  - React Hot Toast (Notifications)
+  - Heroicons
+  - Date-fns (Date manipulation)
 
 - **Backend:**
-
   - Next.js API Routes
   - Prisma ORM
-  - SQLite Database
+  - Neon (PostgreSQL Database)
   - NextAuth.js
   - bcryptjs (Password Hashing)
+  - UUID (Unique identifiers)
 
-- **Testing:**
+- **Development Tools:**
+  - ESLint
+  - Prettier
+  - TypeScript
   - Jest
   - React Testing Library
   - Jest DOM
+  - PostCSS
+  - Autoprefixer
+
+- **Deployment:**
+  - Vercel
 
 <a id="prerequisites"></a>
 

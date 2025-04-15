@@ -6,6 +6,8 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import Head from 'next/head';
 import { Session } from 'next-auth';
 import { ComponentType } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -51,11 +53,11 @@ type AppComponentProps = {
 export default function App({ 
   Component, 
   pageProps, 
-  router 
+  router: appRouter 
 }: AppComponentProps): JSX.Element {
   const { session, ...restPageProps } = pageProps;
-  const isAuth = isAuthPage(router.pathname);
-  const activePage = getActivePage(router.pathname);
+  const isAuth = isAuthPage(appRouter.pathname);
+  const activePage = getActivePage(appRouter.pathname);
 
   return (
     <SessionProvider session={session}>
@@ -64,13 +66,15 @@ export default function App({
         <meta name="description" content="Sistema de assinatura digital de documentos" />
       </Head>
       <div className={poppins.variable}>
-        {isAuth ? (
-          <Component {...restPageProps} />
-        ) : (
-          <DashboardLayout activePage={activePage}>
-            <Component {...restPageProps} />
-          </DashboardLayout>
-        )}
+        <AnimatePresence mode="wait">
+          {isAuth ? (
+            <Component {...restPageProps} key={appRouter.pathname} />
+          ) : (
+            <DashboardLayout activePage={activePage}>
+              <Component {...restPageProps} />
+            </DashboardLayout>
+          )}
+        </AnimatePresence>
       </div>
       <Toaster />
     </SessionProvider>

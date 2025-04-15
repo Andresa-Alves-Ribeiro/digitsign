@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +7,8 @@ import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import FormField from '@/components/FormField';
 import { Button } from '@/components/Button';
-import background from '@/assets/images/background.png';
+import { AuthBackground } from '@/components/AuthBackground';
+import { PageTransition } from '@/components/PageTransition';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -43,17 +43,9 @@ export default function Login(): JSX.Element {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:block lg:w-1/2 bg-gray-900 relative">
-        <Image
-          src={background}
-          alt="Background"
-          fill
-          className="object-cover opacity-50"
-          priority
-        />
-      </div>
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+    <div className="min-h-screen flex overflow-hidden">
+      <AuthBackground />
+      <PageTransition>
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Bem-vindo de volta!</h1>
@@ -93,7 +85,7 @@ export default function Login(): JSX.Element {
             </Link>
           </p>
         </div>
-      </div>
+      </PageTransition>
     </div>
   );
 }

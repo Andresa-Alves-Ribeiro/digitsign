@@ -5,8 +5,9 @@ import { NextRequest } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
+  const resolvedParams = await params;
   try {
     const session = await getServerSession(authOptions);
         
@@ -17,7 +18,7 @@ export async function GET(
       });
     }
 
-    const id = params.id;
+    const id = resolvedParams.id;
     if (!id) {
       return new Response(JSON.stringify({ error: 'Document ID is required' }), {
         status: 400,

@@ -10,11 +10,6 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface UserSession {
-  user: User;
-  expires: string;
-}
-
 // Document Domain
 export interface Document {
   id: string;
@@ -28,15 +23,6 @@ export interface Document {
   updatedAt: Date;
   user?: User;
   signature?: Signature;
-}
-
-export interface DocumentUploadResponse {
-  id: string;
-  name: string;
-  path: string;
-  type: string;
-  size: number;
-  mimeType: string;
 }
 
 export interface DocumentState {
@@ -195,12 +181,6 @@ export interface SignatureCardProps {
 export interface UserMenuProps {
   user: User;
   onLogout: () => void;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
 }
 
 export interface ExtendedDocument extends Document {

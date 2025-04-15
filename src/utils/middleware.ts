@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import Logger from '@/utils/logger';
 
-type RequestHandler = (req: Request, context?: { params: Record<string, string> }) => Promise<Response> | Response;
+type RequestHandler = (req: NextRequest, context?: { params: Record<string, string> }) => Promise<Response> | Response;
 
 export function middleware(request: NextRequest): NextResponse {
   const path = request.nextUrl.pathname;
@@ -35,7 +35,7 @@ export const config = {
 };
 
 export async function withAuth(handler: RequestHandler): Promise<RequestHandler> {
-  return async (req: Request, context?: { params: Record<string, string> }): Promise<Response> => {
+  return async (req: NextRequest, context?: { params: Record<string, string> }): Promise<Response> => {
     try {
       const token = await getToken({
         req,
@@ -65,7 +65,7 @@ export async function withAuth(handler: RequestHandler): Promise<RequestHandler>
 }
 
 export function withErrorHandler(handler: RequestHandler): RequestHandler {
-  return async (req: Request): Promise<Response> => {
+  return async (req: NextRequest): Promise<Response> => {
     try {
       return await handler(req);
     } catch (error) {

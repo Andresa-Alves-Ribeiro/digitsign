@@ -13,7 +13,7 @@ interface UploadFile extends Blob {
 const ALLOWED_FILE_TYPES = ['application/pdf', 'application/x-pdf'];
 const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request): Promise<NextResponse> {

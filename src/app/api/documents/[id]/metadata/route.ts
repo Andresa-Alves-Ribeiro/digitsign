@@ -3,15 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import { NextRequest } from 'next/server';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: NextRequest,
-  { params }: Props
+  { params }: { params: { id: string } }
 ): Promise<Response> {
   try {
     const session = await getServerSession(authOptions);

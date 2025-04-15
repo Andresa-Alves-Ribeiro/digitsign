@@ -37,7 +37,7 @@
     "no-useless-catch": "error"
   },
   "parserOptions": {
-    "project": ["./tsconfig.json", "./tsconfig.test.json", "./tsconfig.d.ts.json"],
+    "project": ["./tsconfig.json"],
     "tsconfigRootDir": "."
   },
   "overrides": [

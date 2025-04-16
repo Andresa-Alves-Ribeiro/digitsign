@@ -10,12 +10,15 @@ interface DocumentMetadataResponse {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
+  mimeType?: string | null;
+  size?: number | null;
   signature: {
     id: string;
     documentId: string;
     userId: string;
+    signatureImg: string;
     createdAt: Date;
-    updatedAt: Date;
+    signedAt: Date | null;
   } | null;
 }
 

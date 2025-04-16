@@ -14,9 +14,8 @@ interface SignResponse {
     documentId: string;
     userId: string;
     signatureImg: string;
-    signedAt: Date;
+    signedAt: Date | null;
     createdAt: Date;
-    updatedAt: Date;
   };
   error?: string;
 }

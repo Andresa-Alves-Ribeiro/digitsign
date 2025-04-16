@@ -31,7 +31,25 @@ const storage = multer.diskStorage({
   }
 });
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+interface UploadResponse {
+  message?: string;
+  document?: {
+    id: string;
+    name: string;
+    fileKey: string;
+  };
+  error?: string;
+  details?: {
+    mimetype?: string;
+    name?: string;
+  };
+}
+
+const fileFilter = (
+  req: NextApiRequest,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+): void => {
   // Check if file has .pdf extension
   const isPdfExtension = file.originalname.toLowerCase().endsWith('.pdf');
   
@@ -53,10 +71,19 @@ const upload = multer({
   }
 });
 
-// Helper function to run middleware
-const runMiddleware = (req: NextApiRequest, res: NextApiResponse, fn: Function) => {
+type MiddlewareFunction = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  callback: (result: Error | unknown) => void
+) => void;
+
+const runMiddleware = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  fn: MiddlewareFunction
+): Promise<unknown> => {
   return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
+    fn(req, res, (result: unknown) => {
       if (result instanceof Error) {
         return reject(result);
       }
@@ -67,8 +94,8 @@ const runMiddleware = (req: NextApiRequest, res: NextApiResponse, fn: Function) 
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
-) {
+  res: NextApiResponse<UploadResponse>
+): Promise<void> {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

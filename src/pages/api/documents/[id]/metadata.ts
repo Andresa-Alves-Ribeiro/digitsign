@@ -3,10 +3,26 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+interface DocumentMetadataResponse {
+  id: string;
+  name: string;
+  fileKey: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  signature: {
+    id: string;
+    documentId: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
+}
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
-) {
+  res: NextApiResponse<DocumentMetadataResponse | { error: string }>
+): Promise<void> {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

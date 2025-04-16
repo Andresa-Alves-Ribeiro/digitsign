@@ -37,6 +37,10 @@ interface RegisterApiResponse {
   email: string;
 }
 
+interface ErrorResponse {
+  error?: string;
+}
+
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -53,14 +57,13 @@ export function useAuth(): UseAuthReturn {
       });
 
       if (!response.ok) {
-        let errorMessage;
+        let errorMessage: string;
         const responseText = await response.text();
         try {
-          const errorData = JSON.parse(responseText);
-          errorMessage = errorData.error || 'Registration failed';
-        } catch (e) {
-          // If response is not JSON, use the text directly
-          errorMessage = responseText || `Registration failed with status ${response.status}`;
+          const errorData = JSON.parse(responseText) as ErrorResponse;
+          errorMessage = errorData.error ?? 'Registration failed';
+        } catch {
+          errorMessage = responseText ?? `Registration failed with status ${response.status}`;
         }
         toast.error(errorMessage, TOAST_CONFIG);
         throw new Error(errorMessage);
@@ -94,7 +97,7 @@ export function useAuth(): UseAuthReturn {
       const result = await signIn('credentials', {
         ...data,
         redirect: false,
-      });
+      }) as LoginResponse;
 
       if (result?.ok) {
         router.push('/');

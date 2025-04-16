@@ -7,10 +7,24 @@ interface SignRequest {
   signatureData: string;
 }
 
+interface SignResponse {
+  message?: string;
+  signature?: {
+    id: string;
+    documentId: string;
+    userId: string;
+    signatureImg: string;
+    signedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  error?: string;
+}
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
-) {
+  res: NextApiResponse<SignResponse>
+): Promise<void> {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

@@ -21,7 +21,7 @@ interface RegisterResponse {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<RegisterResponse>
-) {
+): Promise<void> {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

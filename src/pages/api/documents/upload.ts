@@ -6,6 +6,7 @@ import { join } from 'path';
 import { promises as fs } from 'fs';
 import multer from 'multer';
 import { NextApiRequestWithFiles } from '@/types/api';
+import type { Request } from 'express';
 
 export const config = {
   api: {
@@ -46,7 +47,7 @@ interface UploadResponse {
 }
 
 const fileFilter = (
-  req: NextApiRequest,
+  req: Request,
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ): void => {

@@ -28,6 +28,7 @@ model Document {
   updatedAt DateTime   @updatedAt
   mimeType  String?
   size      Int?
+  url       String? // URL do arquivo no Cloudinary
   signature Signature?
   user      User       @relation(fields: [userId], references: [id])
 }

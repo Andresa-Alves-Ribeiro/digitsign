@@ -19,6 +19,7 @@ export interface Document {
   status: DocumentStatus;
   mimeType?: string | null;
   size?: number | null;
+  url?: string | null;
   createdAt: Date;
   updatedAt: Date;
   user?: User;

@@ -6,7 +6,7 @@ import { join } from 'path';
 import { promises as fs } from 'fs';
 import multer from 'multer';
 import { NextApiRequestWithFiles } from '@/types/api';
-import type { Request } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 export const config = {
   api: {
@@ -73,9 +73,9 @@ const upload = multer({
 });
 
 type MiddlewareFunction = (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  callback: (result: Error | unknown) => void
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => void;
 
 const runMiddleware = (
@@ -84,7 +84,7 @@ const runMiddleware = (
   fn: MiddlewareFunction
 ): Promise<unknown> => {
   return new Promise((resolve, reject) => {
-    fn(req, res, (result: unknown) => {
+    fn(req as unknown as Request, res as unknown as Response, (result: unknown) => {
       if (result instanceof Error) {
         return reject(result);
       }

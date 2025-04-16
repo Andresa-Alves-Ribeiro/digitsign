@@ -80,7 +80,7 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right">
                   <div className="flex items-center justify-end space-x-2">
-                    {doc.status === DocumentStatus.PENDING && (
+                    {doc.status.toLowerCase() === 'pending' && (
                       <button
                         onClick={() => onSign(doc.id)}
                         className="p-1 text-green-600 hover:text-green-800 rounded-full hover:bg-green-50 transition-colors duration-200"

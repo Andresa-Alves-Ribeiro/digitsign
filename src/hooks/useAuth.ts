@@ -37,6 +37,10 @@ interface RegisterApiResponse {
   email: string;
 }
 
+interface ErrorResponse {
+  error?: string;
+}
+
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -53,29 +57,33 @@ export function useAuth(): UseAuthReturn {
       });
 
       if (!response.ok) {
-        throw new Error('Registration failed');
+        let errorMessage: string;
+        const responseText = await response.text();
+        try {
+          const errorData = JSON.parse(responseText) as ErrorResponse;
+          errorMessage = errorData.error ?? 'Registration failed';
+        } catch {
+          errorMessage = responseText ?? `Registration failed with status ${response.status}`;
+        }
+        toast.error(errorMessage, TOAST_CONFIG);
+        throw new Error(errorMessage);
       }
 
-      const result = (await response.json()) as RegisterApiResponse;
-      const signInResult = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (signInResult?.ok) {
-        router.push('/documents');
-        toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
-        return {
-          id: result.id,
-          name: result.name,
-          email: result.email,
-        };
-      } else {
-        throw new Error('Login after registration failed');
-      }
+      const result = await response.json() as RegisterApiResponse;
+      
+      router.push('/login');
+      toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
+      return {
+        id: result.id,
+        name: result.name,
+        email: result.email,
+      };
     } catch (error) {
       console.error('Registration failed:', error);
+      if (error instanceof Error && error.message) {
+        // Don't show another toast since we already showed one for the specific error
+        throw error;
+      }
       toast.error(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG);
       throw error;
     } finally {
@@ -89,10 +97,10 @@ export function useAuth(): UseAuthReturn {
       const result = await signIn('credentials', {
         ...data,
         redirect: false,
-      });
+      }) as LoginResponse;
 
       if (result?.ok) {
-        router.push('/documents');
+        router.push('/');
         toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
         return {
           ok: true,

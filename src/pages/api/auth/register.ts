@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface RegisterRequest {
   name: string;
@@ -7,16 +8,30 @@ interface RegisterRequest {
   password: string;
 }
 
-export async function POST(request: Request): Promise<Response> {
+interface RegisterResponse {
+  message?: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  error?: string;
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<RegisterResponse>
+): Promise<void> {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    const body = await request.json() as RegisterRequest;
+    const body = req.body as RegisterRequest;
     const { name, email, password } = body;
 
     if (!name || !email || !password) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -24,10 +39,7 @@ export async function POST(request: Request): Promise<Response> {
     });
 
     if (existingUser) {
-      return new Response(JSON.stringify({ error: 'Email already registered' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return res.status(400).json({ error: 'Email already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -40,22 +52,16 @@ export async function POST(request: Request): Promise<Response> {
       },
     });
 
-    return new Response(JSON.stringify({ 
+    return res.status(201).json({
       message: 'User created successfully',
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-      }
-    }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
+      },
     });
   } catch (error) {
     console.error('Registration error:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 } 

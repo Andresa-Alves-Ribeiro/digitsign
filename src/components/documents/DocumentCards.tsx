@@ -41,7 +41,7 @@ const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              {doc.status === DocumentStatus.PENDING && (
+              {doc.status.toLowerCase() === 'pending' && (
                 <button
                   onClick={() => onSign(doc.id)}
                   className="p-1 text-green-600 hover:text-green-800 rounded-full hover:bg-green-50 transition-colors duration-200"

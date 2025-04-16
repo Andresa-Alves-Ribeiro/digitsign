@@ -58,7 +58,38 @@ export const getStatusConfig = (status: string): {
   color: string;
   icon: React.ReactNode;
 } => {
-  return documentStatusConfig[status as DocumentStatus] || documentStatusConfig[DocumentStatus.PENDING];
+  // Verifica se o status é um valor válido do enum
+  if (Object.values(DocumentStatus).includes(status as DocumentStatus)) {
+    return documentStatusConfig[status as DocumentStatus];
+  }
+  
+  // Verifica se o status é 'SIGNED' (independente de maiúsculas/minúsculas)
+  if (status.toUpperCase() === 'SIGNED') {
+    return documentStatusConfig[DocumentStatus.SIGNED];
+  }
+  
+  // Verifica se o status é 'PENDING' (independente de maiúsculas/minúsculas)
+  if (status.toUpperCase() === 'PENDING') {
+    return documentStatusConfig[DocumentStatus.PENDING];
+  }
+  
+  // Verifica se o status é 'REJECTED' (independente de maiúsculas/minúsculas)
+  if (status.toUpperCase() === 'REJECTED') {
+    return documentStatusConfig[DocumentStatus.REJECTED];
+  }
+  
+  // Verifica se o status é 'EXPIRED' (independente de maiúsculas/minúsculas)
+  if (status.toUpperCase() === 'EXPIRED') {
+    return documentStatusConfig[DocumentStatus.EXPIRED];
+  }
+  
+  // Verifica se o status é 'DRAFT' (independente de maiúsculas/minúsculas)
+  if (status.toUpperCase() === 'DRAFT') {
+    return documentStatusConfig[DocumentStatus.DRAFT];
+  }
+  
+  // Retorna o status padrão se nenhuma correspondência for encontrada
+  return documentStatusConfig[DocumentStatus.PENDING];
 };
 
 export const isValidStatus = (status: string): status is DocumentStatus => {

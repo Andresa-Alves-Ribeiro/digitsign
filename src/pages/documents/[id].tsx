@@ -102,17 +102,15 @@ const DocumentPage: React.FC = () => {
             <h1 className="text-xl font-bold text-zinc-800">{document.name}</h1>
 
             <div className="flex items-center gap-2">
-              {(() => {
-                return document.status === 'PENDING' && (
-                  <button
-                    onClick={() => onSign(document.id)}
-                    disabled={isSigning}
-                    className="p-2 flex items-center gap-2 bg-green-100 text-green-700 text-sm rounded-md hover:bg-green-200 transition-colors duration-200 m-0 cursor-pointer"
-                  >
-                    <PencilSquareIcon className="w-4 h-4" /> {isSigning ? 'Assinando...' : 'Assinar Documento'}
-                  </button>
-                );
-              })()}
+              {document.status.toLowerCase() === 'pending' && (
+                <button
+                  onClick={() => onSign(document.id)}
+                  disabled={isSigning}
+                  className="p-2 flex items-center gap-2 bg-green-100 text-green-700 text-sm rounded-md hover:bg-green-200 transition-colors duration-200 m-0 cursor-pointer"
+                >
+                  <PencilSquareIcon className="w-4 h-4" /> {isSigning ? 'Assinando...' : 'Assinar Documento'}
+                </button>
+              )}
 
               <button
                 onClick={handleDeleteDocument}

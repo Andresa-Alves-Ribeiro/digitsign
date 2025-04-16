@@ -140,7 +140,10 @@ export default async function handler(
     console.error('Error uploading document:', error);
     return res.status(500).json({ 
       error: 'Internal Server Error',
-      details: error instanceof Error ? { message: error.message } : undefined
+      details: error instanceof Error ? { 
+        mimetype: undefined,
+        name: error.name
+      } : undefined
     });
   }
 } 

@@ -100,10 +100,12 @@ export default function Home(): JSX.Element {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold text-gray-900">{stats.totalDocuments}</p>
-            <span className="text-sm text-green-500 flex items-center">
-              <ArrowUpIcon className="w-4 h-4 mr-1" />
-              12%
-            </span>
+            {stats.totalDocuments > 0 && (
+              <span className="text-sm text-green-500 flex items-center">
+                <ArrowUpIcon className="w-4 h-4 mr-1" />
+                {Math.round((stats.totalDocuments / (stats.totalDocuments || 1)) * 100)}%
+              </span>
+            )}
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -113,10 +115,12 @@ export default function Home(): JSX.Element {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold text-yellow-600">{stats.pendingDocuments}</p>
-            <span className="text-sm text-red-500 flex items-center">
-              <ArrowDownIcon className="w-4 h-4 mr-1" />
-              5%
-            </span>
+            {stats.totalDocuments > 0 && (
+              <span className="text-sm text-red-500 flex items-center">
+                <ArrowDownIcon className="w-4 h-4 mr-1" />
+                {Math.round((stats.pendingDocuments / stats.totalDocuments) * 100)}%
+              </span>
+            )}
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -126,10 +130,12 @@ export default function Home(): JSX.Element {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold text-green-600">{stats.signedDocuments}</p>
-            <span className="text-sm text-green-500 flex items-center">
-              <ArrowUpIcon className="w-4 h-4 mr-1" />
-              8%
-            </span>
+            {stats.totalDocuments > 0 && (
+              <span className="text-sm text-green-500 flex items-center">
+                <ArrowUpIcon className="w-4 h-4 mr-1" />
+                {Math.round((stats.signedDocuments / stats.totalDocuments) * 100)}%
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -143,26 +149,33 @@ export default function Home(): JSX.Element {
             </Link>
           </div>
           <div className="space-y-4">
-            {stats.recentDocuments.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <DocumentTextIcon className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{doc.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
-                    </p>
+            {stats.recentDocuments.length > 0 ? (
+              stats.recentDocuments.map((doc) => (
+                <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <DocumentTextIcon className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
                   </div>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    doc.status === DocumentStatus.SIGNED 
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {doc.status === DocumentStatus.SIGNED ? 'Assinado' : 'Pendente'}
+                  </span>
                 </div>
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                  doc.status === DocumentStatus.SIGNED 
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {doc.status === DocumentStatus.SIGNED ? 'Assinado' : 'Pendente'}
-                </span>
+              ))
+            ) : (
+              <div className="text-center py-6">
+                <DocumentTextIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">Nenhum documento encontrado</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -172,30 +185,39 @@ export default function Home(): JSX.Element {
             <ChartBarIcon className="w-5 h-5 text-gray-400" />
           </div>
           <div className="space-y-4">
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-600">Assinados</span>
-                <span className="font-medium text-gray-900">{stats.signedDocuments}</span>
+            {stats.totalDocuments > 0 ? (
+              <>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-600">Assinados</span>
+                    <span className="font-medium text-gray-900">{stats.signedDocuments}</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div 
+                      className="bg-green-500 h-2 rounded-full" 
+                      style={{ width: `${(stats.signedDocuments / stats.totalDocuments) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-600">Pendentes</span>
+                    <span className="font-medium text-gray-900">{stats.pendingDocuments}</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div 
+                      className="bg-yellow-500 h-2 rounded-full" 
+                      style={{ width: `${(stats.pendingDocuments / stats.totalDocuments) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-6">
+                <ChartBarIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">Nenhum documento para análise</p>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-green-500 h-2 rounded-full" 
-                  style={{ width: `${(stats.signedDocuments / stats.totalDocuments) * 100}%` }}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-600">Pendentes</span>
-                <span className="font-medium text-gray-900">{stats.pendingDocuments}</span>
-              </div>
-              <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-yellow-500 h-2 rounded-full" 
-                  style={{ width: `${(stats.pendingDocuments / stats.totalDocuments) * 100}%` }}
-                />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

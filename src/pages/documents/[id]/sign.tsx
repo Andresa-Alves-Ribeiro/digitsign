@@ -39,11 +39,10 @@ function SignDocumentPage(): JSX.Element {
     setError(null);
     try {
       const requestBody = {
-        documentId: documentId,
         signatureData: signatureData,
       };
 
-      const response = await fetch('/api/documents/sign', {
+      const response = await fetch(`/api/documents/${documentId}/sign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

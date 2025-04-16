@@ -1,16 +1,21 @@
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export async function GET(): Promise<Response> {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(req, res, authOptions);
 
     if (!session) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const documents = await prisma.document.findMany({
@@ -37,15 +42,9 @@ export async function GET(): Promise<Response> {
       signature: signatures.find(sig => sig.documentId === doc.id) || null,
     }));
 
-    return new Response(JSON.stringify(documentsWithSignatures), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(200).json(documentsWithSignatures);
   } catch (error) {
     console.error('Error fetching documents:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 } 

@@ -53,29 +53,34 @@ export function useAuth(): UseAuthReturn {
       });
 
       if (!response.ok) {
-        throw new Error('Registration failed');
+        let errorMessage;
+        const responseText = await response.text();
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || 'Registration failed';
+        } catch (e) {
+          // If response is not JSON, use the text directly
+          errorMessage = responseText || `Registration failed with status ${response.status}`;
+        }
+        toast.error(errorMessage, TOAST_CONFIG);
+        throw new Error(errorMessage);
       }
 
-      const result = (await response.json()) as RegisterApiResponse;
-      const signInResult = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (signInResult?.ok) {
-        router.push('/documents');
-        toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
-        return {
-          id: result.id,
-          name: result.name,
-          email: result.email,
-        };
-      } else {
-        throw new Error('Login after registration failed');
-      }
+      const result = await response.json() as RegisterApiResponse;
+      
+      router.push('/login');
+      toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
+      return {
+        id: result.id,
+        name: result.name,
+        email: result.email,
+      };
     } catch (error) {
       console.error('Registration failed:', error);
+      if (error instanceof Error && error.message) {
+        // Don't show another toast since we already showed one for the specific error
+        throw error;
+      }
       toast.error(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG);
       throw error;
     } finally {
@@ -92,7 +97,7 @@ export function useAuth(): UseAuthReturn {
       });
 
       if (result?.ok) {
-        router.push('/documents');
+        router.push('/');
         toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
         return {
           ok: true,

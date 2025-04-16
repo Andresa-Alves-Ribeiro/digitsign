@@ -14,6 +14,10 @@ interface UploadResponse {
   message?: string;
   error?: string;
   document?: Document;
+  details?: {
+    mimetype: string;
+    name: string;
+  };
 }
 
 const UploadComponent = (): JSX.Element => {
@@ -59,11 +63,12 @@ const UploadComponent = (): JSX.Element => {
         },
         signal: AbortSignal.timeout(30000), // 30 second timeout
       });
-
+      
       const data = await res.json() as UploadResponse;
 
       if (!res.ok) {
-        throw new Error(data.message ?? data.error ?? 'Erro ao fazer upload do arquivo');
+        const errorDetails = data.details ? ` (MIME Type: ${data.details.mimetype}, File: ${data.details.name})` : '';
+        throw new Error(`${data.message ?? data.error ?? 'Erro ao fazer upload do arquivo'}${errorDetails}`);
       }
 
       if (!data.document) {
@@ -82,7 +87,20 @@ const UploadComponent = (): JSX.Element => {
       }, 1500);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer upload do arquivo';
-      Logger.error('Upload error:', errorMessage);
+      
+      // Adicionar contexto ao log de erro
+      const errorContext = {
+        fileName: file?.name,
+        fileSize: file?.size,
+        fileType: file?.type,
+        error: error instanceof Error ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        } : error
+      };
+      
+      Logger.error('Upload error:', errorMessage, errorContext);
       setError(errorMessage);
       setStoreError(errorMessage);
     } finally {

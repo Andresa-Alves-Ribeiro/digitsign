@@ -8,6 +8,7 @@ export function AuthBackground(): JSX.Element {
         src={background}
         alt="Background"
         fill
+        sizes="50vw"
         className="object-cover opacity-50"
         priority
       />

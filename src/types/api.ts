@@ -1,4 +1,5 @@
 import { ApiResponseStatus } from './enums';
+import { NextApiRequest } from 'next';
 
 export interface ApiResponse<T> {
   status: ApiResponseStatus;
@@ -26,4 +27,8 @@ export interface ApiClient {
   put: <T>(url: string, data?: unknown, config?: ApiRequestConfig) => Promise<ApiResponse<T>>;
   delete: <T>(url: string, config?: ApiRequestConfig) => Promise<ApiResponse<T>>;
   patch: <T>(url: string, data?: unknown, config?: ApiRequestConfig) => Promise<ApiResponse<T>>;
+}
+
+export interface NextApiRequestWithFiles extends NextApiRequest {
+  file?: Express.Multer.File;
 } 

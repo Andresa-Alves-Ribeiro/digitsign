@@ -6,21 +6,16 @@ import { searchPlugin } from '@react-pdf-viewer/search';
 import { selectionModePlugin } from '@react-pdf-viewer/selection-mode';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
 
-// Import styles
+// Import only core styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import '@react-pdf-viewer/zoom/lib/styles/index.css';
-import '@react-pdf-viewer/scroll-mode/lib/styles/index.css';
-import '@react-pdf-viewer/search/lib/styles/index.css';
-import '@react-pdf-viewer/selection-mode/lib/styles/index.css';
-import '@react-pdf-viewer/thumbnail/lib/styles/index.css';
 
 interface PDFViewerProps {
   url: string;
   className?: string;
 }
 
-export function PDFViewer({ url, className = '' }: PDFViewerProps) {
+export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element {
   // Create the plugins
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const zoomPluginInstance = zoomPlugin();

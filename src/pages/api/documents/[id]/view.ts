@@ -8,6 +8,13 @@ interface ViewResponse {
   error?: string;
 }
 
+interface CloudinaryResource {
+  public_id: string;
+  secure_url: string;
+  resource_type: string;
+  format: string;
+}
+
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -58,7 +65,7 @@ export default async function handler(
     const result = await cloudinary.api.resource(document.fileKey, {
       resource_type: 'auto',
       type: 'upload'
-    });
+    }) as CloudinaryResource;
 
     // Get the secure URL with format parameter
     const secureUrl = cloudinary.url(result.public_id, {

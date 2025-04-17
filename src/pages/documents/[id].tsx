@@ -9,6 +9,7 @@ import { getStatusConfig } from '@/constants/documentStatus';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
 import { useDocumentActions } from '@/utils/document';
+import { PDFViewer } from '@/components/PDFViewer';
 
 const DocumentPage: React.FC = () => {
   const router = useRouter();
@@ -183,14 +184,7 @@ const DocumentPage: React.FC = () => {
         </div>
 
         <div className="w-full border rounded-lg overflow-hidden">
-          <iframe
-            src={`/api/documents/${document.id}/view`}
-            className="w-full h-[700px]"
-            title={document.name}
-            onError={(e) => {
-              console.error('Erro no iframe:', e);
-            }}
-          />
+          <PDFViewer url={`/api/documents/${document.id}/view`} />
         </div>
       </div>
     </div>

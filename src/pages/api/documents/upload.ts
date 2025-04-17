@@ -117,7 +117,8 @@ export default async function handler(
 
     // Upload to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(base64File, {
-      resource_type: 'raw', // For PDF files
+      resource_type: 'auto',
+      format: 'pdf',
       folder: `documents/${session.user.id}`,
       public_id: `${Date.now()}-${file.originalname}`,
     });

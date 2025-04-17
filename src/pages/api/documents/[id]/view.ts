@@ -2,12 +2,18 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { join } from 'path';
-import { readFile } from 'fs/promises';
+import { v2 as cloudinary } from 'cloudinary';
 
 interface ViewResponse {
   error?: string;
 }
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,12 +54,26 @@ export default async function handler(
       return res.status(403).json({ error: 'Você não tem permissão para visualizar este documento' });
     }
 
-    const filepath = join(process.cwd(), 'uploads', document.fileKey);
-    const fileBuffer = await readFile(filepath);
+    // Get the file from Cloudinary
+    const result = await cloudinary.api.resource(document.fileKey, {
+      resource_type: 'auto',
+      type: 'upload'
+    });
+
+    // Get the secure URL with format parameter
+    const secureUrl = cloudinary.url(result.public_id, {
+      resource_type: 'auto',
+      format: 'pdf',
+      secure: true
+    });
+
+    // Fetch the file content
+    const response = await fetch(secureUrl);
+    const fileBuffer = await response.arrayBuffer();
 
     res.setHeader('Content-Type', document.mimeType || 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="${document.name}"`);
-    return res.send(fileBuffer);
+    return res.send(Buffer.from(fileBuffer));
   } catch (error) {
     console.error('Error viewing document:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

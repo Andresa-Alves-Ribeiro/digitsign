@@ -2,11 +2,10 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { join } from 'path';
-import { promises as fs } from 'fs';
-import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
 import { NextApiRequestWithFiles } from '@/types/api';
 import type { Request, Response, NextFunction } from 'express';
+import multer from 'multer';
 
 export const config = {
   api: {
@@ -17,20 +16,15 @@ export const config = {
 const ALLOWED_FILE_TYPES = ['application/pdf', 'application/x-pdf'];
 const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
 
-// Configure multer for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadsDir = join(process.cwd(), 'uploads');
-    fs.mkdir(uploadsDir, { recursive: true })
-      .then(() => cb(null, uploadsDir))
-      .catch(err => cb(err, uploadsDir));
-  },
-  filename: function (req, file, cb) {
-    const timestamp = Date.now();
-    const filename = `${timestamp}-${file.originalname}`;
-    cb(null, filename);
-  }
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// Configure multer for memory storage
+const storage = multer.memoryStorage();
 
 interface UploadResponse {
   message?: string;
@@ -51,10 +45,7 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ): void => {
-  // Check if file has .pdf extension
   const isPdfExtension = file.originalname.toLowerCase().endsWith('.pdf');
-  
-  // Check if mimetype is allowed
   const isAllowedMimeType = file.mimetype && ALLOWED_FILE_TYPES.includes(file.mimetype);
   
   if (isAllowedMimeType || isPdfExtension) {
@@ -120,11 +111,22 @@ export default async function handler(
       });
     }
 
+    // Convert buffer to base64
+    const fileBuffer = file.buffer;
+    const base64File = `data:${file.mimetype};base64,${fileBuffer.toString('base64')}`;
+
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(base64File, {
+      resource_type: 'raw', // For PDF files
+      folder: `documents/${session.user.id}`,
+      public_id: `${Date.now()}-${file.originalname}`,
+    });
+
     // Create document record
     const document = await prisma.document.create({
       data: {
         name: file.originalname || 'Untitled',
-        fileKey: file.filename,
+        fileKey: uploadResponse.public_id,
         userId: session.user.id,
         status: 'pending',
         mimeType: file.mimetype,

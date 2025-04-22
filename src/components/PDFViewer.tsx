@@ -16,18 +16,26 @@ interface PDFViewerProps {
   className?: string;
 }
 
+interface ApiResponse {
+  url: string;
+  error?: string;
+}
+
 export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element {
   const [pdfUrl, setPdfUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPdfUrl = async () => {
+    const fetchPdfUrl = async (): Promise<void> => {
       try {
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Failed to fetch PDF URL');
         }
-        const data = await response.json();
+        const data = await response.json() as ApiResponse;
+        if (data.error) {
+          throw new Error(data.error);
+        }
         setPdfUrl(data.url);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load PDF');

@@ -6,13 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 interface ViewResponse {
   error?: string;
-}
-
-interface CloudinaryResource {
-  public_id: string;
-  secure_url: string;
-  resource_type: string;
-  format: string;
+  url?: string;
 }
 
 // Configure Cloudinary
@@ -24,7 +18,7 @@ cloudinary.config({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ViewResponse | Buffer>
+  res: NextApiResponse<ViewResponse>
 ): Promise<void> {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -61,26 +55,15 @@ export default async function handler(
       return res.status(403).json({ error: 'Você não tem permissão para visualizar este documento' });
     }
 
-    // Get the file from Cloudinary
-    const result = await cloudinary.api.resource(document.fileKey, {
-      resource_type: 'auto',
-      type: 'upload'
-    }) as CloudinaryResource;
-
-    // Get the secure URL with format parameter
-    const secureUrl = cloudinary.url(result.public_id, {
+    // Generate a secure URL for the PDF
+    const secureUrl = cloudinary.url(document.fileKey, {
       resource_type: 'auto',
       format: 'pdf',
-      secure: true
+      secure: true,
+      flags: 'attachment'
     });
 
-    // Fetch the file content
-    const response = await fetch(secureUrl);
-    const fileBuffer = await response.arrayBuffer();
-
-    res.setHeader('Content-Type', document.mimeType || 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename="${document.name}"`);
-    return res.send(Buffer.from(fileBuffer));
+    return res.status(200).json({ url: secureUrl });
   } catch (error) {
     console.error('Error viewing document:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

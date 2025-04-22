@@ -3,31 +3,19 @@ import useDocumentStore from '@/store/useDocumentStore';
 import Loading from '@/components/Loading';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Document as DocumentType } from '@/types/interfaces';
-import { DocumentStatus } from '@/types/enums';
+import { Document } from '@/types/interfaces';
+import { DocumentStatus } from '@/types/enums/document';
 import { documentStatusConfig } from '@/constants/documentStatus';
 import { formatFileSizeInMB } from '@/utils/file';
 import { toast } from 'react-hot-toast';
 import Logger from '@/utils/logger';
-import { Document as PrismaDocument } from '@prisma/client';
+import { ErrorDisplay } from '@/components/ErrorDisplay';
 
 interface ApiErrorResponse {
   message: string;
 }
 
-// Adapter function to convert API document to store document type
-const adaptDocument = (doc: DocumentType): PrismaDocument => {
-  return {
-    ...doc,
-    mimeType: doc.mimeType ?? null,
-    size: doc.size ?? null,
-    fileUrl: doc.fileKey, // Map fileKey to fileUrl as expected by Prisma
-    createdAt: new Date(doc.createdAt),
-    updatedAt: new Date(doc.updatedAt)
-  } as PrismaDocument;
-};
-
-const DocumentList = (): JSX.Element => {
+const DocumentList = () => {
   const { documents, loading, error, setDocuments, setLoading, setError } = useDocumentStore();
 
   useEffect(() => {
@@ -43,9 +31,9 @@ const DocumentList = (): JSX.Element => {
           const errorData = await response.json() as ApiErrorResponse;
           throw new Error(errorData.message || 'Failed to fetch documents');
         }
-        const data = await response.json() as DocumentType[];
+        const data = await response.json() as Document[];
         if (isMounted) {
-          setDocuments(data.map(adaptDocument));
+          setDocuments(data);
         }
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Error fetching documents';
@@ -78,15 +66,10 @@ const DocumentList = (): JSX.Element => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
-        <div className="text-red-500">{error}</div>
-        <button 
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          Try Again
-        </button>
-      </div>
+      <ErrorDisplay 
+        error={error} 
+        onRetry={() => window.location.reload()}
+      />
     );
   }
 

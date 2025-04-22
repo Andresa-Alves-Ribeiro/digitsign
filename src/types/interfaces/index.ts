@@ -1,4 +1,4 @@
-import { DocumentStatus } from './enums';
+import { DocumentStatus } from '../enums/document';
 
 // User Domain
 export interface User {
@@ -186,4 +186,12 @@ export interface UserMenuProps {
 export interface ExtendedDocument extends Document {
   signatureCount: number;
   lastSignatureDate?: Date;
-} 
+}
+
+export * from './user';
+export * from './document';
+export * from './signature';
+export * from './auth';
+export * from './components';
+export * from './dashboard';
+export * from './api'; 

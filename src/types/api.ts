@@ -1,8 +1,7 @@
-import { ApiResponseStatus } from './enums';
 import { NextApiRequest } from 'next';
 
 export interface ApiResponse<T> {
-  status: ApiResponseStatus;
+  status: string;
   data?: T;
   error?: string;
   message?: string;

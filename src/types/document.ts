@@ -1,11 +1,11 @@
-import { DocumentStatus, DocumentType } from './enums';
+import { DocumentStatus } from './enums/document';
 import { User } from './auth';
 
 export interface Document {
   id: string;
   title: string;
   description: string;
-  type: DocumentType;
+  type: string;
   status: DocumentStatus;
   content: string;
   metadata: Record<string, string>;
@@ -19,7 +19,7 @@ export interface Document {
 export interface DocumentCreateInput {
   title: string;
   description: string;
-  type: DocumentType;
+  type: string;
   content: string;
   metadata?: Record<string, string>;
 }
@@ -27,14 +27,14 @@ export interface DocumentCreateInput {
 export interface DocumentUpdateInput {
   title?: string;
   description?: string;
-  type?: DocumentType;
+  type?: string;
   content?: string;
   metadata?: Record<string, string>;
   status?: DocumentStatus;
 }
 
 export interface DocumentFilter {
-  type?: DocumentType;
+  type?: string;
   status?: DocumentStatus;
   createdBy?: string;
   signedBy?: string;

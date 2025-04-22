@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentStatus } from '@/types/enums';
+import { DocumentStatus } from '@/types/enums/document';
 
 export const documentStatusConfig: Record<DocumentStatus, {
     label: string;

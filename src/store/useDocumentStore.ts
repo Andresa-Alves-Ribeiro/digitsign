@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Document } from '@prisma/client';
+import { Document } from '@/types/interfaces';
 
 interface DocumentState {
   documents: Document[];

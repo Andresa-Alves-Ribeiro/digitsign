@@ -6,6 +6,7 @@ import { searchPlugin } from '@react-pdf-viewer/search';
 import { selectionModePlugin } from '@react-pdf-viewer/selection-mode';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { ErrorDisplay } from '@/components/ErrorDisplay';
 
 // Import only core styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -21,7 +22,7 @@ interface ApiResponse {
   error?: string;
 }
 
-export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element {
+export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   const [pdfUrl, setPdfUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,17 +87,14 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element 
 
   if (error) {
     return (
-      <div className={`h-[800px] w-full flex items-center justify-center ${className}`}>
-        <div className="text-red-500">Error: {error}</div>
-        <button 
-          onClick={() => {
+      <div className={`h-[800px] w-full ${className}`}>
+        <ErrorDisplay 
+          error={error} 
+          onRetry={() => {
             retryCount.current = 0;
             fetchPdfUrl();
           }}
-          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Retry
-        </button>
+        />
       </div>
     );
   }

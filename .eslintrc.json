@@ -1,7 +1,6 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "next/typescript",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ],
@@ -21,12 +20,7 @@
     "semi": ["error", "always"],
     "quotes": ["error", "single"],
     "indent": ["error", 2],
-    "@typescript-eslint/explicit-function-return-type": ["warn", {
-      "allowExpressions": true,
-      "allowTypedFunctionExpressions": true,
-      "allowHigherOrderFunctions": true,
-      "allowDirectConstAssertionInArrowFunctions": true
-    }],
+    "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
     "@typescript-eslint/no-unsafe-assignment": "error",

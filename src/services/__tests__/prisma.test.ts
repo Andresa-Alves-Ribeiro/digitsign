@@ -1,5 +1,5 @@
 import { PrismaClient, User, Document, Signature } from '@prisma/client';
-import { prisma } from '../prisma';
+import { prisma } from '../prisma.js';
 
 // Mock PrismaClient before importing prisma
 jest.mock('@prisma/client', () => ({
@@ -110,26 +110,26 @@ describe('Prisma Service', () => {
 
   describe('Document Operations', () => {
     const mockDocument: Document = {
-      id: '1',
-      name: 'Test Document',
-      fileKey: 'test-file-key',
-      userId: '1',
+      id: 'test-id',
+      name: 'test.pdf',
+      status: 'PENDING',
+      fileKey: 'test-key',
+      userId: 'test-user',
       createdAt: new Date(),
       updatedAt: new Date(),
-      status: 'DRAFT',
       mimeType: 'application/pdf',
-      size: 1024,
+      size: 1024
     };
 
     it('should find documents by user id', async () => {
       (mockPrismaClient.document.findMany as jest.Mock).mockResolvedValue([mockDocument]);
 
       await prisma.document.findMany({
-        where: { userId: '1' },
+        where: { userId: 'test-user' },
       });
 
       expect(mockPrismaClient.document.findMany).toHaveBeenCalledWith({
-        where: { userId: '1' },
+        where: { userId: 'test-user' },
       });
     });
 
@@ -138,10 +138,9 @@ describe('Prisma Service', () => {
 
       await prisma.document.create({
         data: {
-          name: 'Test Document',
-          fileKey: 'test-file-key',
-          userId: '1',
-          status: 'DRAFT',
+          name: 'test.pdf',
+          fileKey: 'test-key',
+          userId: 'test-user',
           mimeType: 'application/pdf',
           size: 1024,
         },
@@ -149,10 +148,9 @@ describe('Prisma Service', () => {
 
       expect(mockPrismaClient.document.create).toHaveBeenCalledWith({
         data: {
-          name: 'Test Document',
-          fileKey: 'test-file-key',
-          userId: '1',
-          status: 'DRAFT',
+          name: 'test.pdf',
+          fileKey: 'test-key',
+          userId: 'test-user',
           mimeType: 'application/pdf',
           size: 1024,
         },
@@ -169,12 +167,12 @@ describe('Prisma Service', () => {
       mockUpdate.mockResolvedValue(updatedDocument);
 
       await prisma.document.update({
-        where: { id: '1' },
+        where: { id: 'test-id' },
         data: { name: 'Updated Document' },
       });
 
       expect(mockUpdate).toHaveBeenCalledWith({
-        where: { id: '1' },
+        where: { id: 'test-id' },
         data: { name: 'Updated Document' },
       });
     });
@@ -183,11 +181,11 @@ describe('Prisma Service', () => {
       (mockPrismaClient.document.delete as jest.Mock).mockResolvedValue(mockDocument);
 
       await prisma.document.delete({
-        where: { id: '1' },
+        where: { id: 'test-id' },
       });
 
       expect(mockPrismaClient.document.delete).toHaveBeenCalledWith({
-        where: { id: '1' },
+        where: { id: 'test-id' },
       });
     });
   });

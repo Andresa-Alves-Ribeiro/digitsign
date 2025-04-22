@@ -9,9 +9,8 @@ import { useDocumentActions } from '@/utils/document';
 
 const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, onSign }) => {
   const { onSign: handleSign, onDelete: handleDelete } = useDocumentActions(() => {
-    // Atualiza a lista de documentos após a exclusão
     if (onDelete) {
-      onDelete(documents[0].id); // Isso vai disparar a atualização no componente pai
+      onDelete(documents[0].id);
     }
   });
 
@@ -38,6 +37,7 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
               </th>
             </tr>
           </thead>
+
           <tbody className="bg-white divide-y divide-gray-200">
             {documents.map((doc, index) => (
               <motion.tr
@@ -52,8 +52,8 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                     <div className="flex-shrink-0 h-8 w-8 text-gray-400">
                       <PdfIcon className="h-8 w-8" />
                     </div>
-                    <div className="ml-4">
-                      <Link href={`/documents/${doc.id}`} className="text-sm font-medium text-gray-900 hover:text-green-600">
+                    <div className="ml-4 min-w-0">
+                      <Link href={`/documents/${doc.id}`} className="block w-96 text-sm font-medium text-gray-900 hover:text-green-600 overflow-hidden text-ellipsis whitespace-nowrap" title={doc.name}>
                         {doc.name}
                       </Link>
                     </div>

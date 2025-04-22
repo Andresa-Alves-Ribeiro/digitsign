@@ -1,5 +1,5 @@
 interface LoadingProps {
-    text?: string;
+  text?: string;
 }
 
 const Loading = ({ text = 'Carregando...' }: LoadingProps) => {

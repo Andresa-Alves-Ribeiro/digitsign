@@ -4,9 +4,8 @@ import { useSession, getSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { UserGroupIcon, DocumentTextIcon, ClockIcon } from '@heroicons/react/24/outline';
-import Loading from '@/components/Loading';
+import Loading from '@/components/ui/Loading';
 import ConfirmationDialog from '@/components/ConfirmationDialog';
-import DocumentCards from '@/components/documents/DocumentCards';
 import DocumentTable from '@/components/documents/DocumentTable';
 import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
@@ -103,19 +102,22 @@ export default function DocumentsPage() {
               title="Total de Documentos"
               value={stats.totalDocuments}
               icon={DocumentTextIcon}
-              color="blue"
+              iconColor="text-blue-500"
+              valueColor="text-blue-600"
             />
             <StatCard
               title="Documentos Pendentes"
               value={stats.pendingDocuments}
               icon={ClockIcon}
-              color="yellow"
+              iconColor="text-yellow-500"
+              valueColor="text-yellow-600"
             />
             <StatCard
               title="Documentos Assinados"
               value={stats.signedDocuments}
               icon={UserGroupIcon}
-              color="green"
+              iconColor="text-green-500"
+              valueColor="text-green-600" 
             />
           </div>
 

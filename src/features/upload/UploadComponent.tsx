@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Loading from '@/components/Loading';
+import Loading from '@/components/ui/Loading';
 import useDocumentStore from '@/store/useDocumentStore';
 import { getSession } from 'next-auth/react';
 import { commonStyles } from '@/constants/styles';

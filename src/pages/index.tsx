@@ -79,7 +79,7 @@ export default function Home() {
 
   return (
     <div className="px-4 pt-4 h-full bg-zinc-100">
-      <PageHeader session={session} title="Dashboard" description={`Seja bem-vindo, ${session?.user?.name ?? 'Usuário'}`} />
+      <PageHeader title="Dashboard" description={`Seja bem-vindo, ${session?.user?.name ?? 'Usuário'}`} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
         <StatCard

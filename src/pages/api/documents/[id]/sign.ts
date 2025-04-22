@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { v2 as cloudinary } from 'cloudinary';
-import { PDFDocument, PDFPage, PDFImage } from 'pdf-lib';
+import { PDFDocument, PDFImage } from 'pdf-lib';
 import { Document, Signature } from '@prisma/client';
 
 interface SignResponse {
@@ -17,10 +17,6 @@ interface CloudinaryResource {
   public_id: string;
   resource_type: string;
   type: string;
-}
-
-interface DocumentWithSignatures extends Document {
-  signatures: Signature[];
 }
 
 interface SignatureDimensions {
@@ -72,10 +68,9 @@ export default async function handler(
         userId: true,
         fileKey: true,
         name: true,
-        mimeType: true,
-        signatures: true
+        mimeType: true
       }
-    }) as DocumentWithSignatures | null;
+    });
 
     if (!document) {
       return res.status(404).json({ error: 'Documento não encontrado' });
@@ -86,8 +81,14 @@ export default async function handler(
     }
 
     // Check if user has already signed
-    const hasSigned = document.signatures.some(sig => sig.userId === session.user.id);
-    if (hasSigned) {
+    const existingSignature = await prisma.signature.findFirst({
+      where: {
+        documentId: document.id,
+        userId: session.user.id
+      }
+    });
+
+    if (existingSignature) {
       return res.status(400).json({ error: 'Você já assinou este documento' });
     }
 
@@ -112,11 +113,10 @@ export default async function handler(
       const pdfBytes = await pdfResponse.arrayBuffer();
       let pdfDoc: PDFDocument;
       try {
-        const loadedDoc = await PDFDocument.load(pdfBytes);
-        if (!loadedDoc) {
+        pdfDoc = await PDFDocument.load(pdfBytes);
+        if (!pdfDoc) {
           throw new Error('Failed to load PDF document');
         }
-        pdfDoc = loadedDoc;
       } catch (_loadError) {
         throw new Error('Failed to load PDF document');
       }
@@ -152,7 +152,7 @@ export default async function handler(
         throw new Error('PDF document has no pages');
       }
 
-      const lastPage = pages[pages.length - 1] as PDFPage;
+      const lastPage = pages[pages.length - 1];
       const pageSize: PageSize = lastPage.getSize();
 
       try {
@@ -203,22 +203,29 @@ export default async function handler(
           documentId: document.id,
           userId: session.user.id,
           signedAt: new Date(),
+          signatureImg: signatureImage
         },
       });
 
       // Get updated document with signatures
       const updatedDocument = await prisma.document.findUnique({
-        where: { id: document.id },
-        include: {
-          signatures: true,
-        },
+        where: { id: document.id }
       });
 
       if (!updatedDocument) {
         throw new Error('Failed to fetch updated document');
       }
 
-      return res.status(200).json({ document: updatedDocument });
+      const signatures = await prisma.signature.findMany({
+        where: { documentId: document.id }
+      });
+
+      return res.status(200).json({ 
+        document: {
+          ...updatedDocument,
+          signatures
+        }
+      });
     } catch (cloudinaryError) {
       console.error('Cloudinary error:', cloudinaryError);
       return res.status(404).json({ error: 'Arquivo não encontrado no Cloudinary' });

@@ -21,7 +21,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps) {
         transition={{
           duration: 10,
           repeat: Infinity,
-          ease: "linear"
+          ease: 'linear'
         }}
       />
       <motion.div
@@ -33,7 +33,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps) {
         transition={{
           duration: 10,
           repeat: Infinity,
-          ease: "linear"
+          ease: 'linear'
         }}
       />
       <motion.div
@@ -45,7 +45,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps) {
         transition={{
           duration: 10,
           repeat: Infinity,
-          ease: "linear"
+          ease: 'linear'
         }}
       />
 

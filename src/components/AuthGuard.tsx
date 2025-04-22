@@ -1,4 +1,4 @@
-import { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, FC } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
@@ -6,7 +6,7 @@ interface AuthGuardProps {
     children: ReactNode;
 }
 
-const AuthGuard = ({ children }: AuthGuardProps) => {
+const AuthGuard: FC<AuthGuardProps> = ({ children }): JSX.Element | null => {
   const { status } = useSession();
   const router = useRouter();
 

@@ -2,12 +2,13 @@ import Link from 'next/link';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
 import { DocumentStatus } from '@/types/enums/document';
+import { FC } from 'react';
 
 interface RecentActivitiesProps {
   documents: Document[];
 }
 
-export default function RecentActivities({ documents }: RecentActivitiesProps) {
+const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element => {
   return (
     <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-6">
@@ -50,4 +51,6 @@ export default function RecentActivities({ documents }: RecentActivitiesProps) {
       </div>
     </div>
   );
-} 
+};
+
+export default RecentActivities; 

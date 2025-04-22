@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { commonStyles } from '@/constants/styles';
+import { FC } from 'react';
 
 export interface ConfirmationDialogProps {
     isOpen: boolean;
@@ -11,7 +12,7 @@ export interface ConfirmationDialogProps {
     cancelText?: string;
 }
 
-export default function ConfirmationDialog({
+const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -19,7 +20,7 @@ export default function ConfirmationDialog({
   message,
   confirmText = 'Confirmar',
   cancelText = 'Cancelar'
-}: ConfirmationDialogProps) {
+}): JSX.Element => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -76,4 +77,6 @@ export default function ConfirmationDialog({
       )}
     </AnimatePresence>
   );
-} 
+};
+
+export default ConfirmationDialog; 

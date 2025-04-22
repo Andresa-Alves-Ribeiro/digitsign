@@ -1,5 +1,5 @@
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
-import { ElementType } from 'react';
+import { ElementType, FC } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -19,34 +19,34 @@ interface StatCardProps {
   isActionCard?: boolean;
 }
 
-export default function StatCard({
+const StatCard: FC<StatCardProps> = ({
   title,
   value,
   total,
   icon: Icon,
   iconColor,
-  valueColor = "text-gray-900",
-  percentageColor = "text-green-500",
+  valueColor = 'text-gray-900',
+  percentageColor = 'text-green-500',
   description,
-  buttonColor = "bg-blue-600",
-  buttonHoverColor = "hover:bg-blue-700",
+  buttonColor = 'bg-blue-600',
+  buttonHoverColor = 'hover:bg-blue-700',
   buttonText,
   href,
   isActionCard = false,
-}: StatCardProps) {
+}): JSX.Element => {
   const percentage = total && value ? Math.round((value / total) * 100) : 0;
 
   const CardWrapper = isActionCard ? motion.div : 'div';
   const wrapperProps = isActionCard ? {
     whileHover: { scale: 1.02 },
-    className: "bg-white overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 h-full"
+    className: 'bg-white overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 h-full'
   } : {
-    className: "bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full"
+    className: 'bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full'
   };
 
   return (
     <CardWrapper {...wrapperProps}>
-      <div className={`${isActionCard ? "p-6" : ""} flex flex-col h-full`}>
+      <div className={`${isActionCard ? 'p-6' : ''} flex flex-col h-full`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
           <div className={`p-2 rounded-full ${iconColor.replace('text-', 'bg-').replace('-500', '-100')}`}>
@@ -88,4 +88,6 @@ export default function StatCard({
       </div>
     </CardWrapper>
   );
-} 
+};
+
+export default StatCard; 

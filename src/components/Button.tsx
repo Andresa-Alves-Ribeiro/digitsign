@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, FC } from 'react';
 import { commonStyles } from '@/constants/styles';
 
 interface ButtonProps {
@@ -18,7 +18,7 @@ const sizeStyles: Record<string, string> = {
   lg: 'px-6 py-3 text-lg',
 };
 
-export function Button({
+export const Button: FC<ButtonProps> = ({
   type = 'button',
   variant = 'primary',
   size = 'md',
@@ -27,7 +27,7 @@ export function Button({
   onClick,
   children,
   className = '',
-}: ButtonProps) {
+}): JSX.Element => {
   const baseStyles = commonStyles.button[variant];
   const currentSizeStyles = sizeStyles[size];
 
@@ -51,4 +51,4 @@ export function Button({
       )}
     </button>
   );
-} 
+}; 

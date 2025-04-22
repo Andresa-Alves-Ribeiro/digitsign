@@ -2,23 +2,43 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-interface SignRequest {
-  signatureData: string;
-}
+import { v2 as cloudinary } from 'cloudinary';
+import { PDFDocument, PDFPage, PDFImage } from 'pdf-lib';
+import { Document, Signature } from '@prisma/client';
 
 interface SignResponse {
-  message?: string;
-  signature?: {
-    id: string;
-    documentId: string;
-    userId: string;
-    signatureImg: string;
-    signedAt: Date | null;
-    createdAt: Date;
-  };
   error?: string;
+  document?: Document & {
+    signatures: Signature[];
+  };
 }
+
+interface CloudinaryResource {
+  public_id: string;
+  resource_type: string;
+  type: string;
+}
+
+interface DocumentWithSignatures extends Document {
+  signatures: Signature[];
+}
+
+interface SignatureDimensions {
+  width: number;
+  height: number;
+}
+
+interface PageSize {
+  width: number;
+  height: number;
+}
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,14 +55,14 @@ export default async function handler(
     }
 
     const { id } = req.query;
-    const { signatureData } = req.body as SignRequest;
-
-    if (!signatureData) {
-      return res.status(400).json({ error: 'Imagem de assinatura é obrigatória' });
-    }
+    const { signatureImage } = req.body as { signatureImage: string };
 
     if (!id || typeof id !== 'string') {
       return res.status(400).json({ error: 'ID do documento inválido' });
+    }
+
+    if (!signatureImage) {
+      return res.status(400).json({ error: 'Imagem da assinatura é obrigatória' });
     }
 
     const document = await prisma.document.findUnique({
@@ -50,9 +70,12 @@ export default async function handler(
       select: {
         id: true,
         userId: true,
-        status: true
+        fileKey: true,
+        name: true,
+        mimeType: true,
+        signatures: true
       }
-    });
+    }) as DocumentWithSignatures | null;
 
     if (!document) {
       return res.status(404).json({ error: 'Documento não encontrado' });
@@ -62,32 +85,144 @@ export default async function handler(
       return res.status(403).json({ error: 'Você não tem permissão para assinar este documento' });
     }
 
-    if (document.status.toUpperCase() === 'SIGNED') {
-      return res.status(400).json({ error: 'Este documento já foi assinado' });
+    // Check if user has already signed
+    const hasSigned = document.signatures.some(sig => sig.userId === session.user.id);
+    if (hasSigned) {
+      return res.status(400).json({ error: 'Você já assinou este documento' });
     }
 
-    // Create signature record
-    const signature = await prisma.signature.create({
-      data: {
-        documentId: id,
-        userId: session.user.id,
-        signatureImg: signatureData,
-        signedAt: new Date(),
-      },
-    });
+    try {
+      // Primeiro, vamos verificar se o arquivo existe no Cloudinary
+      await cloudinary.api.resource(document.fileKey, {
+        resource_type: 'raw',
+        type: 'upload'
+      });
 
-    // Update document status
-    await prisma.document.update({
-      where: { id },
-      data: {
-        status: 'SIGNED'
+      // Download the PDF from Cloudinary
+      const pdfResponse = await fetch(cloudinary.url(document.fileKey, {
+        resource_type: 'raw',
+        type: 'upload',
+        secure: true
+      }));
+
+      if (!pdfResponse.ok) {
+        throw new Error('Failed to download PDF from Cloudinary');
       }
-    });
 
-    return res.status(201).json({
-      message: 'Documento assinado com sucesso',
-      signature,
-    });
+      const pdfBytes = await pdfResponse.arrayBuffer();
+      let pdfDoc: PDFDocument;
+      try {
+        const loadedDoc = await PDFDocument.load(pdfBytes);
+        if (!loadedDoc) {
+          throw new Error('Failed to load PDF document');
+        }
+        pdfDoc = loadedDoc;
+      } catch (_loadError) {
+        throw new Error('Failed to load PDF document');
+      }
+
+      // Convert base64 signature to image
+      const base64Data = signatureImage.split(',')[1];
+      if (!base64Data) {
+        throw new Error('Invalid signature image format');
+      }
+      const signatureBytes = Buffer.from(base64Data, 'base64');
+
+      // Embed the signature image
+      let signatureImageObj: PDFImage;
+      try {
+        const embeddedImage = await pdfDoc.embedPng(signatureBytes);
+        if (!embeddedImage) {
+          throw new Error('Failed to embed signature image');
+        }
+        signatureImageObj = embeddedImage;
+      } catch (_embedError) {
+        throw new Error('Failed to embed signature image');
+      }
+
+      const scaledImage = signatureImageObj.scale(0.5);
+      const signatureDims: SignatureDimensions = {
+        width: scaledImage.width,
+        height: scaledImage.height
+      };
+
+      // Add signature to the last page
+      const pages = pdfDoc.getPages();
+      if (!pages || pages.length === 0) {
+        throw new Error('PDF document has no pages');
+      }
+
+      const lastPage = pages[pages.length - 1] as PDFPage;
+      const pageSize: PageSize = lastPage.getSize();
+
+      try {
+        lastPage.drawImage(signatureImageObj, {
+          x: pageSize.width - signatureDims.width - 50,
+          y: 50,
+          width: signatureDims.width,
+          height: signatureDims.height,
+        });
+      } catch (_drawError) {
+        throw new Error('Failed to draw signature on PDF');
+      }
+
+      // Save the modified PDF
+      let modifiedPdfBytes: Uint8Array;
+      try {
+        const savedBytes = await pdfDoc.save();
+        if (!savedBytes) {
+          throw new Error('Failed to save modified PDF');
+        }
+        modifiedPdfBytes = savedBytes;
+      } catch (_saveError) {
+        throw new Error('Failed to save modified PDF');
+      }
+
+      // Upload the modified PDF back to Cloudinary
+      await new Promise<CloudinaryResource>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'raw',
+            public_id: document.fileKey,
+            overwrite: true,
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result as CloudinaryResource);
+          }
+        );
+
+        // Convert ArrayBuffer to Buffer and pipe to upload stream
+        const buffer = Buffer.from(modifiedPdfBytes);
+        uploadStream.end(buffer);
+      });
+
+      // Create signature record
+      await prisma.signature.create({
+        data: {
+          documentId: document.id,
+          userId: session.user.id,
+          signedAt: new Date(),
+        },
+      });
+
+      // Get updated document with signatures
+      const updatedDocument = await prisma.document.findUnique({
+        where: { id: document.id },
+        include: {
+          signatures: true,
+        },
+      });
+
+      if (!updatedDocument) {
+        throw new Error('Failed to fetch updated document');
+      }
+
+      return res.status(200).json({ document: updatedDocument });
+    } catch (cloudinaryError) {
+      console.error('Cloudinary error:', cloudinaryError);
+      return res.status(404).json({ error: 'Arquivo não encontrado no Cloudinary' });
+    }
   } catch (error) {
     console.error('Error signing document:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

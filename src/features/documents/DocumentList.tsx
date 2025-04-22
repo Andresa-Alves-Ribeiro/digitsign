@@ -94,7 +94,7 @@ const DocumentList = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {documents.map((document) => {
-            const status = document.status as DocumentStatus;
+            const status = document.status;
             const statusConfig = documentStatusConfig[status];
 
             return (

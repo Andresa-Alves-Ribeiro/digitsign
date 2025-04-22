@@ -1,11 +1,13 @@
 import React from 'react';
 import { DocumentStatus } from '@/types/enums/document';
 
-export const documentStatusConfig: Record<DocumentStatus, {
-    label: string;
-    color: string;
-    icon: React.ReactNode;
-}> = {
+type StatusConfig = {
+  label: string;
+  color: string;
+  icon: React.ReactNode;
+};
+
+export const documentStatusConfig: Record<DocumentStatus, StatusConfig> = {
   [DocumentStatus.DRAFT]: {
     label: 'Rascunho',
     color: 'text-gray-700 bg-gray-100 border border-gray-200',
@@ -51,44 +53,16 @@ export const documentStatusConfig: Record<DocumentStatus, {
       </svg>
     ),
   }
-} as const;
+};
 
-export const getStatusConfig = (status: string): {
-  label: string;
-  color: string;
-  icon: React.ReactNode;
-} => {
-  // Verifica se o status é um valor válido do enum
-  if (Object.values(DocumentStatus).includes(status as DocumentStatus)) {
-    return documentStatusConfig[status as DocumentStatus];
+export const getStatusConfig = (status: string): StatusConfig => {
+  const normalizedStatus = status.toUpperCase() as DocumentStatus;
+  
+  if (isValidStatus(normalizedStatus)) {
+    return documentStatusConfig[normalizedStatus];
   }
   
-  // Verifica se o status é 'SIGNED' (independente de maiúsculas/minúsculas)
-  if (status.toUpperCase() === 'SIGNED') {
-    return documentStatusConfig[DocumentStatus.SIGNED];
-  }
-  
-  // Verifica se o status é 'PENDING' (independente de maiúsculas/minúsculas)
-  if (status.toUpperCase() === 'PENDING') {
-    return documentStatusConfig[DocumentStatus.PENDING];
-  }
-  
-  // Verifica se o status é 'REJECTED' (independente de maiúsculas/minúsculas)
-  if (status.toUpperCase() === 'REJECTED') {
-    return documentStatusConfig[DocumentStatus.REJECTED];
-  }
-  
-  // Verifica se o status é 'EXPIRED' (independente de maiúsculas/minúsculas)
-  if (status.toUpperCase() === 'EXPIRED') {
-    return documentStatusConfig[DocumentStatus.EXPIRED];
-  }
-  
-  // Verifica se o status é 'DRAFT' (independente de maiúsculas/minúsculas)
-  if (status.toUpperCase() === 'DRAFT') {
-    return documentStatusConfig[DocumentStatus.DRAFT];
-  }
-  
-  // Retorna o status padrão se nenhuma correspondência for encontrada
+  // Return default status if no match is found
   return documentStatusConfig[DocumentStatus.PENDING];
 };
 

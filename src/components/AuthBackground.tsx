@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import background from '@/assets/images/back.jpeg';
+import { FC } from 'react';
 
-export function AuthBackground() {
+export const AuthBackground: FC = (): JSX.Element => {
   return (
     <div className="hidden lg:block lg:w-1/2 bg-gray-800 relative">
       <Image
@@ -14,4 +15,4 @@ export function AuthBackground() {
       />
     </div>
   );
-} 
+}; 

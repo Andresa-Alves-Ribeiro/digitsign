@@ -190,7 +190,7 @@ const UploadComponent = () => {
                     <motion.div 
                       className="flex justify-center"
                       whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     >
                       <div className="p-4 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors duration-300">
                         <svg

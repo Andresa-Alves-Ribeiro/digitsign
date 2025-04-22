@@ -2,13 +2,19 @@ import { ChartBarIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
 import { DocumentStatus } from '@/types/enums/document';
 import { motion } from 'framer-motion';
+import { FC } from 'react';
 
 interface SigningTimelineProps {
   documents: Document[];
 }
 
-export default function SigningTimeline({ documents }: SigningTimelineProps) {
-  const getLast7Days = () => {
+interface DayCount {
+  date: Date;
+  count: number;
+}
+
+const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element => {
+  const getLast7Days = (): Date[] => {
     const days = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date();
@@ -18,7 +24,7 @@ export default function SigningTimeline({ documents }: SigningTimelineProps) {
     return days;
   };
 
-  const getSignedDocumentsByDay = () => {
+  const getSignedDocumentsByDay = (): DayCount[] => {
     const days = getLast7Days();
     return days.map(date => {
       const dayDocuments = documents.filter(doc => {
@@ -38,14 +44,14 @@ export default function SigningTimeline({ documents }: SigningTimelineProps) {
   const signedByDay = getSignedDocumentsByDay();
   const maxCount = Math.max(...signedByDay.map(day => day.count), 1);
 
-  const getX = (index: number) => {
+  const getX = (index: number): number => {
     const width = 100;
     const padding = 10;
     const availableWidth = width - (padding * 2);
     return padding + (index * availableWidth / (signedByDay.length - 1));
   };
 
-  const getY = (count: number) => {
+  const getY = (count: number): number => {
     const height = 100;
     const padding = 20;
     const availableHeight = height - (padding * 2);
@@ -174,10 +180,12 @@ export default function SigningTimeline({ documents }: SigningTimelineProps) {
         ) : (
           <div className="text-center py-6">
             <ChartBarIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-            <p className="text-gray-500">Nenhum documento para análise</p>
+            <p className="text-gray-500">Nenhum documento encontrado</p>
           </div>
         )}
       </div>
     </motion.div>
   );
-} 
+};
+
+export default SigningTimeline; 

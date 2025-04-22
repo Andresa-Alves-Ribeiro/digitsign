@@ -11,7 +11,7 @@ interface ApiResponse {
   success?: boolean;
 }
 
-function SignDocumentPage(): JSX.Element {
+function SignDocumentPage() {
   const router = useRouter();
   const params = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);

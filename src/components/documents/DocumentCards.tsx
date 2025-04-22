@@ -4,11 +4,16 @@ import { getStatusConfig } from '@/constants/documentStatus';
 import { PdfIcon } from '@/assets/icons';
 import { CalendarIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { DocumentCardsProps as DocumentCardsPropsType } from '@/types/interfaces';
-import { DocumentStatus } from '@/types/enums';
+import { DocumentStatus } from '@/types/enums/document';
 import { useDocumentActions } from '@/utils/document';
 
-const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
-  const { onSign, onDelete } = useDocumentActions();
+const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents, onDelete, onSign }) => {
+  const { onSign: handleSign, onDelete: handleDelete } = useDocumentActions(() => {
+    // Atualiza a lista de documentos após a exclusão
+    if (onDelete) {
+      onDelete(documents[0].id); // Isso vai disparar a atualização no componente pai
+    }
+  });
 
   return (
     <div className="lg:hidden space-y-4">
@@ -20,7 +25,7 @@ const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200 group"
         >
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0 h-8 w-8 text-gray-400 group-hover:text-green-600 transition-colors duration-200">
                 <PdfIcon className="h-8 w-8" />
@@ -43,7 +48,7 @@ const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
             <div className="flex items-center space-x-2">
               {doc.status.toLowerCase() === 'pending' && (
                 <button
-                  onClick={() => onSign(doc.id)}
+                  onClick={() => onSign ? onSign(doc.id) : handleSign(doc.id)}
                   className="p-1 text-green-600 hover:text-green-800 rounded-full hover:bg-green-50 transition-colors duration-200"
                   title="Assinar documento"
                 >
@@ -51,7 +56,7 @@ const DocumentCards: React.FC<DocumentCardsPropsType> = ({ documents }) => {
                 </button>
               )}
               <button
-                onClick={() => onDelete(doc.id)}
+                onClick={() => onDelete ? onDelete(doc.id) : handleDelete(doc.id)}
                 className="p-1 text-red-600 hover:text-red-800 rounded-full hover:bg-red-50 transition-colors duration-200"
                 title="Excluir documento"
               >

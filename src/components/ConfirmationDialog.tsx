@@ -19,17 +19,16 @@ export default function ConfirmationDialog({
   message,
   confirmText = 'Confirmar',
   cancelText = 'Cancelar'
-}: ConfirmationDialogProps): JSX.Element {
+}: ConfirmationDialogProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <motion.dialog
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          role="dialog"
-          aria-modal="true"
+          open={isOpen}
           aria-labelledby="dialog-title"
         >
           <motion.div
@@ -73,7 +72,7 @@ export default function ConfirmationDialog({
               </button>
             </div>
           </motion.div>
-        </motion.div>
+        </motion.dialog>
       )}
     </AnimatePresence>
   );

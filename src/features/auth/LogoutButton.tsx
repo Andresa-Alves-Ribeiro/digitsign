@@ -12,7 +12,7 @@ export default function LogoutButton({
   children = 'Sair',
   onLogout,
   onClick,
-}: LogoutButtonProps): JSX.Element {
+}: LogoutButtonProps) {
   const { logout, loading } = useAuth();
 
   const handleLogout = async (): Promise<void> => {

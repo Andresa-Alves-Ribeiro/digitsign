@@ -14,9 +14,24 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
-// Function to check if the current page is an auth page
+// Function to check if the current page is an auth page or error page
 const isAuthPage = (pathname: string): boolean => {
-  return pathname === '/login' || pathname === '/register';
+  return pathname === '/login' || 
+         pathname === '/register' || 
+         pathname === '/401' || 
+         pathname === '/403' || 
+         pathname === '/404' || 
+         pathname === '/500';
+};
+
+// Function to check if the current page is an error page
+const isErrorPage = (pathname: string): boolean => {
+  return pathname === '/401' || 
+         pathname === '/403' || 
+         pathname === '/404' || 
+         pathname === '/500' ||
+         pathname.startsWith('/_error') ||
+         pathname.includes('[...slug]');
 };
 
 // Function to determine the active page based on the pathname
@@ -53,9 +68,10 @@ export default function App({
   Component, 
   pageProps, 
   router: appRouter 
-}: AppComponentProps): JSX.Element {
+}: AppComponentProps) {
   const { session, ...restPageProps } = pageProps;
   const isAuth = isAuthPage(appRouter.pathname);
+  const isError = isErrorPage(appRouter.pathname);
   const activePage = getActivePage(appRouter.pathname);
 
   return (
@@ -66,7 +82,7 @@ export default function App({
       </Head>
       <div className={poppins.variable}>
         <AnimatePresence mode="wait">
-          {isAuth ? (
+          {isAuth || isError ? (
             <Component {...restPageProps} key={appRouter.pathname} />
           ) : (
             <DashboardLayout activePage={activePage}>

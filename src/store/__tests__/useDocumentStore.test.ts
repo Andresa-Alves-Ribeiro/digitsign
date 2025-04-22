@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import useDocumentStore from '../useDocumentStore';
-import { Document } from '@prisma/client';
+import { Document } from '@/types/interfaces';
 
 describe('useDocumentStore', () => {
   const mockDocument: Document = {
@@ -11,7 +11,7 @@ describe('useDocumentStore', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
-    fileUrl: 'test.pdf',
+    fileKey: 'test.pdf',
     mimeType: 'application/pdf'
   };
 

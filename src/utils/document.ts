@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { prisma } from '@/services/prisma';
 import Logger from '@/utils/logger';
 import { Document, Prisma } from '@prisma/client';
+import { toast } from 'react-hot-toast';
 
 export interface DocumentWithSignatures extends Document {
   signature: {
@@ -14,7 +15,7 @@ export interface DocumentWithSignatures extends Document {
   } | null;
 }
 
-export const useDocumentActions = (): {
+export const useDocumentActions = (onDocumentsChange?: (documents: Document[]) => void): {
   onSign: (documentId: string) => void;
   onDelete: (documentId: string) => Promise<void>;
 } => {
@@ -30,10 +31,28 @@ export const useDocumentActions = (): {
     }
 
     try {
-      await deleteDocument(documentId);
+      const response = await fetch(`/api/documents/${documentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao excluir documento');
+      }
+
+      // Atualiza a lista de documentos se o callback foi fornecido
+      if (onDocumentsChange) {
+        const updatedResponse = await fetch('/api/documents');
+        if (updatedResponse.ok) {
+          const updatedDocuments = await updatedResponse.json();
+          onDocumentsChange(updatedDocuments);
+        }
+      }
+
+      toast.success('Documento excluído com sucesso');
       router.push('/documents');
     } catch (error) {
       Logger.error('Erro ao excluir documento:', error);
+      toast.error('Erro ao excluir documento');
       throw error;
     }
   };

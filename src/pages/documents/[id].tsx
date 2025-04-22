@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
-import Loading from '@/components/Loading';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -9,41 +8,22 @@ import { getStatusConfig } from '@/constants/documentStatus';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
 import { useDocumentActions } from '@/utils/document';
+import { PDFViewer } from '@/components/PDFViewer';
+import { GetServerSideProps } from 'next';
+import { getDocumentServerSideProps } from '@/utils/documentServerSide';
 
-const DocumentPage: React.FC = () => {
+interface DocumentPageProps {
+  document: Document | null;
+  error: string | null;
+}
+
+const DocumentPage: React.FC<DocumentPageProps> = ({ document: initialDocument, error: initialError }) => {
   const router = useRouter();
-  const { id } = router.query;
   const { data: _session } = useSession();
-  const [document, setDocument] = useState<Document | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSigning] = useState(false);
+  const [document, ] = useState<Document | null>(initialDocument);
+  const [error, setError] = useState<string | null>(initialError);
   const [isDeleting, setIsDeleting] = useState(false);
   const { onSign } = useDocumentActions();
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchDocument = async (): Promise<void> => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/documents/${id}/metadata`);
-                
-        if (!res.ok) {
-          throw new Error('Failed to fetch document');
-        }
-
-        const data = await res.json() as Document;
-        setDocument(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDocument();
-  }, [id]);
 
   const handleDeleteDocument = async (): Promise<void> => {
     if (!document) return;
@@ -71,10 +51,6 @@ const DocumentPage: React.FC = () => {
       setIsDeleting(false);
     }
   };
-
-  if (loading) {
-    return <Loading />;
-  }
 
   if (error) {
     return (
@@ -105,10 +81,9 @@ const DocumentPage: React.FC = () => {
               {document.status.toLowerCase() === 'pending' && (
                 <button
                   onClick={() => onSign(document.id)}
-                  disabled={isSigning}
                   className="p-2 flex items-center gap-2 bg-green-100 text-green-700 text-sm rounded-md hover:bg-green-200 transition-colors duration-200 m-0 cursor-pointer"
                 >
-                  <PencilSquareIcon className="w-4 h-4" /> {isSigning ? 'Assinando...' : 'Assinar Documento'}
+                  <PencilSquareIcon className="w-4 h-4" /> Assinar Documento
                 </button>
               )}
 
@@ -183,18 +158,13 @@ const DocumentPage: React.FC = () => {
         </div>
 
         <div className="w-full border rounded-lg overflow-hidden">
-          <iframe
-            src={`/api/documents/${document.id}/view`}
-            className="w-full h-[700px]"
-            title={document.name}
-            onError={(e) => {
-              console.error('Erro no iframe:', e);
-            }}
-          />
+          <PDFViewer url={`/api/documents/${document.id}/view`} />
         </div>
       </div>
     </div>
   );
 };
+
+export const getServerSideProps: GetServerSideProps<DocumentPageProps> = getDocumentServerSideProps;
 
 export default DocumentPage;

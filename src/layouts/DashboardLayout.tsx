@@ -14,7 +14,7 @@ interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
 
-export default function DashboardLayout({ activePage = 'dashboard', children }: DashboardLayoutProps): JSX.Element {
+export default function DashboardLayout({ activePage = 'dashboard', children }: DashboardLayoutProps) {
   return (
     <div className="flex h-full w-full">
       {/* Sidebar - Hidden on mobile, visible on tablet and up */}
@@ -27,6 +27,7 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
               width={120}
               height={120}
               className="w-auto"
+              priority
             />
           </Link>
         </div>

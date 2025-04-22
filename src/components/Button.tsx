@@ -27,7 +27,7 @@ export function Button({
   onClick,
   children,
   className = '',
-}: ButtonProps): JSX.Element {
+}: ButtonProps) {
   const baseStyles = commonStyles.button[variant];
   const currentSizeStyles = sizeStyles[size];
 

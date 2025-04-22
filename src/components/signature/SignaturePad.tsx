@@ -10,7 +10,7 @@ interface SignaturePadProps {
   onCancel: () => void;
 }
 
-const SignaturePad = ({ onSave, onCancel }: SignaturePadProps): JSX.Element => {
+const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
   const signaturePadRef = useRef<SignatureCanvas>(null);
   const [isSaving, setIsSaving] = useState(false);
 

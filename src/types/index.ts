@@ -1,6 +1,6 @@
 import { User, LoginCredentials, RegisterData } from './auth';
 import { Document, DocumentCreateInput, DocumentUpdateInput, DocumentFilter, DocumentSort, DocumentPagination, DocumentListResponse } from './document';
-import { DocumentStatus, DocumentType, UserRole, NotificationType, NotificationPriority } from './enums';
+import { DocumentStatus } from './enums/document';
 
 export type {
   User,
@@ -17,10 +17,6 @@ export type {
 
 export {
   DocumentStatus,
-  DocumentType,
-  UserRole,
-  NotificationType,
-  NotificationPriority
 };
 
 export * from './interfaces';

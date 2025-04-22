@@ -115,17 +115,23 @@ export default async function handler(
     const fileBuffer = file.buffer;
     const base64File = `data:${file.mimetype};base64,${fileBuffer.toString('base64')}`;
 
+    // Prepare the filename without extension
+    const filename = file.originalname.replace(/\.pdf$/i, '');
+    const publicId = `${Date.now()}-${filename}`;
+
     // Upload to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(base64File, {
-      resource_type: 'raw', // For PDF files
+      resource_type: 'raw',
+      type: 'upload',
       folder: `documents/${session.user.id}`,
-      public_id: `${Date.now()}-${file.originalname}`,
+      public_id: publicId,
+      access_mode: 'authenticated'
     });
 
     // Create document record
     const document = await prisma.document.create({
       data: {
-        name: file.originalname || 'Untitled',
+        name: file.originalname,
         fileKey: uploadResponse.public_id,
         userId: session.user.id,
         status: 'pending',

@@ -14,7 +14,7 @@ interface HeaderProps {
   activePage?: 'dashboard' | 'upload' | 'pending' | 'signed' | 'documents';
 }
 
-export default function Header({ activePage = 'dashboard' }: HeaderProps): JSX.Element {
+export default function Header({ activePage = 'dashboard' }: HeaderProps) {
   const { data: session } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

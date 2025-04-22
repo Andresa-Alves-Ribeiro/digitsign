@@ -27,6 +27,7 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
               width={120}
               height={120}
               className="w-auto"
+              priority
             />
           </Link>
         </div>

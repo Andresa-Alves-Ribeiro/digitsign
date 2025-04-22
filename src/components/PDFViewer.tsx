@@ -5,7 +5,7 @@ import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import { searchPlugin } from '@react-pdf-viewer/search';
 import { selectionModePlugin } from '@react-pdf-viewer/selection-mode';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Import only core styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -24,26 +24,34 @@ interface ApiResponse {
 export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element {
   const [pdfUrl, setPdfUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchPdfUrl = useCallback(async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch PDF URL');
+      }
+      
+      const data = await response.json() as ApiResponse;
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
+      setPdfUrl(data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load PDF');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [url]);
 
   useEffect(() => {
-    const fetchPdfUrl = async (): Promise<void> => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Failed to fetch PDF URL');
-        }
-        const data = await response.json() as ApiResponse;
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        setPdfUrl(data.url);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load PDF');
-      }
-    };
-
     fetchPdfUrl();
-  }, [url]);
+  }, [fetchPdfUrl]);
 
   // Create the plugins
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -61,7 +69,7 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element 
     );
   }
 
-  if (!pdfUrl) {
+  if (isLoading || !pdfUrl) {
     return (
       <div className={`h-[800px] w-full flex items-center justify-center ${className}`}>
         <div className="text-gray-500">Loading PDF...</div>
@@ -84,6 +92,10 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps): JSX.Element 
           ]}
           theme={{
             theme: 'auto',
+          }}
+          onError={(error) => {
+            console.error('PDF Viewer Error:', error);
+            setError('Failed to load PDF viewer');
           }}
         />
       </Worker>

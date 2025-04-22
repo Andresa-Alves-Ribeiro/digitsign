@@ -117,10 +117,9 @@ export default async function handler(
 
     // Upload to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(base64File, {
-      resource_type: 'auto',
-      format: 'pdf',
+      resource_type: 'raw',
       folder: `documents/${session.user.id}`,
-      public_id: `${Date.now()}-${file.originalname}`,
+      public_id: `${Date.now()}-${file.originalname}`.replace(/\.pdf$/i, ''),
     });
 
     // Create document record

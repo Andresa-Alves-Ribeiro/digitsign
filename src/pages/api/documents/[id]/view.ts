@@ -58,10 +58,8 @@ export default async function handler(
     // Generate a secure URL for the PDF
     const secureUrl = cloudinary.url(document.fileKey, {
       resource_type: 'raw',
-      type: 'upload',
       secure: true,
-      flags: 'attachment',
-      format: 'pdf'
+      version: 1
     });
 
     return res.status(200).json({ url: secureUrl });

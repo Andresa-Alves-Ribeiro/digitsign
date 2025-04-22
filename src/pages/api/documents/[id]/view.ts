@@ -55,14 +55,25 @@ export default async function handler(
       return res.status(403).json({ error: 'Você não tem permissão para visualizar este documento' });
     }
 
-    // Generate a secure URL for the PDF
-    const secureUrl = cloudinary.url(document.fileKey, {
-      resource_type: 'raw',
-      secure: true,
-      version: 1
-    });
+    try {
+      // Primeiro, vamos verificar se o arquivo existe no Cloudinary
+      const resource = await cloudinary.api.resource(document.fileKey, {
+        resource_type: 'raw',
+        type: 'upload'
+      });
 
-    return res.status(200).json({ url: secureUrl });
+      // Generate a secure URL for the PDF
+      const secureUrl = cloudinary.url(document.fileKey, {
+        resource_type: 'raw',
+        type: 'upload',
+        secure: true
+      });
+
+      return res.status(200).json({ url: secureUrl });
+    } catch (cloudinaryError) {
+      console.error('Cloudinary error:', cloudinaryError);
+      return res.status(404).json({ error: 'Arquivo não encontrado no Cloudinary' });
+    }
   } catch (error) {
     console.error('Error viewing document:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

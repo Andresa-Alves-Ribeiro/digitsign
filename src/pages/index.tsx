@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import useDocumentStore from '@/store/useDocumentStore';
 import { toast } from 'react-hot-toast';
-import { Document } from '@prisma/client';
+import { Document as PrismaDocument } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { DocumentStatus } from '@/types/enums';
@@ -22,7 +22,7 @@ interface DashboardStats {
   totalDocuments: number;
   pendingDocuments: number;
   signedDocuments: number;
-  recentDocuments: Document[];
+  recentDocuments: PrismaDocument[];
 }
 
 interface ApiErrorResponse {
@@ -39,10 +39,10 @@ export default function Home(): JSX.Element {
     recentDocuments: [],
   });
 
-  const calculateStats = useCallback((documents: Document[]): void => {
+  const calculateStats = useCallback((documents: PrismaDocument[]): void => {
     const total = documents.length;
-    const pending = documents.filter(doc => doc.status === DocumentStatus.PENDING).length;
-    const signed = documents.filter(doc => doc.status === DocumentStatus.SIGNED).length;
+    const pending = documents.filter(d => d.status.toUpperCase() === DocumentStatus.PENDING).length;
+    const signed = documents.filter(d => d.status.toUpperCase() === DocumentStatus.SIGNED).length;
     const recent = [...documents].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 
     setStats({
@@ -63,7 +63,7 @@ export default function Home(): JSX.Element {
         throw new Error(errorData.message ?? 'Erro ao carregar documentos');
       }
       
-      const data = await response.json() as Document[];
+      const data = await response.json() as PrismaDocument[];
       setDocuments(data);
       calculateStats(data);
     } catch (error) {

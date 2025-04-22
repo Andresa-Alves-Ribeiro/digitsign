@@ -65,21 +65,3 @@ export enum NotificationPriority {
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH'
 }
-
-export enum Theme {
-  LIGHT = 'LIGHT',
-  DARK = 'DARK',
-  SYSTEM = 'SYSTEM'
-}
-
-export enum Language {
-  PT_BR = 'PT_BR',
-  EN_US = 'EN_US',
-  ES_ES = 'ES_ES'
-}
-
-export enum LoadingSize {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  LARGE = 'large'
-} 

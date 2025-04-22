@@ -8,6 +8,7 @@ interface DocumentResponse {
   name: string;
   fileKey: string;
   userId: string;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
   mimeType?: string | null;
@@ -40,6 +41,27 @@ export default async function handler(
     const documents = await prisma.document.findMany({
       where: {
         userId: session.user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        fileKey: true,
+        userId: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        mimeType: true,
+        size: true,
+        signature: {
+          select: {
+            id: true,
+            documentId: true,
+            userId: true,
+            signatureImg: true,
+            createdAt: true,
+            signedAt: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

@@ -51,7 +51,7 @@ export default function Register() {
     <div className="min-h-screen flex overflow-hidden">
       <AuthBackground />
       <PageTransition>
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-neutral-50 rounded-lg shadow-md p-10">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Criar uma conta</h1>
             <p className="mt-2 text-gray-600">Preencha os dados para se registrar</p>

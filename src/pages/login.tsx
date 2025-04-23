@@ -45,12 +45,14 @@ export default function Login() {
   return (
     <div className="min-h-screen flex overflow-hidden">
       <AuthBackground />
+      
       <PageTransition>
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-neutral-50 rounded-lg shadow-md p-10">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Bem-vindo de volta!</h1>
             <p className="mt-2 text-gray-600">Faça login para continuar</p>
           </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <FormField<LoginFormData>
               label="Email"
@@ -78,6 +80,7 @@ export default function Login() {
               Entrar
             </Button>
           </form>
+
           <p className="mt-4 text-center text-gray-600">
             Não tem uma conta?{' '}
             <Link href="/register" className="text-green-600 hover:text-green-700">

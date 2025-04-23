@@ -34,8 +34,7 @@
     "allowJs": true
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/pages/**/*.ts",
     "**/*.d.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts"

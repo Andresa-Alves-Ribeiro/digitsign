@@ -12,7 +12,7 @@ export function PageTransition({ children }: PageTransitionProps) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="w-full lg:w-1/2 flex items-center justify-center p-8 overflow-hidden"
+      className="w-full bg-neutral-100 lg:w-1/2 flex items-center justify-center p-8 overflow-hidden"
     >
       {children}
     </motion.div>

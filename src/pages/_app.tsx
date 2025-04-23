@@ -10,8 +10,9 @@ import { AnimatePresence } from 'framer-motion';
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-poppins',
+  display: 'swap',
 });
 
 // Function to check if the current page is an auth page or error page
@@ -80,7 +81,7 @@ export default function App({
         <title>DigitSign - Assinatura Digital</title>
         <meta name="description" content="Sistema de assinatura digital de documentos" />
       </Head>
-      <div className={poppins.variable}>
+      <div className={`${poppins.variable} font-sans antialiased`}>
         <AnimatePresence mode="wait">
           {isAuth || isError ? (
             <Component {...restPageProps} key={appRouter.pathname} />

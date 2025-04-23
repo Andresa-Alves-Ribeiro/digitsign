@@ -25,7 +25,7 @@ const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
       const signature = signaturePadRef.current.toDataURL();
       await onSave(signature);
       toast.success('Assinatura salva com sucesso!', TOAST_CONFIG);
-    } catch (_error) {
+    } catch {
       toast.error('Erro ao salvar assinatura', TOAST_CONFIG);
     } finally {
       setIsSaving(false);

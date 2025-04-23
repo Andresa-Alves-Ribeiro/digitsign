@@ -104,7 +104,7 @@ export default function Home() {
           iconColor="text-yellow-500"
           valueColor="text-yellow-600"
           percentageColor="text-red-500"
-          description={`Você tem ${stats.pendingDocuments} documentos pendentes de assinatura`}
+          description={`Você tem ${stats.pendingDocuments} documentos pendentes`}
           buttonColor="bg-yellow-600"
           buttonHoverColor="hover:bg-yellow-700"
           buttonText="Ver Pendentes"

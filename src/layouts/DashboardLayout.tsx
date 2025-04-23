@@ -16,7 +16,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ activePage = 'dashboard', children }: DashboardLayoutProps) {
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full bg-gray-50">
       {/* Sidebar - Hidden on mobile, visible on tablet and up */}
       <div className="hidden lg:block fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
         <div className="p-2 border-b border-gray-100">
@@ -27,7 +27,6 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
               width={120}
               height={120}
               className="w-auto"
-              priority
             />
           </Link>
         </div>
@@ -75,9 +74,9 @@ export default function DashboardLayout({ activePage = 'dashboard', children }: 
       </div>
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64 min-h-screen flex flex-col">
+      <div className="flex-1 lg:ml-64 min-h-screen flex flex-col bg-gray-50">
         <Header activePage={activePage} />
-        <main className="flex-1">
+        <main className="flex-1 p-4">
           {children}
         </main>
       </div>

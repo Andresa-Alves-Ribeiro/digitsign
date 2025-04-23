@@ -12,7 +12,6 @@ export default function CatchAllRoute() {
   return <NotFoundPage path={path} />;
 }
 
-// Adiciona getServerSideProps para garantir que a página seja tratada como uma página de erro
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {},

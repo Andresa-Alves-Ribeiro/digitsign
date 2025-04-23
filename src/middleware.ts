@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   // Lista de páginas que não devem ser interceptadas
-  const publicPages = ['/login', '/register', '/401', '/403', '/404', '/500', '/teste'];
+  const publicPages = ['/login', '/register', '/401', '/403', '/404', '/500'];
   
   // Verifica se a página atual é uma página pública
   const isPublicPage = publicPages.some(page => request.nextUrl.pathname === page);
@@ -14,11 +14,14 @@ export function middleware(request: NextRequest) {
   }
   
   // Verifica se o usuário está autenticado
-  const session = request.cookies.get('next-auth.session-token');
+  const sessionToken = request.cookies.get('next-auth.session-token')?.value;
+  const secureSessionToken = request.cookies.get('__Secure-next-auth.session-token')?.value;
   
   // Se não estiver autenticado e não for uma página pública, redireciona para a página de login
-  if (!session && !isPublicPage) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (!sessionToken && !secureSessionToken && !isPublicPage) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', request.url);
+    return NextResponse.redirect(loginUrl);
   }
   
   return NextResponse.next();

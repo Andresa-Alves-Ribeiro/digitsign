@@ -28,6 +28,7 @@ DigitSign is a modern web application that I developed as part of a technical as
   - Session management
   - Protected routes
   - Secure password hashing
+  - Error pages
 
 - 📄 Document Management
   - Document upload
@@ -132,7 +133,7 @@ DigitSign is a modern web application that I developed as part of a technical as
 1. Clone the repository:
 
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/Andresa-Alves-Ribeiro/teste-tecnico-digitsign.git
    cd digitsign
    ```
 
@@ -148,8 +149,8 @@ DigitSign is a modern web application that I developed as part of a technical as
    Create a `.env` file in the root directory with the following variables:
 
    ```
-   DATABASE_URL="postgresql://postgres.grldgmzqdcsjbpqbzxao:aBTgAtweP09AJUdM@aws-0-sa-east-1.pooler.supabase.com:5432/postgres"
-   NEXTAUTH_SECRET="yD9d59S6Hh2rrTueb6+43DWnhMSJpeKRB41dvAWcAag="
+   DATABASE_URL="your-database-url"
+   NEXTAUTH_SECRET="your-nextauth-secret"
    NEXTAUTH_URL="http://localhost:3000"
    NEXT_PUBLIC_API_URL="http://localhost:3000"
    ```
@@ -238,7 +239,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🦸 Author
 
-Hi there! 👋 I'm Andresa Alves Ribeiro, a passionate Front-end/Full-Stack developer and Information Systems student. I love creating elegant solutions to complex problems and am always excited to learn new technologies.
+Hi! 👋 I'm Andresa Alves Ribeiro, a Front-end/Full-Stack developer and Information Systems student. I love creating solutions to complex problems and am always excited to learn new technologies.
 
 This project was developed as part of a technical assessment, showcasing my skills in modern web development, particularly with Next.js, TypeScript, and full-stack development practices.
 

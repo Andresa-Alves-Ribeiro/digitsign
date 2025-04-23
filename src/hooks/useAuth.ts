@@ -97,6 +97,7 @@ export function useAuth(): UseAuthReturn {
       const result = await signIn('credentials', {
         ...data,
         redirect: false,
+        callbackUrl: '/'
       }) as LoginResponse;
 
       if (result?.ok) {

@@ -7,6 +7,8 @@ import { selectionModePlugin } from '@react-pdf-viewer/selection-mode';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ErrorDisplay } from '@/components/ErrorDisplay';
+import Loading from '@/components/ui/Loading';
+
 
 // Import only core styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -102,7 +104,7 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   if (isLoading || !pdfUrl) {
     return (
       <div className={`h-[800px] w-full flex items-center justify-center ${className}`}>
-        <div className="text-gray-500">Loading PDF...</div>
+        <Loading text="Loading PDF..." />
       </div>
     );
   }
@@ -122,10 +124,6 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
           ]}
           theme={{
             theme: 'auto',
-          }}
-          onError={(error) => {
-            console.error('PDF Viewer Error:', error);
-            setError('Failed to load PDF viewer');
           }}
         />
       </Worker>

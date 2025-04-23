@@ -1,13 +1,14 @@
 import { renderHook, act } from '@testing-library/react';
 import useDocumentStore from '../useDocumentStore';
 import { Document } from '@/types/interfaces';
+import { DocumentStatus } from '@/types/enums/document';
 
 describe('useDocumentStore', () => {
   const mockDocument: Document = {
     id: '1',
     name: 'Test Document',
     size: 1024,
-    status: 'PENDING',
+    status: DocumentStatus.PENDING,
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',

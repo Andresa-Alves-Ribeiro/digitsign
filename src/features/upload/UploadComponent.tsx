@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Loading from '@/components/Loading';
+import Loading from '@/components/ui/Loading';
 import useDocumentStore from '@/store/useDocumentStore';
 import { getSession } from 'next-auth/react';
 import { commonStyles } from '@/constants/styles';
@@ -190,7 +190,7 @@ const UploadComponent = () => {
                     <motion.div 
                       className="flex justify-center"
                       whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     >
                       <div className="p-4 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors duration-300">
                         <svg

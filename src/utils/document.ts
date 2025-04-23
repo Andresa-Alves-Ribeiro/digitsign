@@ -43,7 +43,7 @@ export const useDocumentActions = (onDocumentsChange?: (documents: Document[]) =
       if (onDocumentsChange) {
         const updatedResponse = await fetch('/api/documents');
         if (updatedResponse.ok) {
-          const updatedDocuments = await updatedResponse.json();
+          const updatedDocuments = await updatedResponse.json() as Document[];
           onDocumentsChange(updatedDocuments);
         }
       }
@@ -87,7 +87,7 @@ export async function getDocument(id: string): Promise<DocumentWithSignatures> {
       throw new Error('Document not found');
     }
 
-    return document as DocumentWithSignatures;
+    return document;
   } catch (error) {
     Logger.error('Failed to fetch document', error, { documentId: id });
     throw error;

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Loading from '../Loading';
+import Loading from '@/components/ui/Loading';
 
 describe('Loading Component', () => {
   it('renders with default text', () => {

@@ -57,7 +57,7 @@ export default async function handler(
 
     try {
       // Primeiro, vamos verificar se o arquivo existe no Cloudinary
-      const resource = await cloudinary.api.resource(document.fileKey, {
+      await cloudinary.api.resource(document.fileKey, {
         resource_type: 'raw',
         type: 'upload'
       });

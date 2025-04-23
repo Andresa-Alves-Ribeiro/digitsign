@@ -4,9 +4,8 @@ import { useSession, getSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { UserGroupIcon, DocumentTextIcon, ClockIcon } from '@heroicons/react/24/outline';
-import Loading from '@/components/Loading';
+import Loading from '@/components/ui/Loading';
 import ConfirmationDialog from '@/components/ConfirmationDialog';
-import DocumentCards from '@/components/documents/DocumentCards';
 import DocumentTable from '@/components/documents/DocumentTable';
 import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
@@ -70,7 +69,7 @@ export default function DocumentsPage() {
     if (status === 'authenticated') {
       fetchDocuments();
     }
-  }, [status]);
+  }, [status, calculateStats]);
 
   if (status === 'loading' || loading) {
     return (
@@ -98,10 +97,10 @@ export default function DocumentsPage() {
           </motion.div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
             <StatCard
               title="Total de Documentos"
-              value={documents.length}
+              value={stats.totalDocuments}
               icon={DocumentTextIcon}
               iconColor="text-blue-500"
               valueColor="text-blue-600"
@@ -117,29 +116,18 @@ export default function DocumentsPage() {
               title="Documentos Assinados"
               value={stats.signedDocuments}
               icon={UserGroupIcon}
-              iconColor="text-purple-500"
-              valueColor="text-purple-600"
+              iconColor="text-green-500"
+              valueColor="text-green-600" 
             />
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4">
-            <div className="px-6 py-4 border-b border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900">Documentos Recentes</h2>
-            </div>
-
-            <div className="p-6">
-              <DocumentCards
-                documents={documents}
-                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
-                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
-              />
-
-              <DocumentTable
-                documents={documents}
-                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
-                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
-              />
-            </div>
+          {/* Document List */}
+          <div className="bg-white rounded-lg shadow">
+            <DocumentTable
+              documents={documents}
+              onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
+              onSign={(docId) => router.push(`/documents/${docId}/sign`)}
+            />
           </div>
         </div>
 
@@ -190,8 +178,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
-      session,
-    },
+    props: { session },
   };
 }; 

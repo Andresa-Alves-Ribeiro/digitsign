@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import AuthGuard from '../AuthGuard';
 
@@ -20,39 +20,53 @@ describe('AuthGuard Component', () => {
     jest.clearAllMocks();
   });
 
-  it('shows loading state when status is loading', () => {
-    ;(useSession as jest.Mock).mockReturnValue({
-      data: null,
-      status: 'loading'
+  it('should render children when session exists', async () => {
+    (useSession as jest.Mock).mockReturnValue({
+      data: { user: { id: '1', email: 'test@example.com' } },
+      status: 'authenticated'
     });
 
-    render(<AuthGuard>{mockChildren}</AuthGuard>);
-    expect(mockPush).not.toHaveBeenCalled();
+    render(
+      <AuthGuard>
+        <div>Protected Content</div>
+      </AuthGuard>
+    );
+
+    expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
 
-  it('shows children when status is unauthenticated', () => {
-    ;(useSession as jest.Mock).mockReturnValue({
+  it('should redirect to login when no session exists', async () => {
+    (useSession as jest.Mock).mockReturnValue({
       data: null,
       status: 'unauthenticated'
     });
 
-    render(<AuthGuard>{mockChildren}</AuthGuard>);
+    render(
+      <AuthGuard>
+        <div>Protected Content</div>
+      </AuthGuard>
+    );
+
     expect(mockPush).toHaveBeenCalledWith('/login');
   });
 
-  it('shows children when status is authenticated', () => {
-    ;(useSession as jest.Mock).mockReturnValue({
-      data: { user: { email: 'test@test.com' } },
-      status: 'authenticated'
+  it('should handle loading state', () => {
+    (useSession as jest.Mock).mockReturnValue({
+      data: null,
+      status: 'loading'
     });
 
-    const { container } = render(<AuthGuard>{mockChildren}</AuthGuard>);
-    expect(container.firstChild).not.toBeNull();
-    expect(mockPush).not.toHaveBeenCalled();
+    render(
+      <AuthGuard>
+        <div>Protected Content</div>
+      </AuthGuard>
+    );
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('returns null when status is not one of the expected states', () => {
-    ;(useSession as jest.Mock).mockReturnValue({
+    (useSession as jest.Mock).mockReturnValue({
       data: null,
       status: 'unknown'
     });

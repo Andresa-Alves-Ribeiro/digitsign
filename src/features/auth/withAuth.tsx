@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Loading from '@/components/Loading';
+import Loading from '@/components/ui/Loading';
 
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   return function WithAuthComponent(props: P) {

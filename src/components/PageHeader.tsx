@@ -1,13 +1,11 @@
 import NewDocumentButton from '@/components/NewDocumentButton';
-import { Session } from 'next-auth';
 
 interface PageHeaderProps {
-  session?: Session | null;
   title: string;
   description: string;
 }
 
-export default function PageHeader({ session, title, description }: PageHeaderProps) {
+export default function PageHeader({ title, description }: PageHeaderProps): JSX.Element {
   return (
     <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 p-6 md:p-8 rounded-2xl shadow-md border border-green-100 transition-all duration-300 hover:shadow-lg">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">

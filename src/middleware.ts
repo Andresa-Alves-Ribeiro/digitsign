@@ -19,9 +19,7 @@ export function middleware(request: NextRequest) {
   
   // Se não estiver autenticado e não for uma página pública, redireciona para a página de login
   if (!sessionToken && !secureSessionToken && !isPublicPage) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', request.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/login', request.url));
   }
   
   return NextResponse.next();

@@ -3,9 +3,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSession, getSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { UserGroupIcon, DocumentTextIcon, ClockIcon } from '@heroicons/react/24/outline';
+import {
+  UserGroupIcon,
+  DocumentTextIcon,
+  ClockIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  ArrowPathIcon
+} from '@heroicons/react/24/outline';
 import Loading from '@/components/ui/Loading';
-import ConfirmationDialog from '@/components/ConfirmationDialog';
+import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
 import DocumentTable from '@/components/documents/DocumentTable';
 import { Document } from '@/types/interfaces';
 import { GetServerSideProps } from 'next';
@@ -19,8 +26,12 @@ export default function DocumentsPage() {
   const router = useRouter();
   const { status } = useSession();
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; docId: string | null }>({
     show: false,
     docId: null
@@ -46,30 +57,49 @@ export default function DocumentsPage() {
     });
   }, []);
 
-  useEffect(() => {
-    const fetchDocuments = async (): Promise<void> => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/documents');
+  const fetchDocuments = useCallback(async (): Promise<void> => {
+    try {
+      setIsRefreshing(true);
+      const response = await fetch('/api/documents');
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch documents');
-        }
-
-        const data = await response.json() as Document[];
-        setDocuments(data);
-        calculateStats(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to fetch documents');
       }
-    };
 
+      const data = await response.json() as Document[];
+      setDocuments(data);
+      calculateStats(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsRefreshing(false);
+      setLoading(false);
+    }
+  }, [calculateStats]);
+
+  useEffect(() => {
     if (status === 'authenticated') {
       fetchDocuments();
     }
-  }, [status, calculateStats]);
+  }, [status, fetchDocuments]);
+
+  useEffect(() => {
+    let filtered = [...documents];
+
+    if (searchTerm) {
+      filtered = filtered.filter(doc =>
+        doc.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(doc =>
+        doc.status.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
+
+    setFilteredDocuments(filtered);
+  }, [documents, searchTerm, statusFilter]);
 
   if (status === 'loading' || loading) {
     return (
@@ -85,25 +115,39 @@ export default function DocumentsPage() {
 
   if (status === 'authenticated') {
     return (
-      <div className="h-full bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <PageHeader title="Seus Documentos" description="Gerencie seus documentos aqui" />
+            <PageHeader
+              title="Seus Documentos"
+              description={
+                <div className="flex flex-col gap-1">
+                  <span>Gerencie seus documentos, assine pendentes e acompanhe o status de cada um.</span>
+                </div>
+              }
+              showNewDocumentButton={true}
+            />
           </motion.div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+          <motion.div
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <StatCard
               title="Total de Documentos"
               value={stats.totalDocuments}
               icon={DocumentTextIcon}
               iconColor="text-blue-500"
               valueColor="text-blue-600"
+              isActionCard={false}
             />
             <StatCard
               title="Documentos Pendentes"
@@ -111,24 +155,96 @@ export default function DocumentsPage() {
               icon={ClockIcon}
               iconColor="text-yellow-500"
               valueColor="text-yellow-600"
+              isActionCard={false}
             />
             <StatCard
               title="Documentos Assinados"
               value={stats.signedDocuments}
               icon={UserGroupIcon}
               iconColor="text-green-500"
-              valueColor="text-green-600" 
+              valueColor="text-green-600"
+              isActionCard={false}
             />
-          </div>
+          </motion.div>
+
+          <motion.div
+            className="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className="relative w-full md:w-96">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                placeholder="Buscar documentos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FunnelIcon className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="all">Todos os status</option>
+                  <option value="pending">Pendentes</option>
+                  <option value="signed">Assinados</option>
+                </select>
+              </div>
+
+              <motion.button
+                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => fetchDocuments()}
+                disabled={isRefreshing}
+              >
+                <ArrowPathIcon className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </motion.button>
+            </div>
+          </motion.div>
 
           {/* Document List */}
-          <div className="bg-white rounded-lg shadow">
-            <DocumentTable
-              documents={documents}
-              onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
-              onSign={(docId) => router.push(`/documents/${docId}/sign`)}
-            />
-          </div>
+          <motion.div
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            {filteredDocuments.length > 0 ? (
+              <DocumentTable
+                documents={filteredDocuments}
+                onDelete={(docId) => setDeleteConfirmation({ show: true, docId })}
+                onSign={(docId) => router.push(`/documents/${docId}/sign`)}
+              />
+            ) : (
+              <div className="p-8 text-center">
+                <DocumentTextIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum documento encontrado</h3>
+                <p className="text-gray-500 mb-4">
+                  {searchTerm || statusFilter !== 'all'
+                    ? 'Tente ajustar seus filtros de busca'
+                    : 'Você ainda não possui documentos. Crie um novo documento para começar.'}
+                </p>
+                <button
+                  onClick={() => router.push('/documents/new')}
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  Criar novo documento
+                </button>
+              </div>
+            )}
+          </motion.div>
         </div>
 
         <ConfirmationDialog

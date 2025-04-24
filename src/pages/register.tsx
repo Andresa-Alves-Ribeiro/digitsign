@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
-import FormField from '@/components/FormField';
-import { Button } from '@/components/Button';
+import FormField from '@/components/ui/FormField';
+import Button from '@/components/ui/Button';
 import { AuthBackground } from '@/components/AuthBackground';
-import { PageTransition } from '@/components/PageTransition';
+import { PageTransition } from '@/components/ui/PageTransition';
 
 const registerSchema = z.object({
   name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres'),

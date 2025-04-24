@@ -1,10 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import withAuth from '../../../features/auth/withAuth';
 import SignaturePad from '../../../components/signature/SignaturePad';
-import { motion } from 'framer-motion';
+import SignDocumentHeader from '../../../components/documents/SignDocumentHeader';
+import ErrorMessage from '../../../components/documents/ErrorMessage';
+import LoadingSpinner from '../../../components/documents/LoadingSpinner';
+import DocumentContainer from '../../../components/documents/DocumentContainer';
+import Button from '@/components/ui/Button';
+import { TrashIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
+import { TOAST_CONFIG } from '@/constants/toast';
+import DocumentStatusCheck from '../../../components/documents/DocumentStatusCheck';
+import CloudinaryCheck from '../../../components/documents/CloudinaryCheck';
+import CloudinaryDocumentCheck from '../../../components/documents/CloudinaryDocumentCheck';
 
 interface ApiResponse {
   error?: string;
@@ -16,22 +26,24 @@ function SignDocumentPage() {
   const params = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-    
-  if (!params?.id) {
-    return <div>Documento não encontrado</div>;
-  }
+  const [isSaving, setIsSaving] = useState(false);
+  const documentId = params?.id as string;
 
-  const documentId = params.id as string;
+  const handleClear = useCallback((): void => {
+    // @ts-expect-error - Accessing window.signaturePadMethods
+    const signaturePad = window.signaturePadMethods as { clear?: () => void } | undefined;
+    if (signaturePad?.clear) {
+      try {
+        signaturePad.clear();
+      } catch (error) {
+        console.error('Error clearing signature pad:', error);
+      }
+    }
+  }, []);
 
-  const handleSaveSignature = async (signatureData: string): Promise<void> => {
+  const handleSaveSignature = useCallback(async (signatureData: string): Promise<void> => {
     if (!signatureData || signatureData.trim() === '') {
       setError('Por favor, desenhe sua assinatura antes de salvar.');
-      return;
-    }
-
-    if (!signatureData.startsWith('data:image/png;base64,')) {
-      console.error('Invalid signature format:', signatureData.substring(0, 50) + '...');
-      setError('Formato de assinatura inválido. Tente novamente.');
       return;
     }
 
@@ -39,7 +51,7 @@ function SignDocumentPage() {
     setError(null);
     try {
       const requestBody = {
-        signatureData: signatureData,
+        signatureImage: signatureData,
       };
 
       const response = await fetch(`/api/documents/${documentId}/sign`, {
@@ -63,144 +75,94 @@ function SignDocumentPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [documentId, router, setError, setIsSubmitting]);
 
-  if (isSubmitting) {
-    return <div>Processing signature...</div>;
+  const handleSave = useCallback(async (): Promise<void> => {
+    // @ts-expect-error - Accessing window.signaturePadMethods
+    const signaturePad = window.signaturePadMethods as { 
+      isEmpty?: () => boolean;
+      toDataURL?: () => string;
+    } | undefined;
+    
+    if (!signaturePad?.isEmpty || signaturePad.isEmpty()) {
+      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG);
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      if (!signaturePad.toDataURL) {
+        throw new Error('Método toDataURL não disponível');
+      }
+      const signature = signaturePad.toDataURL();
+      await handleSaveSignature(signature);
+      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG);
+    } catch (error) {
+      console.error('Error saving signature:', error);
+      toast.error('Erro ao salvar assinatura', TOAST_CONFIG);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [handleSaveSignature, setIsSaving]);
+
+  if (!params?.id) {
+    return <div>Documento não encontrado</div>;
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-4 sm:py-6 lg:py-8">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-xl shadow-lg">
-            <div className="px-4 py-5 sm:p-6 lg:p-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-blue-50 p-2.5 sm:p-3 rounded-lg">
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Assinar Documento</h1>
-                      <div className="flex flex-wrap items-center gap-2 mt-1">
-                        <span className="text-sm text-gray-500">ID do Documento:</span>
-                        <span className="text-sm font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-md break-all">{documentId}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => router.back()}
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                                        Voltar
-                  </button>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200">
-                  <div className="max-w-2xl mx-auto">
-                    <SignaturePad
-                      onSave={handleSaveSignature}
-                      onCancel={() => router.back()}
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm text-red-700 break-words">{error}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  if (isSubmitting) {
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-4 sm:py-6 lg:py-8">
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-lg">
-          <div className="px-4 py-5 sm:p-6 lg:p-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="w-full"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-blue-50 p-2.5 sm:p-3 rounded-lg">
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Assinar Documento</h1>
-                    <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-500">ID do Documento:</span>
-                      <span className="text-sm font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-md break-all">{documentId}</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => router.back()}
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    <CloudinaryCheck>
+      <DocumentStatusCheck documentId={documentId}>
+        <CloudinaryDocumentCheck documentId={documentId}>
+          <DocumentContainer>
+            <SignDocumentHeader documentId={documentId} onBack={() => router.back()} />
+
+            <div>
+              <SignaturePad
+                onSave={handleSaveSignature}
+                onCancel={() => router.back()}
+              />
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  variant="clear"
+                  onClick={handleClear}
+                  disabled={isSaving}
+                  className="flex items-center justify-center"
                 >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                                    Voltar
-                </button>
+                  <TrashIcon className="w-5 h-5 mr-2" />
+                  Limpar
+                </Button>
+                <Button
+                  variant="cancel"
+                  onClick={() => router.back()}
+                  disabled={isSaving}
+                  className="flex items-center justify-center"
+                >
+                  <XMarkIcon className="w-5 h-5 mr-2" />
+                  Cancelar
+                </Button>
+                <Button
+                  variant="save"
+                  onClick={handleSave}
+                  isLoading={isSaving}
+                  disabled={isSaving}
+                  className="flex items-center justify-center"
+                >
+                  {!isSaving && <CheckIcon className="w-5 h-5 mr-2" />}
+                  {isSaving ? 'Salvando...' : 'Salvar'}
+                </Button>
               </div>
+            </div>
 
-              <div className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200">
-                <div className="max-w-2xl mx-auto">
-                  <SignaturePad
-                    onSave={handleSaveSignature}
-                    onCancel={() => router.back()}
-                  />
-                </div>
-              </div>
-
-              {error && (
-                <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm text-red-700 break-words">{error}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </div>
+            {error && <ErrorMessage message={error} />}
+          </DocumentContainer>
+        </CloudinaryDocumentCheck>
+      </DocumentStatusCheck>
+    </CloudinaryCheck>
   );
 }
 

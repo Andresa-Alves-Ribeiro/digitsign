@@ -26,7 +26,7 @@ const StatCard: FC<StatCardProps> = ({
   icon: Icon,
   iconColor,
   valueColor = 'text-gray-900',
-  percentageColor = 'text-green-500',
+  percentageColor = 'text-primary',
   description,
   buttonColor = 'bg-blue-600',
   buttonHoverColor = 'hover:bg-blue-700',
@@ -39,6 +39,7 @@ const StatCard: FC<StatCardProps> = ({
   const CardWrapper = isActionCard ? motion.div : 'div';
   const wrapperProps = isActionCard ? {
     whileHover: { scale: 1.02 },
+    whileTap: { scale: 0.98 },
     className: 'bg-white overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 h-full'
   } : {
     className: 'bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full'
@@ -49,39 +50,65 @@ const StatCard: FC<StatCardProps> = ({
       <div className={`${isActionCard ? 'p-6' : ''} flex flex-col h-full`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-          <div className={`p-2 rounded-full ${iconColor.replace('text-', 'bg-').replace('-500', '-100')}`}>
+          <motion.div 
+            className={`p-2 rounded-full ${iconColor.replace('text-', 'bg-').replace('-500', '-100')}`}
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.5 }}
+          >
             <Icon className={`w-6 h-6 ${iconColor}`} />
-          </div>
+          </motion.div>
         </div>
 
         <div className="flex-grow">
           <div className="flex items-baseline gap-2">
-            <p className={`text-4xl font-bold ${valueColor}`}>{value}</p>
+            <motion.p 
+              className={`text-4xl font-bold ${valueColor}`}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {value}
+            </motion.p>
             {percentage > 0 && (
-              <span className={`text-sm ${percentageColor} flex items-center`}>
+              <motion.span 
+                className={`text-sm ${percentageColor} flex items-center`}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
                 {percentage > 0 ? (
                   <ArrowUpIcon className="w-4 h-4 mr-1" />
                 ) : (
                   <ArrowDownIcon className="w-4 h-4 mr-1" />
                 )}
                 {Math.abs(percentage)}%
-              </span>
+              </motion.span>
             )}
           </div>
         </div>
 
-        {href && buttonText && (
+        {buttonText && href && (
           <div className="mt-auto pt-6">
             {description && (
-              <p className="text-sm text-gray-500 mb-2">{description}</p>
+              <motion.p 
+                className="text-sm text-gray-500 mb-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {description}
+              </motion.p>
             )}
 
-            <Link
-              href={href}
-              className={`inline-flex items-center justify-center w-fit px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white ${buttonColor} ${buttonHoverColor} transition-colors duration-200`}
-            >
-              <Icon className="w-4 h-4 mr-2" />
-              {buttonText}
+            <Link href={href}>
+              <motion.div
+                className={`inline-flex items-center justify-center w-fit px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white ${buttonColor} ${buttonHoverColor} transition-colors duration-200`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                {buttonText}
+              </motion.div>
             </Link>
           </div>
         )}

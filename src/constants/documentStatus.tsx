@@ -19,7 +19,7 @@ export const documentStatusConfig: Record<DocumentStatus, StatusConfig> = {
   },
   [DocumentStatus.SIGNED]: {
     label: 'Assinado',
-    color: 'text-green-700 bg-green-100 border border-green-200',
+    color: 'text-primary bg-primary-light border border-primary',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

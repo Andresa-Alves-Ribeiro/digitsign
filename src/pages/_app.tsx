@@ -2,7 +2,7 @@ import '@/styles/globals.css';
 import { Toaster } from 'react-hot-toast';
 import { SessionProvider } from 'next-auth/react';
 import { Poppins } from 'next/font/google';
-import DashboardLayout from '@/layouts/DashboardLayout';
+import DashboardShell from '@/layouts/DashboardShell';
 import Head from 'next/head';
 import { Session } from 'next-auth';
 import { ComponentType } from 'react';
@@ -86,9 +86,9 @@ export default function App({
           {isAuth || isError ? (
             <Component {...restPageProps} key={appRouter.pathname} />
           ) : (
-            <DashboardLayout activePage={activePage}>
+            <DashboardShell activePage={activePage}>
               <Component {...restPageProps} />
-            </DashboardLayout>
+            </DashboardShell>
           )}
         </AnimatePresence>
       </div>

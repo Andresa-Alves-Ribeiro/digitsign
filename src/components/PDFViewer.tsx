@@ -30,15 +30,26 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const retryCount = useRef(0);
   const maxRetries = 3;
+  const [_scale, _setScale] = useState(1);
 
   const fetchPdfUrl = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        credentials: 'include', // Include cookies for authentication
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch PDF URL');
+        const errorData = await response.json().catch(() => ({})) as Record<string, unknown>;
+        const errorMessage = typeof errorData === 'object' && errorData !== null && 'error' in errorData 
+          ? String(errorData.error) 
+          : `Failed to fetch PDF URL: ${response.status}`;
+        throw new Error(errorMessage);
       }
       
       const data = await response.json() as ApiResponse;
@@ -46,17 +57,22 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
         throw new Error(data.error);
       }
       
+      if (!data.url) {
+        throw new Error('No PDF URL received from server');
+      }
+      
       setPdfUrl(data.url);
       retryCount.current = 0; // Reset retry count on success
     } catch (err) {
       console.error('Error fetching PDF URL:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load PDF';
       if (retryCount.current < maxRetries) {
         retryCount.current += 1;
         setTimeout(() => {
           fetchPdfUrl();
         }, 1000 * retryCount.current); // Exponential backoff
       } else {
-        setError(err instanceof Error ? err.message : 'Failed to load PDF');
+        setError(errorMessage);
       }
     } finally {
       setIsLoading(false);

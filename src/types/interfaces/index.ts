@@ -69,7 +69,8 @@ export interface HeaderProps {
   user?: User;
 }
 
-export interface DashboardLayoutProps {
+export interface DashboardShellProps {
+  activePage?: 'dashboard' | 'upload' | 'pending' | 'signed' | 'documents';
   children: React.ReactNode;
 }
 
@@ -194,4 +195,5 @@ export * from './signature';
 export * from './auth';
 export * from './components';
 export * from './dashboard';
-export * from './api'; 
+export * from './api';
+export * from './cloudinary'; 

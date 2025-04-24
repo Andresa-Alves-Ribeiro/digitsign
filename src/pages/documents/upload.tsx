@@ -5,16 +5,37 @@ import UploadComponent from '@/features/upload/UploadComponent';
 import PageHeader from '@/components/PageHeader';
 import { motion } from 'framer-motion';
 import { MAX_FILE_SIZE_MB } from '@/constants/app';
+import { ArrowLeftIcon, DocumentArrowUpIcon, ShieldCheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 function UploadPage() {
   return (
-    <div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-y-hidden">
-        <PageHeader 
-          title="Upload de Documentos" 
-          description="Faça o upload do seu documento para assinar de forma segura e rápida" 
-        />
-        
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <div className="flex items-center mb-4">
+            <Link href="/documents" className="flex items-center text-gray-600 hover:text-green-600 transition-colors duration-200">
+              <ArrowLeftIcon className="h-5 w-5 mr-1" />
+              <span className="text-sm font-medium">Voltar para documentos</span>
+            </Link>
+          </div>
+
+          <PageHeader
+            title="Upload de Documentos"
+            description={
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-gray-500">Faça o upload do seu documento para assinar de forma segura e rápida</span>
+              </div>
+            }
+            showNewDocumentButton={false}
+          />
+        </motion.div>
+
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <motion.div
@@ -31,10 +52,11 @@ function UploadPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm p-6 space-y-6"
+              className="bg-white rounded-xl shadow-sm p-6 space-y-6 border border-gray-100"
             >
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <ShieldCheckIcon className="h-5 w-5 text-green-500 mr-2" />
                   Requisitos do Documento
                 </h3>
                 <ul className="space-y-3 text-sm text-gray-600">
@@ -60,7 +82,8 @@ function UploadPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <DocumentArrowUpIcon className="h-5 w-5 text-blue-500 mr-2" />
                   Dicas Importantes
                 </h3>
                 <ul className="space-y-3 text-sm text-gray-600">
@@ -76,16 +99,53 @@ function UploadPage() {
                     </svg>
                     Certifique-se que a página está corretamente visível
                   </li>
+                  <li className="flex items-start">
+                    <svg className="h-5 w-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Para documentos grandes, considere dividir em partes menores
+                  </li>
                 </ul>
               </div>
 
-              <div className="bg-green-50 rounded-lg p-4">
-                <h4 className="text-sm font-medium text-green-800 mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <ClockIcon className="h-5 w-5 text-amber-500 mr-2" />
+                  Processo de Upload
+                </h3>
+                <div className="relative">
+                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  <div className="space-y-4">
+                    <div className="relative pl-8">
+                      <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-green-500"></div>
+                      <p className="text-sm text-gray-600">Selecione o arquivo PDF</p>
+                    </div>
+                    <div className="relative pl-8">
+                      <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-green-500"></div>
+                      <p className="text-sm text-gray-600">Clique em &quot;Enviar Documento&quot;</p>
+                    </div>
+                    <div className="relative pl-8">
+                      <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-green-500"></div>
+                      <p className="text-sm text-gray-600">Aguarde o processamento</p>
+                    </div>
+                    <div className="relative pl-8">
+                      <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-green-500"></div>
+                      <p className="text-sm text-gray-600">Documento pronto para assinatura</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                <h4 className="text-sm font-medium text-green-800 mb-2 flex items-center">
+                  <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                   Precisa de ajuda?
                 </h4>
                 <p className="text-sm text-green-600">
                   Se você encontrar algum problema durante o upload, você pode entrar em contato através do nosso email de suporte:{' '}
-                  <a 
+                  <a
                     href="mailto:andresa_15ga@hotmail.com"
                     className="text-green-700 hover:text-green-800 underline transition-colors duration-200"
                   >

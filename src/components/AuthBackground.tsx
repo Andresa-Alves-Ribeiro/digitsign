@@ -13,6 +13,7 @@ export const AuthBackground: FC = (): JSX.Element => {
         className="object-cover opacity-50"
         priority
       />
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-800 opacity-70"></div>
     </div>
   );
 }; 

@@ -116,7 +116,7 @@ const UploadComponent = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-4xl"
       >
-        <div className="bg-white rounded-2xl shadow-md p-6 sm:p-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}

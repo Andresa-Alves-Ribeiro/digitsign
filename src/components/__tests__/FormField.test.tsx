@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useForm, UseFormRegister } from 'react-hook-form';
-import FormField from '../FormField';
+import FormField from '../ui/FormField';
 
 interface TestFormData extends Record<string, unknown> {
   testField: string;

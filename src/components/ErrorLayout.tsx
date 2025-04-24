@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 interface ErrorLayoutProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps): JSX.Element {
       
       {/* Animated Blobs */}
       <motion.div
-        className="absolute top-0 -left-4 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
+        className="absolute top-0 -left-4 w-72 h-72 bg-primary rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, 90, 0],
@@ -25,7 +25,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps): JSX.Element {
         }}
       />
       <motion.div
-        className="absolute top-0 -right-4 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
+        className="absolute top-0 -right-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
         animate={{
           scale: [1.2, 1, 1.2],
           rotate: [90, 0, 90],
@@ -37,7 +37,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps): JSX.Element {
         }}
       />
       <motion.div
-        className="absolute -bottom-8 left-20 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
+        className="absolute -bottom-8 left-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, -90, 0],

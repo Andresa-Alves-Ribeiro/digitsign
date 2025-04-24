@@ -1,83 +1,82 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
-import toast from 'react-hot-toast';
-import { TOAST_CONFIG } from '@/constants/toast';
+import { motion } from 'framer-motion';
+import { SignaturePadProps } from '@/types/interfaces/signature';
 
-interface SignaturePadProps {
-  onSave: (signature: string) => Promise<void>;
-  onCancel: () => void;
-}
-
-const SignaturePad = ({ onSave, onCancel }: SignaturePadProps) => {
+const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProps) => {
   const signaturePadRef = useRef<SignatureCanvas>(null);
-  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = async (): Promise<void> => {
-    if (!signaturePadRef.current || signaturePadRef.current.isEmpty()) {
-      toast.error('Por favor, desenhe uma assinatura antes de salvar', TOAST_CONFIG);
-      return;
+  const clear = useCallback(() => {
+    if (signaturePadRef.current) {
+      try {
+        signaturePadRef.current.clear();
+        const canvas = signaturePadRef.current.getCanvas();
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+      } catch (error) {
+        console.error('Error clearing signature pad from component:', error);
+      }
     }
+  }, []);
 
+  const isEmpty = useCallback(() => {
     try {
-      setIsSaving(true);
-      const signature = signaturePadRef.current.toDataURL();
-      await onSave(signature);
-      toast.success('Assinatura salva com sucesso!', TOAST_CONFIG);
-    } catch {
-      toast.error('Erro ao salvar assinatura', TOAST_CONFIG);
-    } finally {
-      setIsSaving(false);
+      return signaturePadRef.current?.isEmpty() ?? true;
+    } catch (error) {
+      console.error('Error checking if signature pad is empty:', error);
+      return true;
     }
-  };
+  }, []);
 
-  const handleClear = (): void => {
-    signaturePadRef.current?.clear();
-  };
+  const toDataURL = useCallback(() => {
+    try {
+      return signaturePadRef.current?.toDataURL() ?? '';
+    } catch (error) {
+      console.error('Error getting signature data URL:', error);
+      return '';
+    }
+  }, []);
+
+  useEffect(() => {
+    clear();
+  }, [clear]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // @ts-expect-error - Adding methods to window object for external access
+      window.signaturePadMethods = {
+        clear,
+        isEmpty,
+        toDataURL
+      };
+    }
+  }, [clear, isEmpty, toDataURL]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-2">Assinatura Digital</h2>
-      <p className="text-gray-600 mb-4">Use o campo abaixo para desenhar sua assinatura</p>
-      
-      <div className="w-full border border-gray-300 rounded-lg mb-4">
+    <motion.div 
+      className="flex flex-col w-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="w-full border border-gray-200 rounded-lg mb-6 overflow-hidden bg-neutral-50">
         <SignatureCanvas
           ref={signaturePadRef}
           canvasProps={{
-            className: 'w-full h-40',
+            className: 'w-full h-48 md:h-56',
             'aria-label': 'Área para assinatura'
           }}
+          backgroundColor="rgb(250, 250, 250)"
+          clearOnResize={true}
         />
       </div>
-
-      <div className="flex gap-4">
-        <button
-          type="button"
-          onClick={handleClear}
-          disabled={isSaving}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Limpar
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isSaving}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Cancelar
-        </button>
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={isSaving}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSaving ? 'Salvando...' : 'Salvar'}
-        </button>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 

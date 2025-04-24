@@ -1,5 +1,4 @@
 import { createMocks } from 'node-mocks-http';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import handler from '../auth';

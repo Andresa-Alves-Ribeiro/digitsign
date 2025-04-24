@@ -17,6 +17,7 @@ interface CloudinaryResource {
   public_id: string;
   resource_type: string;
   type: string;
+  secure_url: string;
 }
 
 interface SignatureDimensions {
@@ -121,7 +122,6 @@ export default async function handler(
           type: 'upload'
         });
       } catch (cloudinaryError) {
-        console.error('Cloudinary error:', cloudinaryError);
         return res.status(404).json({ 
           error: 'Arquivo não encontrado no Cloudinary. Por favor, tente fazer upload do documento novamente.' 
         });
@@ -134,8 +134,6 @@ export default async function handler(
         secure: true
       });
       
-      console.log('Attempting to download PDF from Cloudinary URL:', cloudinaryUrl);
-      
       try {
         // Use a more reliable method to download the PDF
         const pdfResponse = await fetch(cloudinaryUrl, {
@@ -147,26 +145,18 @@ export default async function handler(
         });
         
         if (!pdfResponse.ok) {
-          console.error('Failed to download PDF from Cloudinary:', {
-            status: pdfResponse.status,
-            statusText: pdfResponse.statusText,
-            url: cloudinaryUrl
-          });
-          
           // Try an alternative approach using Cloudinary's API
           try {
-            console.log('Trying alternative approach using Cloudinary API...');
             const result = await cloudinary.api.resource(document.fileKey, {
               resource_type: 'raw',
               type: 'upload'
-            });
+            }) as CloudinaryResource;
             
             if (!result || !result.secure_url) {
               throw new Error('No secure URL found in Cloudinary response');
             }
             
             const alternativeUrl = result.secure_url;
-            console.log('Using alternative URL:', alternativeUrl);
             
             const alternativeResponse = await fetch(alternativeUrl, {
               method: 'GET',
@@ -181,7 +171,6 @@ export default async function handler(
             }
             
             const pdfBytes = await alternativeResponse.arrayBuffer();
-            console.log('Successfully downloaded PDF using alternative method, size:', pdfBytes.byteLength);
             
             let pdfDoc: PDFDocument;
             try {
@@ -189,9 +178,7 @@ export default async function handler(
               if (!pdfDoc) {
                 throw new Error('Failed to load PDF document');
               }
-              console.log('Successfully loaded PDF document');
             } catch (loadError) {
-              console.error('Error loading PDF document:', loadError);
               return res.status(500).json({ 
                 error: 'Falha ao carregar o documento PDF. O arquivo pode estar corrompido.' 
               });
@@ -254,206 +241,60 @@ export default async function handler(
               throw new Error('Failed to save modified PDF');
             }
 
-            // Upload the modified PDF back to Cloudinary
-            await new Promise<CloudinaryResource>((resolve, reject) => {
-              const uploadStream = cloudinary.uploader.upload_stream(
+            // Upload the modified PDF to Cloudinary
+            try {
+              const uploadResult = await cloudinary.uploader.upload(
+                Buffer.from(modifiedPdfBytes).toString('base64'),
                 {
                   resource_type: 'raw',
                   public_id: document.fileKey,
-                  overwrite: true,
-                },
-                (error, result) => {
-                  if (error) reject(error);
-                  else resolve(result as CloudinaryResource);
+                  overwrite: true
                 }
-              );
+              ) as CloudinaryResource;
 
-              // Convert ArrayBuffer to Buffer and pipe to upload stream
-              const buffer = Buffer.from(modifiedPdfBytes);
-              uploadStream.end(buffer);
-            });
-
-            // Create signature record
-            await prisma.signature.create({
-              data: {
-                documentId: document.id,
-                userId: session.user.id,
-                signedAt: new Date(),
-                signatureImg: signatureImage
-              },
-            });
-
-            // Update document status to SIGNED
-            await prisma.document.update({
-              where: { id: document.id },
-              data: { status: 'SIGNED' }
-            });
-
-            // Get updated document with signatures
-            const updatedDocument = await prisma.document.findUnique({
-              where: { id: document.id }
-            });
-
-            if (!updatedDocument) {
-              throw new Error('Failed to fetch updated document');
-            }
-
-            const signatures = await prisma.signature.findMany({
-              where: { documentId: document.id }
-            });
-
-            return res.status(200).json({ 
-              document: {
-                ...updatedDocument,
-                signatures
+              if (!uploadResult || !uploadResult.secure_url) {
+                throw new Error('Failed to upload modified PDF to Cloudinary');
               }
-            });
-          } catch (alternativeError) {
-            console.error('Alternative download approach failed:', alternativeError);
-            return res.status(500).json({ 
-              error: `Falha ao baixar o PDF do Cloudinary (Status: ${pdfResponse.status}). Por favor, tente novamente.` 
-            });
-          }
-        }
-        
-        const pdfBytes = await pdfResponse.arrayBuffer();
-        console.log('Successfully downloaded PDF, size:', pdfBytes.byteLength);
-        
-        let pdfDoc: PDFDocument;
-        try {
-          pdfDoc = await PDFDocument.load(pdfBytes);
-          if (!pdfDoc) {
-            throw new Error('Failed to load PDF document');
-          }
-          console.log('Successfully loaded PDF document');
-        } catch (loadError) {
-          console.error('Error loading PDF document:', loadError);
-          return res.status(500).json({ 
-            error: 'Falha ao carregar o documento PDF. O arquivo pode estar corrompido.' 
-          });
-        }
 
-        // Convert base64 signature to image
-        const base64Data = signatureImage.split(',')[1];
-        if (!base64Data) {
-          throw new Error('Invalid signature image format');
-        }
-        const signatureBytes = Buffer.from(base64Data, 'base64');
+              // Create signature record
+              const signature = await prisma.signature.create({
+                data: {
+                  documentId: document.id,
+                  userId: session.user.id,
+                  signedAt: new Date()
+                }
+              });
 
-        // Embed the signature image
-        let signatureImageObj: PDFImage;
-        try {
-          const embeddedImage = await pdfDoc.embedPng(signatureBytes);
-          if (!embeddedImage) {
-            throw new Error('Failed to embed signature image');
-          }
-          signatureImageObj = embeddedImage;
-        } catch (_embedError) {
-          throw new Error('Failed to embed signature image');
-        }
-
-        const scaledImage = signatureImageObj.scale(0.5);
-        const signatureDims: SignatureDimensions = {
-          width: scaledImage.width,
-          height: scaledImage.height
-        };
-
-        // Add signature to the last page
-        const pages = pdfDoc.getPages();
-        if (!pages || pages.length === 0) {
-          throw new Error('PDF document has no pages');
-        }
-
-        const lastPage = pages[pages.length - 1];
-        const pageSize: PageSize = lastPage.getSize();
-
-        try {
-          lastPage.drawImage(signatureImageObj, {
-            x: pageSize.width - signatureDims.width - 50,
-            y: 50,
-            width: signatureDims.width,
-            height: signatureDims.height,
-          });
-        } catch (_drawError) {
-          throw new Error('Failed to draw signature on PDF');
-        }
-
-        // Save the modified PDF
-        let modifiedPdfBytes: Uint8Array;
-        try {
-          const savedBytes = await pdfDoc.save();
-          if (!savedBytes) {
-            throw new Error('Failed to save modified PDF');
-          }
-          modifiedPdfBytes = savedBytes;
-        } catch (_saveError) {
-          throw new Error('Failed to save modified PDF');
-        }
-
-        // Upload the modified PDF back to Cloudinary
-        await new Promise<CloudinaryResource>((resolve, reject) => {
-          const uploadStream = cloudinary.uploader.upload_stream(
-            {
-              resource_type: 'raw',
-              public_id: document.fileKey,
-              overwrite: true,
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result as CloudinaryResource);
+              return res.status(200).json({
+                document: {
+                  ...document,
+                  signatures: [signature]
+                }
+              });
+            } catch (uploadError) {
+              return res.status(500).json({
+                error: 'Falha ao fazer upload do documento assinado'
+              });
             }
-          );
-
-          // Convert ArrayBuffer to Buffer and pipe to upload stream
-          const buffer = Buffer.from(modifiedPdfBytes);
-          uploadStream.end(buffer);
-        });
-
-        // Create signature record
-        await prisma.signature.create({
-          data: {
-            documentId: document.id,
-            userId: session.user.id,
-            signedAt: new Date(),
-            signatureImg: signatureImage
-          },
-        });
-
-        // Update document status to SIGNED
-        await prisma.document.update({
-          where: { id: document.id },
-          data: { status: 'SIGNED' }
-        });
-
-        // Get updated document with signatures
-        const updatedDocument = await prisma.document.findUnique({
-          where: { id: document.id }
-        });
-
-        if (!updatedDocument) {
-          throw new Error('Failed to fetch updated document');
-        }
-
-        const signatures = await prisma.signature.findMany({
-          where: { documentId: document.id }
-        });
-
-        return res.status(200).json({ 
-          document: {
-            ...updatedDocument,
-            signatures
+          } catch (alternativeError) {
+            return res.status(500).json({
+              error: 'Falha ao processar o documento'
+            });
           }
+        }
+      } catch (downloadError) {
+        return res.status(500).json({
+          error: 'Falha ao baixar o documento'
         });
-      } catch (error) {
-        console.error('Error signing document:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
       }
-    } catch (error) {
-      console.error('Error signing document:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+    } catch (processError) {
+      return res.status(500).json({
+        error: 'Falha ao processar o documento'
+      });
     }
   } catch (error) {
-    console.error('Error signing document:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({
+      error: 'Erro interno do servidor'
+    });
   }
 } 

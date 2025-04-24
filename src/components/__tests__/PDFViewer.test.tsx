@@ -1,14 +1,23 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PDFViewer from '../PDFViewer';
 
+interface PDFDocumentProps {
+  children: React.ReactNode;
+  onLoadSuccess: (data: { numPages: number }) => void;
+}
+
+interface PDFPageProps {
+  pageNumber: number;
+}
+
 // Mock do react-pdf
 jest.mock('react-pdf', () => ({
-  Document: ({ children, onLoadSuccess }: any) => (
+  Document: ({ children, onLoadSuccess }: PDFDocumentProps) => (
     <div data-testid="pdf-document" onClick={() => onLoadSuccess({ numPages: 2 })}>
       {children}
     </div>
   ),
-  Page: ({ pageNumber }: any) => (
+  Page: ({ pageNumber }: PDFPageProps) => (
     <div data-testid={`pdf-page-${pageNumber}`}>Page {pageNumber}</div>
   ),
   pdfjs: {

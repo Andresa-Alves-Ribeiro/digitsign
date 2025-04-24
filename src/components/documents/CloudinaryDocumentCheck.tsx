@@ -9,6 +9,11 @@ interface CloudinaryDocumentCheckProps {
   children: React.ReactNode;
 }
 
+interface CloudinaryDocumentCheckResponse {
+  exists: boolean;
+  error?: string;
+}
+
 const CloudinaryDocumentCheck: React.FC<CloudinaryDocumentCheckProps> = ({ documentId, children }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +23,7 @@ const CloudinaryDocumentCheck: React.FC<CloudinaryDocumentCheckProps> = ({ docum
     const checkDocument = async () => {
       try {
         const response = await fetch(`/api/documents/${documentId}/cloudinary-check`);
-        const data = await response.json();
+        const data = await response.json() as CloudinaryDocumentCheckResponse;
 
         if (!response.ok) {
           toast.error(data.error || 'Erro ao verificar documento no Cloudinary', TOAST_CONFIG);

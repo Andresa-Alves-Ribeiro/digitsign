@@ -8,10 +8,11 @@ describe('PageHeader', () => {
   };
 
   it('should render title and description', () => {
-    render(<PageHeader {...defaultProps} />);
+    const { title, description } = defaultProps;
+    render(<PageHeader title={title} description={description} />);
 
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-    expect(screen.getByText('Test Description')).toBeInTheDocument();
+    expect(screen.getByText(title)).toBeInTheDocument();
+    expect(screen.getByText(description)).toBeInTheDocument();
   });
 
   it('should render with custom className', () => {
@@ -38,7 +39,7 @@ describe('PageHeader', () => {
     render(<PageHeader {...propsWithoutDescription} />);
 
     expect(screen.getByText('Test Title')).toBeInTheDocument();
-    expect(screen.queryByText('Test Description')).not.toBeInTheDocument();
+    expect(screen.queryByText(description)).not.toBeInTheDocument();
   });
 
   it('should render with custom title element', () => {

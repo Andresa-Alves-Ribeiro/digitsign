@@ -20,16 +20,17 @@ describe('ErrorDisplay', () => {
   });
 
   it('should call onRetry when retry button is clicked', () => {
-    render(<ErrorDisplay {...defaultProps} />);
+    const mockOnRetry = jest.fn();
+    render(<ErrorDisplay {...defaultProps} onRetry={mockOnRetry} />);
 
     const retryButton = screen.getByRole('button', { name: /tentar novamente/i });
     fireEvent.click(retryButton);
 
-    expect(defaultProps.onRetry).toHaveBeenCalledTimes(1);
+    expect(mockOnRetry).toHaveBeenCalledTimes(1);
   });
 
   it('should not show retry button when onRetry is not provided', () => {
-    const { onRetry, ...propsWithoutRetry } = defaultProps;
+    const { onRetry: _onRetry, ...propsWithoutRetry } = defaultProps;
     render(<ErrorDisplay {...propsWithoutRetry} />);
 
     expect(screen.queryByRole('button', { name: /tentar novamente/i })).not.toBeInTheDocument();

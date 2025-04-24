@@ -6,6 +6,21 @@ import handler from '../../documents/upload';
 import multer from 'multer';
 import formidable from 'formidable';
 import fs from 'fs/promises';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+interface MulterRequest extends NextApiRequest {
+  file?: {
+    buffer: Buffer;
+    originalname: string;
+    mimetype: string;
+    size: number;
+  };
+}
+
+interface CloudinaryResponse {
+  public_id: string;
+  secure_url: string;
+}
 
 // Mock do next-auth
 jest.mock('next-auth', () => ({
@@ -34,7 +49,7 @@ jest.mock('cloudinary', () => ({
 // Mock do multer
 jest.mock('multer', () => {
   return jest.fn(() => ({
-    single: () => (req: any, res: any, next: any) => {
+    single: () => (req: MulterRequest, res: NextApiResponse, next: (error?: Error) => void) => {
       req.file = {
         buffer: Buffer.from('test pdf content'),
         originalname: 'test.pdf',
@@ -102,7 +117,7 @@ describe('Upload API', () => {
       }
     };
 
-    const mockCloudinaryResponse = {
+    const mockCloudinaryResponse: CloudinaryResponse = {
       public_id: 'test-public-id',
       secure_url: 'https://test-url.com'
     };
@@ -166,7 +181,7 @@ describe('Upload API', () => {
 
     // Simular erro de validação do multer
     (multer as jest.Mock).mockImplementationOnce(() => ({
-      single: () => (req: any, res: any, next: any) => {
+      single: () => (req: MulterRequest, res: NextApiResponse, next: (error?: Error) => void) => {
         next(new Error('Tipo de arquivo não permitido. Apenas PDFs são aceitos.'));
       }
     }));
@@ -201,7 +216,7 @@ describe('Upload API', () => {
 
     // Simular ausência de arquivo
     (multer as jest.Mock).mockImplementationOnce(() => ({
-      single: () => (req: any, res: any, next: any) => {
+      single: () => (req: MulterRequest, res: NextApiResponse, next: (error?: Error) => void) => {
         next();
       }
     }));

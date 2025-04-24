@@ -5,10 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
-import FormField from '@/components/ui/FormField';
 import Button from '@/components/ui/Button';
+import FormField from '@/components/ui/FormField';
 import { AuthBackground } from '@/components/AuthBackground';
 import { PageTransition } from '@/components/ui/PageTransition';
+import { BackButton } from '@/components/ui/BackButton';
 
 const registerSchema = z.object({
   name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres'),
@@ -50,18 +51,24 @@ export default function Register() {
   return (
     <div className="min-h-screen flex overflow-hidden">
       <AuthBackground />
+      
       <PageTransition>
         <div className="w-full max-w-md bg-neutral-50 rounded-lg shadow-md p-10">
+          <div className="flex justify-between items-center mb-8">
+            <BackButton className="mb-4" />
+          </div>
+
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Criar uma conta</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Criar Conta</h1>
             <p className="mt-2 text-gray-600">Preencha os dados para se registrar</p>
           </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <FormField<RegisterFormData>
               label="Nome"
               name="name"
               type="text"
-              placeholder="Seu nome completo"
+              placeholder="Seu nome"
               error={errors.name?.message}
               register={register}
             />
@@ -96,10 +103,11 @@ export default function Register() {
               isLoading={isLoading}
               className="w-full"
             >
-              Criar conta
+              Registrar
             </Button>
           </form>
-          <p className="mt-4 text-center text-gray-600">
+
+          <p className="mt-4 text-center text-sm text-gray-600">
             Já tem uma conta?{' '}
             <Link href="/login" className="text-green-600 hover:text-green-700">
               Faça login

@@ -117,7 +117,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
       {/* Main content */}
       <div className="flex-1 lg:ml-64 min-h-screen flex flex-col bg-gray-50">
         {/* Header */}
-        <header className={`sticky top-0 z-50 transition-all duration-300 ${
+        <header className={`sticky top-0 z-60 transition-all duration-300 ${
           isScrolled
             ? 'bg-white/80 backdrop-blur-md shadow-md'
             : 'bg-white shadow-sm'

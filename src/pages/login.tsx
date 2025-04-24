@@ -9,6 +9,7 @@ import FormField from '@/components/ui/FormField';
 import Button from '@/components/ui/Button';
 import { AuthBackground } from '@/components/AuthBackground';
 import { PageTransition } from '@/components/ui/PageTransition';
+import { BackButton } from '@/components/ui/BackButton';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -48,6 +49,10 @@ export default function Login() {
       
       <PageTransition>
         <div className="w-full max-w-md bg-neutral-50 rounded-lg shadow-md p-10">
+          <div className="flex justify-between items-center mb-8">
+            <BackButton className="mb-4" />
+          </div>
+
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Bem-vindo de volta!</h1>
             <p className="mt-2 text-gray-600">Faça login para continuar</p>
@@ -81,7 +86,7 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-gray-600">
+          <p className="mt-4 text-center text-sm text-gray-600">
             Não tem uma conta?{' '}
             <Link href="/register" className="text-green-600 hover:text-green-700">
               Registre-se

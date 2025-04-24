@@ -283,6 +283,12 @@ export default async function handler(
               },
             });
 
+            // Update document status to SIGNED
+            await prisma.document.update({
+              where: { id: document.id },
+              data: { status: 'SIGNED' }
+            });
+
             // Get updated document with signatures
             const updatedDocument = await prisma.document.findUnique({
               where: { id: document.id }
@@ -411,6 +417,12 @@ export default async function handler(
             signedAt: new Date(),
             signatureImg: signatureImage
           },
+        });
+
+        // Update document status to SIGNED
+        await prisma.document.update({
+          where: { id: document.id },
+          data: { status: 'SIGNED' }
         });
 
         // Get updated document with signatures

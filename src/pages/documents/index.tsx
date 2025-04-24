@@ -125,11 +125,7 @@ export default function DocumentsPage() {
           >
             <PageHeader
               title="Seus Documentos"
-              description={
-                <div className="flex flex-col gap-1">
-                  <span>Gerencie seus documentos, assine pendentes e acompanhe o status de cada um.</span>
-                </div>
-              }
+              description="Gerencie seus documentos, assine pendentes e acompanhe o status de cada um."
               showNewDocumentButton={true}
             />
           </motion.div>
@@ -236,12 +232,6 @@ export default function DocumentsPage() {
                     ? 'Tente ajustar seus filtros de busca'
                     : 'Você ainda não possui documentos. Crie um novo documento para começar.'}
                 </p>
-                <button
-                  onClick={() => router.push('/documents/new')}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                  Criar novo documento
-                </button>
               </div>
             )}
           </motion.div>

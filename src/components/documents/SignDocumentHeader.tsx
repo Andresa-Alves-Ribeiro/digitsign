@@ -1,13 +1,12 @@
 import React from 'react';
-import { DocumentTextIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import Button from '@/components/ui/Button';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { BackButton } from '@/components/ui/BackButton';
 
 interface SignDocumentHeaderProps {
   documentId: string;
-  onBack: () => void;
 }
 
-const SignDocumentHeader: React.FC<SignDocumentHeaderProps> = ({ documentId, onBack }) => {
+const SignDocumentHeader: React.FC<SignDocumentHeaderProps> = ({ documentId }) => {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
       <div className="flex items-center space-x-4">
@@ -22,14 +21,7 @@ const SignDocumentHeader: React.FC<SignDocumentHeaderProps> = ({ documentId, onB
           </div>
         </div>
       </div>
-      <Button
-        variant="secondary"
-        onClick={onBack}
-        className="flex items-center justify-center"
-      >
-        <ArrowLeftIcon className="w-5 h-5 mr-2" />
-        Voltar
-      </Button>
+      <BackButton />
     </div>
   );
 };

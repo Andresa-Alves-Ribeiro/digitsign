@@ -118,7 +118,7 @@ function SignDocumentPage() {
       <DocumentStatusCheck documentId={documentId}>
         <CloudinaryDocumentCheck documentId={documentId}>
           <DocumentContainer>
-            <SignDocumentHeader documentId={documentId} onBack={() => router.back()} />
+            <SignDocumentHeader documentId={documentId} />
 
             <div>
               <SignaturePad

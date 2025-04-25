@@ -8,7 +8,7 @@ import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ErrorDisplay } from '@/components/ErrorDisplay';
 import Loading from '@/components/ui/Loading';
-
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Import only core styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -30,7 +30,7 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const retryCount = useRef(0);
   const maxRetries = 3;
-  const [_scale, _setScale] = useState(1);
+  const { theme } = useTheme();
 
   const fetchPdfUrl = useCallback(async (): Promise<void> => {
     try {
@@ -139,7 +139,7 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
             thumbnailPluginInstance,
           ]}
           theme={{
-            theme: 'auto',
+            theme: theme,
           }}
         />
       </Worker>

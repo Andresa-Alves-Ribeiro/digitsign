@@ -1,5 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
 import { prisma } from './prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -23,6 +25,14 @@ const loginSchema = z.object({
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -78,10 +88,35 @@ export const authOptions: NextAuthOptions = {
   },
   debug: process.env.NODE_ENV === 'development',
   callbacks: {
-    async redirect({ _url, baseUrl }) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google' || account?.provider === 'github') {
+        try {
+          // Verificar se o usuário já existe
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+
+          if (!existingUser) {
+            // Criar novo usuário se não existir
+            await prisma.user.create({
+              data: {
+                email: user.email!,
+                name: user.name!,
+                password: '', // Usuários de OAuth não precisam de senha
+              },
+            });
+          }
+        } catch (error) {
+          console.error('Error during OAuth sign in:', error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async redirect({ url, baseUrl }) {
       return baseUrl;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
       }
@@ -96,10 +131,10 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn({ user }) {
-      console.error('User signed in:', user.email);
+      console.log('User signed in:', user.email);
     },
     async signOut({ token }) {
-      console.error('User signed out:', token.email);
+      console.log('User signed out:', token.email);
     },
   },
 }; 

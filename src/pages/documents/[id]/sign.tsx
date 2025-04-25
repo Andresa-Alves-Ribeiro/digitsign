@@ -106,7 +106,7 @@ function SignDocumentPage() {
   }, [handleSaveSignature, setIsSaving]);
 
   if (!params?.id) {
-    return <div>Documento não encontrado</div>;
+    return <div className="text-text-light dark:text-text-dark">Documento não encontrado</div>;
   }
 
   if (isSubmitting) {
@@ -120,18 +120,18 @@ function SignDocumentPage() {
           <DocumentContainer>
             <SignDocumentHeader documentId={documentId} />
 
-            <div>
+            <div className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-lg shadow-md">
               <SignaturePad
                 onSave={handleSaveSignature}
                 onCancel={() => router.back()}
               />
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
                 <Button
                   variant="clear"
                   onClick={handleClear}
                   disabled={isSaving}
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   <TrashIcon className="w-5 h-5 mr-2" />
                   Limpar
@@ -140,7 +140,7 @@ function SignDocumentPage() {
                   variant="cancel"
                   onClick={() => router.back()}
                   disabled={isSaving}
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-700"
                 >
                   <XMarkIcon className="w-5 h-5 mr-2" />
                   Cancelar
@@ -150,7 +150,7 @@ function SignDocumentPage() {
                   onClick={handleSave}
                   isLoading={isSaving}
                   disabled={isSaving}
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center bg-primary text-white hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary"
                 >
                   {!isSaving && <CheckIcon className="w-5 h-5 mr-2" />}
                   {isSaving ? 'Salvando...' : 'Salvar'}

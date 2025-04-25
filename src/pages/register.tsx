@@ -53,7 +53,7 @@ export default function Register() {
       <AuthBackground />
       
       <PageTransition>
-        <div className="w-full max-w-md bg-neutral-50 rounded-lg shadow-md p-10">
+        <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
           <div className="flex justify-between items-center mb-8">
             <BackButton className="mb-4" />
           </div>

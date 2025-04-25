@@ -105,7 +105,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
 
   return (
     <motion.div 
-      className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+      className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}

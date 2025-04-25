@@ -7,6 +7,7 @@ import Head from 'next/head';
 import { Session } from 'next-auth';
 import { ComponentType } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -77,22 +78,24 @@ export default function App({
 
   return (
     <SessionProvider session={session}>
-      <Head>
-        <title>DigitSign - Assinatura Digital</title>
-        <meta name="description" content="Sistema de assinatura digital de documentos" />
-      </Head>
-      <div className={`${poppins.variable} font-sans antialiased`}>
-        <AnimatePresence mode="wait">
-          {isAuth || isError ? (
-            <Component {...restPageProps} key={appRouter.pathname} />
-          ) : (
-            <DashboardShell activePage={activePage}>
-              <Component {...restPageProps} />
-            </DashboardShell>
-          )}
-        </AnimatePresence>
-      </div>
-      <Toaster />
+      <ThemeProvider>
+        <Head>
+          <title>DigitSign - Assinatura Digital</title>
+          <meta name="description" content="Sistema de assinatura digital de documentos" />
+        </Head>
+        <div className={`${poppins.variable} font-sans antialiased`}>
+          <AnimatePresence mode="wait">
+            {isAuth || isError ? (
+              <Component {...restPageProps} key={appRouter.pathname} />
+            ) : (
+              <DashboardShell activePage={activePage}>
+                <Component {...restPageProps} />
+              </DashboardShell>
+            )}
+          </AnimatePresence>
+        </div>
+        <Toaster />
+      </ThemeProvider>
     </SessionProvider>
   );
 }

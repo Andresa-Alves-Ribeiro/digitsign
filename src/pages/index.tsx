@@ -101,7 +101,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial="hidden"
@@ -115,7 +115,7 @@ export default function Home() {
               description={
                 <div className="flex items-center gap-2">
                   <span>Seja bem-vindo,</span>
-                  <span className="font-semibold text-gray-900">{session?.user?.name ?? 'Usuário'}</span>
+                  <span className="font-semibold text-text-light dark:text-text-dark">{session?.user?.name ?? 'Usuário'}</span>
                   <ArrowTrendingUpIcon className="w-5 h-5 text-green-500" />
                 </div>
               } 

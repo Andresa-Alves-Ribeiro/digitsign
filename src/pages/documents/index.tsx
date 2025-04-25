@@ -103,7 +103,7 @@ export default function DocumentsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="h-screen flex items-center justify-center bg-component-bg-light dark:bg-component-bg-dark">
         <Loading text="Carregando documentos..." />
       </div>
     );
@@ -115,7 +115,7 @@ export default function DocumentsPage() {
 
   if (status === 'authenticated') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -164,31 +164,31 @@ export default function DocumentsPage() {
           </motion.div>
 
           <motion.div
-            className="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between"
+            className="bg-component-bg-light dark:bg-component-bg-dark rounded-xl shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-100 dark:border-gray-700"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <div className="relative w-full md:w-96">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark placeholder-gray-400 dark:placeholder-gray-500"
                 placeholder="Buscar documentos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FunnelIcon className="h-5 w-5 text-gray-400" />
+                  <FunnelIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                 </div>
                 <select
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -199,7 +199,7 @@ export default function DocumentsPage() {
               </div>
 
               <motion.button
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                className="p-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-gray-300 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => fetchDocuments()}
@@ -212,7 +212,7 @@ export default function DocumentsPage() {
 
           {/* Document List */}
           <motion.div
-            className="bg-white rounded-xl shadow-sm overflow-hidden"
+            className="bg-component-bg-light dark:bg-component-bg-dark rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -225,9 +225,9 @@ export default function DocumentsPage() {
               />
             ) : (
               <div className="p-8 text-center">
-                <DocumentTextIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum documento encontrado</h3>
-                <p className="text-gray-500 mb-4">
+                <DocumentTextIcon className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-text-light dark:text-text-dark mb-1">Nenhum documento encontrado</h3>
+                <p className="text-text-light/70 dark:text-text-dark/70 mb-4">
                   {searchTerm || statusFilter !== 'all'
                     ? 'Tente ajustar seus filtros de busca'
                     : 'Você ainda não possui documentos. Crie um novo documento para começar.'}

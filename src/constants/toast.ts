@@ -2,31 +2,32 @@ export const TOAST_CONFIG = {
   duration: 3000,
   position: 'top-right',
   style: {
-    background: '#1F2937',
-    color: '#fff',
+    background: 'var(--component-bg-dark)',
+    color: 'var(--text-dark)',
+    border: '1px solid var(--component-bg-hover-dark)',
   },
   success: {
     duration: 3000,
     theme: {
-      primary: '#10B981',
+      primary: 'var(--primary)',
     },
   },
   error: {
     duration: 4000,
     theme: {
-      primary: '#EF4444',
+      primary: 'var(--red-500)',
     },
   },
   warning: {
     duration: 4000,
     theme: {
-      primary: '#F59E0B',
+      primary: 'var(--yellow-500)',
     },
   },
   info: {
     duration: 4000,
     theme: {
-      primary: '#3B82F6',
+      primary: 'var(--blue-500)',
     },
   },
 } as const;

@@ -5,10 +5,22 @@
 @layer base {
   :root {
     --background: #ffffff;
+    --background-light: #ffffff;
+    --background-dark: #171717;
     --foreground: #171717;
+    --text-light: #171717;
+    --text-dark: #ffffff;
+    --text-primary-light: #171717;
+    --text-primary-dark: #ffffff;
+    --text-secondary-light: #4B5563;
+    --text-secondary-dark: #9CA3AF;
     --primary: #10B981;
     --primary-dark: #059669;
     --primary-light: #D1FAE5;
+    --component-bg-light: #ffffff;
+    --component-bg-dark: #1f2937;
+    --component-bg-hover-light: #f3f4f6;
+    --component-bg-hover-dark: #374151;
     --red-50: #FEF2F2;
     --red-100: #FEE2E2;
     --red-200: #FECACA;
@@ -61,6 +73,26 @@
     --gray-900: #111827;
   }
 
+  .dark {
+    --background: #121212;
+    --background-light: #ffffff;
+    --background-dark: #121212;
+    --foreground: #ffffff;
+    --text-light: #171717;
+    --text-dark: #ffffff;
+    --text-primary-light: #171717;
+    --text-primary-dark: #ffffff;
+    --text-secondary-light: #4B5563;
+    --text-secondary-dark: #9CA3AF;
+    --primary: #10B981;
+    --primary-dark: #059669;
+    --primary-light: #D1FAE5;
+    --component-bg-light: #ffffff;
+    --component-bg-dark: #1e1e1e;
+    --component-bg-hover-light: #f3f4f6;
+    --component-bg-hover-dark: #2d2d2d;
+  }
+
   body {
     @apply bg-background text-foreground min-h-screen;
     font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -71,7 +103,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-foreground dark:text-text-dark;
   }
 
   h1 {
@@ -87,7 +119,7 @@
   }
 
   p {
-    @apply text-gray-700;
+    @apply text-gray-700 dark:text-gray-300;
   }
 }
 
@@ -182,5 +214,60 @@ img {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* PDF Viewer Dark Mode Styles */
+.dark .rpv-core__viewer {
+  background-color: var(--background-dark);
+}
+
+.dark .rpv-core__toolbar {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__toolbar-item {
+  color: var(--text-dark);
+}
+
+.dark .rpv-core__toolbar-item:hover {
+  background-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__menu {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__menu-item {
+  color: var(--text-dark);
+}
+
+.dark .rpv-core__menu-item:hover {
+  background-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__thumbnail {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__thumbnail--selected {
+  background-color: var(--primary-dark);
+}
+
+.dark .rpv-core__search {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__search-input {
+  background-color: var(--component-bg-dark);
+  color: var(--text-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__search-input:focus {
+  border-color: var(--primary-dark);
 }
 

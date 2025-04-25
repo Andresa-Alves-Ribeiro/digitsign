@@ -32,14 +32,9 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
   };
 
   return (
-    <motion.div 
-      className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <div className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-700">Atividades Recentes</h3>
+        <h3 className="text-lg font-semibold text-text-light dark:text-text-dark">Atividades Recentes</h3>
 
         <Link href="/documents">
           <motion.div 
@@ -53,27 +48,24 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
         </Link>
       </div>
 
-      <motion.div 
-        className="space-y-4"
-        variants={containerVariants}
-      >
+      <div className="space-y-4">
         {documents.length > 0 ? (
           documents.map((doc, _index) => (
             <motion.div
               key={doc.id}
               variants={itemVariants}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
             >
               <div className="flex items-center gap-3">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <DocumentTextIcon className="w-5 h-5 text-gray-400" />
+                  <DocumentTextIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </motion.div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{doc.name}</p>
-                  <p className='text-sm text-gray-500'>
+                  <p className="text-sm font-medium text-text-light dark:text-text-dark">{doc.name}</p>
+                  <p className='text-sm text-text-light/70 dark:text-text-dark/70'>
                     {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
@@ -81,8 +73,8 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
               <motion.span 
                 className={`px-2 py-1 text-xs font-medium rounded-md ${
                   doc.status === DocumentStatus.SIGNED 
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-yellow-100 text-yellow-800'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
+                    : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -107,13 +99,13 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
                 repeatType: 'reverse'
               }}
             >
-              <DocumentTextIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <DocumentTextIcon className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
             </motion.div>
-            <p className="text-gray-500">Nenhum documento encontrado</p>
+            <p className="text-text-light/70 dark:text-text-dark/70">Nenhum documento encontrado</p>
           </motion.div>
         )}
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

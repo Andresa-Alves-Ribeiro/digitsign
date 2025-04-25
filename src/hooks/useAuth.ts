@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { User } from 'next-auth';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
 import toast from 'react-hot-toast';
@@ -9,6 +9,7 @@ import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast';
 interface LoginData {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 interface RegisterResponse {
@@ -44,6 +45,15 @@ interface ErrorResponse {
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Check for saved credentials on component mount
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      // You might want to pre-fill the email field in your login form
+      console.log('Found saved email:', savedEmail);
+    }
+  }, []);
 
   const register = async (name: string, email: string, password: string): Promise<RegisterResponse> => {
     try {
@@ -101,6 +111,13 @@ export function useAuth(): UseAuthReturn {
       }) as LoginResponse;
 
       if (result?.ok) {
+        // Handle remember me
+        if (data.rememberMe) {
+          localStorage.setItem('rememberedEmail', data.email);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+        }
+
         router.push('/');
         toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
         return {
@@ -124,6 +141,8 @@ export function useAuth(): UseAuthReturn {
   const logout = async (): Promise<void> => {
     try {
       await signOut();
+      // Clear remembered email on logout
+      localStorage.removeItem('rememberedEmail');
       router.push('/login');
       toast.success(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG);
     } catch (error) {

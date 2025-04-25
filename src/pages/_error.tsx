@@ -6,7 +6,7 @@ interface ErrorProps {
   statusCode?: number;
 }
 
-function Error({ statusCode }: ErrorProps) {
+function ErrorPage({ statusCode }: ErrorProps) {
   const errorMessage = statusCode
     ? `Ocorreu um erro ${statusCode} no servidor`
     : 'Ocorreu um erro no cliente';
@@ -23,9 +23,9 @@ function Error({ statusCode }: ErrorProps) {
   );
 }
 
-Error.getInitialProps = ({ res, err }: NextPageContext) => {
+ErrorPage.getInitialProps = ({ res, err }: NextPageContext) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
   return { statusCode };
 };
 
-export default Error; 
+export default ErrorPage; 

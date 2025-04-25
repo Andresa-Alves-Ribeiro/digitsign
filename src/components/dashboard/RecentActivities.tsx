@@ -54,18 +54,18 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
             <motion.div
               key={doc.id}
               variants={itemVariants}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="flex items-center justify-between p-3 bg-white dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 border border-slate-100 dark:border-gray-700"
             >
               <div className="flex items-center gap-3">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <DocumentTextIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <DocumentTextIcon className="w-5 h-5 text-slate-400 dark:text-gray-500" />
                 </motion.div>
                 <div>
-                  <p className="text-sm font-medium text-text-light dark:text-text-dark">{doc.name}</p>
-                  <p className='text-sm text-text-light/70 dark:text-text-dark/70'>
+                  <p className="text-sm font-medium text-slate-800 dark:text-text-dark">{doc.name}</p>
+                  <p className='text-sm text-slate-500 dark:text-text-dark/70'>
                     {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
@@ -73,8 +73,8 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
               <motion.span 
                 className={`px-2 py-1 text-xs font-medium rounded-md ${
                   doc.status === DocumentStatus.SIGNED 
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
-                    : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400'
+                    ? 'bg-teal-50 dark:bg-green-900/30 text-teal-700 dark:text-green-400'
+                    : 'bg-amber-50 dark:bg-yellow-900/30 text-amber-700 dark:text-yellow-400'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

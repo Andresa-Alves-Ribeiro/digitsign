@@ -25,11 +25,11 @@ const StatCard: FC<StatCardProps> = ({
   total,
   icon: Icon,
   iconColor,
-  valueColor = 'text-gray-900',
-  percentageColor = 'text-primary',
+  valueColor = 'text-slate-800',
+  percentageColor = 'text-teal-600',
   description,
-  buttonColor = 'bg-blue-600',
-  buttonHoverColor = 'hover:bg-blue-700',
+  buttonColor = 'bg-teal-600',
+  buttonHoverColor = 'hover:bg-teal-700',
   buttonText,
   href,
   isActionCard = false,
@@ -40,16 +40,16 @@ const StatCard: FC<StatCardProps> = ({
   const wrapperProps = isActionCard ? {
     whileHover: { scale: 1.02 },
     whileTap: { scale: 0.98 },
-    className: 'bg-component-bg-light dark:bg-component-bg-dark overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700 h-full'
+    className: 'bg-white dark:bg-component-bg-dark overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-slate-100 dark:border-gray-700 h-full'
   } : {
-    className: 'bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 h-full'
+    className: 'bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 h-full'
   };
 
   return (
     <CardWrapper {...wrapperProps}>
       <div className={`${isActionCard ? 'p-6' : ''} flex flex-col h-full`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-text-light dark:text-text-dark">{title}</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-text-dark">{title}</h3>
           <motion.div 
             className={`p-2 rounded-full ${iconColor.replace('text-', 'bg-').replace('-500', '-100')}`}
             whileHover={{ rotate: 360 }}
@@ -91,7 +91,7 @@ const StatCard: FC<StatCardProps> = ({
           <div className="mt-auto pt-6">
             {description && (
               <motion.p 
-                className="text-sm text-text-light/70 dark:text-text-dark/70 mb-2"
+                className="text-sm text-slate-600 dark:text-text-dark/70 mb-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}

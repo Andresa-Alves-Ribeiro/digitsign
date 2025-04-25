@@ -105,7 +105,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
 
   return (
     <motion.div 
-      className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
+      className="bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -115,22 +115,22 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
         variants={itemVariants}
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-gray-700">Timeline de Assinaturas</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-text-dark">Timeline de Assinaturas</h3>
           <motion.button
-            className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setShowLegend(!showLegend)}
           >
-            <InformationCircleIcon className="w-5 h-5 text-gray-400" />
+            <InformationCircleIcon className="w-5 h-5 text-slate-400 dark:text-gray-500" />
           </motion.button>
         </div>
         <motion.div 
-          className="p-2 rounded-full bg-green-50"
+          className="p-2 rounded-full bg-teal-50 dark:bg-green-900/30"
           whileHover={{ rotate: 360 }}
           transition={{ duration: 0.5 }}
         >
-          <ChartBarIcon className="w-5 h-5 text-green-500" />
+          <ChartBarIcon className="w-5 h-5 text-teal-600 dark:text-green-400" />
         </motion.div>
       </motion.div>
 
@@ -140,13 +140,13 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
       >
         {showLegend && (
           <motion.div 
-            className="bg-gray-50 p-3 rounded-lg text-sm text-gray-600 mb-4"
+            className="bg-gray-50/50 dark:bg-gray-800/50 p-3 rounded-lg text-sm text-slate-600 dark:text-gray-400 mb-4"
             variants={legendVariants}
             initial="hidden"
             animate="visible"
           >
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 rounded-sm bg-gradient-to-t from-green-600 to-green-400"></div>
+              <div className="w-3 h-3 rounded-sm bg-gradient-to-t from-teal-600 to-teal-400"></div>
               <span className="font-medium">Documentos assinados nos últimos 7 dias</span>
             </div>
             <div className="text-xs">
@@ -159,7 +159,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
         {documents.length > 0 ? (
           <div className="h-48 relative pl-8">
             {/* Y-axis labels - Moved outside the chart area */}
-            <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between py-2 text-xs text-gray-400">
+            <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between py-2 text-xs text-slate-400">
               {[maxCount, Math.round(maxCount * 0.75), Math.round(maxCount * 0.5), Math.round(maxCount * 0.25), 0].map((value, i) => (
                 <span key={i}>{value}</span>
               ))}
@@ -189,16 +189,16 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
                         style={{ 
                           height: height,
                           background: isActive 
-                            ? 'linear-gradient(to top, #059669, #10b981)' 
-                            : 'linear-gradient(to top, #10b981, #34d399)',
+                            ? 'linear-gradient(to top, #0f766e, #14b8a6)' 
+                            : 'linear-gradient(to top, #14b8a6, #2dd4bf)',
                           boxShadow: isActive
-                            ? '0 8px 12px -1px rgba(16, 185, 129, 0.3), 0 4px 6px -1px rgba(16, 185, 129, 0.2)'
-                            : '0 4px 6px -1px rgba(16, 185, 129, 0.2), 0 2px 4px -1px rgba(16, 185, 129, 0.1)'
+                            ? '0 8px 12px -1px rgba(20, 184, 166, 0.3), 0 4px 6px -1px rgba(20, 184, 166, 0.2)'
+                            : '0 4px 6px -1px rgba(20, 184, 166, 0.2), 0 2px 4px -1px rgba(20, 184, 166, 0.1)'
                         }}
                       >
                         {day.count > 0 && (
                           <motion.div
-                            className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded-full shadow-sm text-xs font-medium text-gray-900"
+                            className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-1.5 py-0.5 rounded-full shadow-sm text-xs font-medium text-slate-800"
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5 + index * 0.1 }}
@@ -209,19 +209,19 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
                         
                         {isActive && (
                           <motion.div
-                            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium whitespace-nowrap z-10"
+                            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium whitespace-nowrap z-10"
                             variants={tooltipVariants}
                             initial="hidden"
                             animate="visible"
                           >
                             <div className='font-bold'>{day.count} documento{day.count !== 1 ? 's' : ''}</div>
-                            <div className='text-gray-300'>{formattedDate}</div>
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-800"></div>
+                            <div className='text-slate-300'>{formattedDate}</div>
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800"></div>
                           </motion.div>
                         )}
                       </motion.div>
                       <motion.span 
-                        className="text-xs text-gray-500 mt-2"
+                        className="text-xs text-slate-500 mt-2"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 + index * 0.1 }}
@@ -236,7 +236,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
               {/* Grid lines */}
               <div className="absolute inset-0 flex flex-col justify-between px-2 pb-6">
                 {[0, 1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-full border-t border-gray-100" />
+                  <div key={i} className="w-full border-t border-slate-100" />
                 ))}
               </div>
             </div>
@@ -257,9 +257,9 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
                 repeatType: 'reverse'
               }}
             >
-              <ChartBarIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <ChartBarIcon className="w-12 h-12 text-slate-300 dark:text-gray-600 mx-auto mb-2" />
             </motion.div>
-            <p className="text-gray-500">Nenhum documento encontrado</p>
+            <p className="text-slate-500 dark:text-gray-400">Nenhum documento encontrado</p>
           </motion.div>
         )}
       </motion.div>

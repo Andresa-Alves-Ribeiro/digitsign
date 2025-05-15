@@ -56,7 +56,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
   }) => (
     <Link
       href={href}
-      className={`flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg transition-all duration-200 group ${
+      className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 rounded-lg transition-all duration-200 group cursor-pointer ${
         isActive 
           ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 shadow-sm border border-green-100 dark:border-green-800' 
           : 'hover:bg-gray-100 dark:hover:bg-green-800'
@@ -67,7 +67,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
           ? 'text-green-500 dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300' 
           : 'text-gray-400 dark:text-gray-500 group-hover:text-green-500 dark:group-hover:text-green-400'
       }`} />
-      <span className="font-medium">{title}</span>
+      <span className="font-medium truncate cursor-pointer">{title}</span>
     </Link>
   );
 
@@ -76,7 +76,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
       {/* Sidebar - Hidden on mobile, visible on tablet and up */}
       <div className="hidden lg:block fixed inset-y-0 left-0 w-64 bg-component-bg-light dark:bg-component-bg-dark shadow-lg border-r border-gray-100 dark:border-gray-700">
         <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-          <Link href="/" className="flex items-center justify-center">
+          <Link href="/" className="flex items-center justify-center cursor-pointer">
             <Image
               src={theme === 'dark' ? logoDark : logoLight}
               alt="Logo"
@@ -99,13 +99,13 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
             <NavLink 
               href="/documents/upload" 
               icon={DocumentArrowUpIcon} 
-              title="Upload de Documentos" 
+              title="Upload" 
               isActive={activePage === 'upload'} 
             />
             <NavLink 
               href="/documents" 
               icon={DocumentTextIcon} 
-              title="Todos os Documentos" 
+              title="Documentos" 
               isActive={activePage === 'documents'} 
             />
           </nav>
@@ -133,7 +133,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
               <div className="flex items-center space-x-4 lg:hidden">
                 <Link
                   href="/"
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'dashboard'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
@@ -144,25 +144,25 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                 </Link>
                 <Link
                   href="/documents/upload"
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'upload'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
-                  title="Upload de Documentos"
+                  title="Upload"
                 >
                   <DocumentArrowUpIcon className="w-5 h-5" />
                 </Link>
                 <Link
                   href="/documents"
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'documents'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
-                  title="Todos os Documentos"
+                  title="Documentos"
                 >
-                  <DocumentArrowUpIcon className="w-5 h-5" />
+                  <DocumentTextIcon className="w-5 h-5" />
                 </Link>
               </div>
 

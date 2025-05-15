@@ -291,14 +291,44 @@ textarea,
   cursor: text;
 }
 
-/* Set pointer cursor for clickable elements */
+/* Set pointer cursor for all interactive elements */
 a,
 button,
 [role="button"],
 [type="button"],
 [type="submit"],
 [type="reset"],
-.cursor-pointer {
+.cursor-pointer,
+[onclick],
+[data-clickable="true"],
+.clickable,
+.interactive,
+.btn,
+.link,
+.nav-link,
+.menu-item,
+select,
+summary,
+details,
+.hover\:scale-*,
+.hover\:shadow-*,
+.hover\:bg-*,
+[class*="hover:"],
+[class*="active:"],
+[class*="focus:"] {
+  cursor: pointer !important;
+}
+
+/* Ensure links and buttons maintain pointer cursor even when nested */
+a *,
+button *,
+[role="button"] *,
+.cursor-pointer *,
+.clickable *,
+.interactive *,
+.btn *,
+.link *,
+.nav-link * {
   cursor: pointer !important;
 }
 
@@ -316,25 +346,48 @@ div {
 }
 
 /* Specific cursor styles for different states */
-*:disabled {
+*:disabled,
+.disabled,
+[aria-disabled="true"] {
   cursor: not-allowed !important;
 }
 
-.resize {
+/* Resize cursors */
+.resize,
+textarea {
   cursor: resize !important;
 }
 
-.move {
+.resize-x {
+  cursor: ew-resize !important;
+}
+
+.resize-y {
+  cursor: ns-resize !important;
+}
+
+/* Move cursors */
+.move,
+.draggable {
   cursor: move !important;
 }
 
-/* Ensure links and buttons maintain pointer cursor even when nested in text elements */
-p a, 
-span a, 
-div a, 
-p button, 
-span button, 
-div button {
-  cursor: pointer !important;
+/* Loading cursor */
+.loading,
+[aria-busy="true"] {
+  cursor: wait !important;
+}
+
+/* Help cursor */
+[title],
+[data-tooltip] {
+  cursor: help !important;
+}
+
+/* Override cursor for non-interactive disabled elements */
+button:disabled *,
+a.disabled *,
+.btn.disabled * {
+  cursor: not-allowed !important;
 }
 

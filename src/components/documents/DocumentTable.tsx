@@ -2,9 +2,12 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getStatusConfig } from '@/constants/documentStatus';
 import { PdfIcon } from '@/assets/icons';
-import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, EyeIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { DocumentTableProps as DocumentTablePropsType } from '@/types/interfaces';
 import { useDocumentActions } from '@/utils/document';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import Badge from '@/components/ui/Badge';
 
 const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, onSign }) => {
   const { onSign: handleSign, onDelete: handleDelete } = useDocumentActions(() => {
@@ -31,6 +34,28 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
       transition: {
         duration: 0.3
       }
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'warning';
+      case 'signed':
+        return 'success';
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'Pendente';
+      case 'signed':
+        return 'Assinado';
+      default:
+        return status;
     }
   };
 
@@ -88,17 +113,9 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
           </div>
           
           <div className="mt-3">
-            {(() => {
-              const statusConfig = getStatusConfig(doc.status);
-              return (
-                <span
-                  className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig.color} shadow-sm`}
-                >
-                  {statusConfig.icon}
-                  <span className="ml-1">{statusConfig.label}</span>
-                </span>
-              );
-            })()}
+            <Badge variant={getStatusColor(doc.status)}>
+              {getStatusText(doc.status)}
+            </Badge>
           </div>
         </motion.div>
       ))}
@@ -155,23 +172,17 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-sm text-text-light/70 dark:text-text-dark/80">
-                  {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
+                  {format(new Date(doc.createdAt), "dd 'de' MMMM 'de' yyyy", {
+                    locale: ptBR,
+                  })}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-sm text-text-light/70 dark:text-text-dark/80">
                   {doc.size ? `${(doc.size / (1024 * 1024)).toFixed(2)} MB` : '-'}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
-                  {(() => {
-                    const statusConfig = getStatusConfig(doc.status);
-                    return (
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig.color} shadow-sm`}
-                      >
-                        {statusConfig.icon}
-                        <span className="ml-1">{statusConfig.label}</span>
-                      </span>
-                    );
-                  })()}
+                  <Badge variant={getStatusColor(doc.status)}>
+                    {getStatusText(doc.status)}
+                  </Badge>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right">
                   <div className="flex items-center justify-end space-x-2">

@@ -18,7 +18,9 @@
     "react/jsx-no-comment-textnodes": "off"
   },
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": ["./tsconfig.json"],
+    "tsconfigRootDir": ".",
+    "sourceType": "module"
   },
   "ignorePatterns": [
     "node_modules/",

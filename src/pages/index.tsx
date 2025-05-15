@@ -152,7 +152,7 @@ export default function Home() {
               buttonColor="bg-yellow-600"
               buttonHoverColor="hover:bg-yellow-700"
               buttonText="Ver Pendentes"
-              href="/documents"
+              href="/documents?status=pending"
               isActionCard
             />
             <StatCard
@@ -167,7 +167,7 @@ export default function Home() {
               buttonColor="bg-green-600"
               buttonHoverColor="hover:bg-green-700"
               buttonText="Ver Assinados"
-              href="/documents/signed"
+              href="/documents?status=signed"
               isActionCard
             />
           </motion.div>

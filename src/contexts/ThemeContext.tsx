@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 type Theme = 'light' | 'dark';
 
@@ -11,9 +12,14 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const isAuthPage = (pathname: string): boolean => {
+  return pathname === '/login' || pathname === '/register';
+};
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Check if user has a theme preference in localStorage
@@ -21,31 +27,41 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      // If no saved preference, check system preference
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
+    } else {
+      // Always default to light theme
+      setTheme('light');
+      document.documentElement.classList.remove('dark');
     }
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem('theme', theme);
-      document.documentElement.classList.toggle('dark', theme === 'dark');
+      // Força o tema claro nas páginas de autenticação
+      if (isAuthPage(router.pathname)) {
+        document.documentElement.classList.remove('dark');
+      } else {
+        localStorage.setItem('theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      }
     }
-  }, [theme, mounted]);
+  }, [theme, mounted, router.pathname]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    if (!isAuthPage(router.pathname)) {
+      setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    }
   };
 
   if (!mounted) {
     return null;
   }
 
+  // Força o tema claro nas páginas de autenticação
+  const currentTheme = isAuthPage(router.pathname) ? 'light' : theme;
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: currentTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

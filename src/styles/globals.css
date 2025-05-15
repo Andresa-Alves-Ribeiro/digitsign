@@ -271,3 +271,70 @@ img {
   border-color: var(--primary-dark);
 }
 
+/* Prevent text selection and set default cursor */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* Allow text selection in specific elements */
+input, 
+textarea, 
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  cursor: text;
+}
+
+/* Set pointer cursor for clickable elements */
+a,
+button,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Allow text selection in specific text elements */
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6, 
+span, 
+div {
+  cursor: default;
+}
+
+/* Specific cursor styles for different states */
+*:disabled {
+  cursor: not-allowed !important;
+}
+
+.resize {
+  cursor: resize !important;
+}
+
+.move {
+  cursor: move !important;
+}
+
+/* Ensure links and buttons maintain pointer cursor even when nested in text elements */
+p a, 
+span a, 
+div a, 
+p button, 
+span button, 
+div button {
+  cursor: pointer !important;
+}
+

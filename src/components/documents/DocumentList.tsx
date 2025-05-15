@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -21,7 +21,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
   const router = useRouter();
   const { documents, setDocuments } = useDocumentStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState(router.query.status?.toString() || initialFilter);
+  const [statusFilter, setStatusFilter] = useState(router.query.status?.toString() ?? initialFilter);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     show: boolean;
@@ -46,7 +46,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
     }, undefined, { shallow: true });
   };
 
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       setIsRefreshing(true);
       const response = await fetch('/api/documents');
@@ -61,11 +61,11 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [setDocuments]);
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [fetchDocuments]);
 
   const filteredDocuments = documents.filter((doc: Document) => {
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -78,7 +78,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
   return (
     <>
       <motion.div
-        className="bg-component-bg-light dark:bg-component-bg-dark rounded-xl shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-100 dark:border-gray-700"
+        className="bg-component-bg-light dark:bg-component-bg-dark rounded-t-xl shadow-sm p-4 flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-100 dark:border-gray-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
@@ -125,7 +125,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
       </motion.div>
 
       <motion.div
-        className="bg-component-bg-light dark:bg-component-bg-dark rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+        className="bg-component-bg-light dark:bg-component-bg-dark rounded-b-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}

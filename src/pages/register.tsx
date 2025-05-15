@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +8,6 @@ import Button from '@/components/ui/Button';
 import FormField from '@/components/ui/FormField';
 import { AuthBackground } from '@/components/AuthBackground';
 import { PageTransition } from '@/components/ui/PageTransition';
-import { BackButton } from '@/components/ui/BackButton';
 
 const registerSchema = z.object({
   name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres'),
@@ -24,7 +22,6 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  const router = useRouter();
   const { register: registerUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,82 +34,76 @@ export default function Register() {
   });
 
   const onSubmit = async (data: RegisterFormData): Promise<void> => {
-    try {
-      setIsLoading(true);
-      await registerUser(data.name, data.email, data.password);
-      router.push('/');
-    } catch {
-      // Error toast is already handled in useAuth hook
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    await registerUser(data.name, data.email, data.password);
+    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex overflow-hidden">
+    <div className="h-screen flex overflow-hidden bg-gray-50">
       <AuthBackground />
       
       <PageTransition>
-        <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
-          <div className="flex justify-between items-center mb-8">
-            <BackButton className="mb-4" />
+        <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24">
+          <div className="max-w-md w-full mx-auto">
+            <div className="text-center mb-3">
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Criar Conta</h1>
+              <p className="mt-1 text-md text-gray-600">Preencha os dados para se registrar</p>
+            </div>
+
+            <div className="bg-white py-5 px-6 shadow-xl rounded-2xl border border-gray-100">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                <FormField<RegisterFormData>
+                  label="Nome"
+                  name="name"
+                  type="text"
+                  placeholder="Seu nome"
+                  error={errors.name?.message}
+                  register={register}
+                />
+                <FormField<RegisterFormData>
+                  label="Email"
+                  name="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  error={errors.email?.message}
+                  register={register}
+                />
+                <FormField<RegisterFormData>
+                  label="Senha"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  error={errors.password?.message}
+                  register={register}
+                />
+                <FormField<RegisterFormData>
+                  label="Confirmar Senha"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  error={errors.confirmPassword?.message}
+                  register={register}
+                />
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  isLoading={isLoading}
+                  className="w-full"
+                >
+                  Registrar
+                </Button>
+              </form>
+            </div>
+
+            <p className="mt-4 text-center text-sm text-gray-600">
+              Já tem uma conta?{' '}
+              <Link href="/login" className="text-green-600 hover:text-green-700">
+                Faça login
+              </Link>
+            </p>
           </div>
-
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Criar Conta</h1>
-            <p className="mt-2 text-gray-600">Preencha os dados para se registrar</p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <FormField<RegisterFormData>
-              label="Nome"
-              name="name"
-              type="text"
-              placeholder="Seu nome"
-              error={errors.name?.message}
-              register={register}
-            />
-            <FormField<RegisterFormData>
-              label="Email"
-              name="email"
-              type="email"
-              placeholder="seu@email.com"
-              error={errors.email?.message}
-              register={register}
-            />
-            <FormField<RegisterFormData>
-              label="Senha"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              error={errors.password?.message}
-              register={register}
-            />
-            <FormField<RegisterFormData>
-              label="Confirmar Senha"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              error={errors.confirmPassword?.message}
-              register={register}
-            />
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={isLoading}
-              className="w-full"
-            >
-              Registrar
-            </Button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Já tem uma conta?{' '}
-            <Link href="/login" className="text-green-600 hover:text-green-700">
-              Faça login
-            </Link>
-          </p>
         </div>
       </PageTransition>
     </div>

@@ -1,12 +1,7 @@
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { Poppins } from 'next/font/google';
-import '@/styles/globals.css';
+'use client';
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
-});
+import { ThemeProvider } from '../contexts/ThemeContext';
+import Layout from '../components/Layout';
 
 export default function RootLayout({
   children,
@@ -14,10 +9,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={poppins.className}>
+    <html lang="en">
+      <body>
         <ThemeProvider>
-          {children}
+          <Layout>{children}</Layout>
         </ThemeProvider>
       </body>
     </html>

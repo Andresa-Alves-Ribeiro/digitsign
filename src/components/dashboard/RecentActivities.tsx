@@ -10,7 +10,7 @@ interface RecentActivitiesProps {
 }
 
 const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element => {
-  const containerVariants = {
+  const _containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,

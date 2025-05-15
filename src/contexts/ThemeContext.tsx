@@ -1,7 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -10,71 +9,52 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
-// Create a default value for the context to avoid the "must be used within a ThemeProvider" error
-const defaultContextValue: ThemeContextType = {
-  theme: 'light',
-  toggleTheme: () => {},
-};
-
-const ThemeContext = createContext<ThemeContextType>(defaultContextValue);
-
-// Function to check if the current page is an auth page
-const isAuthPage = (pathname: string): boolean => {
-  return pathname === '/login' || pathname === '/register';
-};
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
-    // Initialize theme from localStorage or system preference
+    // Check if user has a theme preference in localStorage
     const savedTheme = localStorage.getItem('theme') as Theme;
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Force light theme on auth pages
-    if (isAuthPage(pathname)) {
-      setTheme('light');
-    } else {
-      setTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // If no saved preference, check system preference
+      setTheme('dark');
+      document.documentElement.classList.add('dark');
     }
     setMounted(true);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     if (mounted) {
-      // Only save theme to localStorage if not on auth page
-      if (!isAuthPage(pathname)) {
-        localStorage.setItem('theme', theme);
-      }
-      
-      if (theme === 'dark' && !isAuthPage(pathname)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      localStorage.setItem('theme', theme);
+      document.documentElement.classList.toggle('dark', theme === 'dark');
     }
-  }, [theme, mounted, pathname]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
-    // Prevent theme toggle on auth pages
-    if (isAuthPage(pathname)) return;
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  // Use the default value during server-side rendering
-  const value = mounted 
-    ? { theme, toggleTheme } 
-    : defaultContextValue;
+  if (!mounted) {
+    return null;
+  }
 
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
 } 

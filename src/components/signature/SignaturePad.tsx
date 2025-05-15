@@ -8,8 +8,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProps) => {
   const signaturePadRef = useRef<SignatureCanvas>(null);
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
+  const { theme: _isDarkMode } = useTheme();
   const previousThemeRef = useRef(theme);
   const signatureDataRef = useRef<string>('');
 

@@ -13,8 +13,8 @@ import {
   UserIcon,
   ChevronDownIcon,
   ArrowRightStartOnRectangleIcon,
-  SunIcon,
-  MoonIcon
+  _SunIcon as SunIcon,
+  _MoonIcon as MoonIcon
 } from '@heroicons/react/24/outline';
 
 interface DashboardShellProps {

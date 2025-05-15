@@ -87,10 +87,15 @@ export default async function handler(
       where: { id },
       select: {
         id: true,
-        userId: true,
-        fileKey: true,
         name: true,
-        mimeType: true
+        fileKey: true,
+        userId: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        mimeType: true,
+        size: true,
+        signature: true
       }
     });
 
@@ -261,13 +266,22 @@ export default async function handler(
                 data: {
                   documentId: document.id,
                   userId: session.user.id,
-                  signedAt: new Date()
+                  signedAt: new Date(),
+                  signatureImg: signatureImage
                 }
               });
 
               return res.status(200).json({
                 document: {
-                  ...document,
+                  id: document.id,
+                  name: document.name,
+                  fileKey: document.fileKey,
+                  userId: document.userId,
+                  status: document.status,
+                  createdAt: document.createdAt,
+                  updatedAt: document.updatedAt,
+                  mimeType: document.mimeType,
+                  size: document.size,
                   signatures: [signature]
                 }
               });

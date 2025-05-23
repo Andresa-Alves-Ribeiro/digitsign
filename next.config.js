@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+// Importing the Sentry Next.js plugin
+const { withSentryConfig } = require('@sentry/nextjs');
+
 const nextConfig = {
     reactStrictMode: true,
     pageExtensions: ['tsx', 'ts', 'jsx', 'js'].filter(ext => !ext.includes('test')),
@@ -45,8 +49,31 @@ const nextConfig = {
                     { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
                 ],
             },
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self'; font-src 'self' github.githubassets.com; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+                    }
+                ]
+            }
         ];
     },
 }
 
-module.exports = nextConfig 
+// For all available options, see:
+// https://github.com/getsentry/sentry-webpack-plugin#options
+const sentryWebpackPluginOptions = {
+    // Additional config options for the Sentry webpack plugin. Keep in mind that
+    // the following options are set automatically, and overriding them is not
+    // recommended:
+    //   release, url, configFile, stripPrefix, urlPrefix, include, ignore
+    silent: true,
+};
+
+module.exports = withSentryConfig(
+    nextConfig,
+    sentryWebpackPluginOptions,
+    { hideSourceMaps: true }
+); 

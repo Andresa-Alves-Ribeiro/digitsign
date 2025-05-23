@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { User } from 'next-auth';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
 import toast from 'react-hot-toast';
@@ -9,6 +9,7 @@ import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast';
 interface LoginData {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 interface RegisterResponse {
@@ -26,24 +27,24 @@ interface LoginResponse {
 interface UseAuthReturn {
   user: User | null;
   loading: boolean;
+  savedEmail: string | null;
   register: (name: string, email: string, password: string) => Promise<RegisterResponse>;
   login: (data: LoginData) => Promise<LoginResponse>;
   logout: () => Promise<void>;
 }
 
-interface RegisterApiResponse {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface ErrorResponse {
-  error?: string;
-}
-
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
+  const [savedEmail, setSavedEmail] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    // Check for saved credentials on component mount
+    const email = localStorage.getItem('rememberedEmail');
+    if (email) {
+      setSavedEmail(email);
+    }
+  }, []);
 
   const register = async (name: string, email: string, password: string): Promise<RegisterResponse> => {
     try {
@@ -56,21 +57,12 @@ export function useAuth(): UseAuthReturn {
         body: JSON.stringify({ name, email, password }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        let errorMessage: string;
-        const responseText = await response.text();
-        try {
-          const errorData = JSON.parse(responseText) as ErrorResponse;
-          errorMessage = errorData.error ?? 'Registration failed';
-        } catch {
-          errorMessage = responseText ?? `Registration failed with status ${response.status}`;
-        }
-        toast.error(errorMessage, TOAST_CONFIG);
-        throw new Error(errorMessage);
+        throw new Error(result.error ?? 'Erro ao registrar');
       }
 
-      const result = await response.json() as RegisterApiResponse;
-      
       router.push('/login');
       toast.success(TOAST_MESSAGES.auth.registerSuccess, TOAST_CONFIG);
       return {
@@ -80,10 +72,6 @@ export function useAuth(): UseAuthReturn {
       };
     } catch (error) {
       console.error('Registration failed:', error);
-      if (error instanceof Error && error.message) {
-        // Don't show another toast since we already showed one for the specific error
-        throw error;
-      }
       toast.error(TOAST_MESSAGES.auth.registerError, TOAST_CONFIG);
       throw error;
     } finally {
@@ -97,9 +85,17 @@ export function useAuth(): UseAuthReturn {
       const result = await signIn('credentials', {
         ...data,
         redirect: false,
+        callbackUrl: '/'
       }) as LoginResponse;
 
       if (result?.ok) {
+        // Handle remember me
+        if (data.rememberMe) {
+          localStorage.setItem('rememberedEmail', data.email);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+        }
+
         router.push('/');
         toast.success(TOAST_MESSAGES.auth.loginSuccess, TOAST_CONFIG);
         return {
@@ -122,7 +118,9 @@ export function useAuth(): UseAuthReturn {
 
   const logout = async (): Promise<void> => {
     try {
-      await signOut();
+      await signOut({ redirect: false });
+      // Clear remembered email on logout
+      localStorage.removeItem('rememberedEmail');
       router.push('/login');
       toast.success(TOAST_MESSAGES.auth.logoutSuccess, TOAST_CONFIG);
     } catch (error) {
@@ -134,6 +132,7 @@ export function useAuth(): UseAuthReturn {
   return {
     user: null, // We'll handle the user state properly with useSession later
     loading,
+    savedEmail,
     register,
     login,
     logout,

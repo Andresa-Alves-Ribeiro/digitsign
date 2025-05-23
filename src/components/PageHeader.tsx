@@ -1,27 +1,31 @@
-import NewDocumentButton from '@/components/NewDocumentButton';
+import NewDocumentButton from './NewDocumentButton';
+import { ReactNode } from 'react';
 
 interface PageHeaderProps {
   title: string;
-  description: string;
+  description: ReactNode;
+  showNewDocumentButton?: boolean;
 }
 
-export default function PageHeader({ title, description }: PageHeaderProps): JSX.Element {
+export default function PageHeader({ title, description, showNewDocumentButton = true }: PageHeaderProps): JSX.Element {
   return (
-    <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 p-6 md:p-8 rounded-2xl shadow-md border border-green-100 transition-all duration-300 hover:shadow-lg">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-        <div className="flex flex-col gap-2 max-w-2xl">
-          <h2 className="text-4xl max-md:text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent tracking-tight">
+    <div className="w-full bg-component-bg-light dark:bg-component-bg-dark p-8 md:p-10 rounded-md shadow-sm border border-neutral-100 dark:border-neutral-800">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
+        <div className="flex flex-col gap-3 max-w-2xl">
+          <h2 className="text-2xl md:text-3xl font-medium text-text-light dark:text-text-dark tracking-tight">
             {title}
           </h2>
 
-          <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">
+          <div className="text-sm md:text-base text-text-light/70 dark:text-text-dark/70 font-normal leading-relaxed">
             {description}
-          </p>
+          </div>
         </div>
 
-        <div className="w-full md:w-auto">
-          <NewDocumentButton />
-        </div>
+        {showNewDocumentButton && (
+          <div className="w-full md:w-auto">
+            <NewDocumentButton />
+          </div>
+        )}
       </div>
     </div>
   );

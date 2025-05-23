@@ -19,17 +19,17 @@ model User {
 }
 
 model Document {
-  id        String     @id @default(uuid())
+  id        String         @id @default(uuid())
   name      String
   fileKey   String
   userId    String
-  status    String     @default("PENDING")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  status    DocumentStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
   mimeType  String?
   size      Int?
   signature Signature?
-  user      User       @relation(fields: [userId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
 }
 
 model Signature {
@@ -41,4 +41,9 @@ model Signature {
   signedAt     DateTime?
   document     Document  @relation(fields: [documentId], references: [id])
   user         User      @relation(fields: [userId], references: [id])
+}
+
+enum DocumentStatus {
+  PENDING
+  SIGNED
 }

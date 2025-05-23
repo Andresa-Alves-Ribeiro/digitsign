@@ -1,5 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
 import { prisma } from './prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -23,6 +25,14 @@ const loginSchema = z.object({
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -78,6 +88,31 @@ export const authOptions: NextAuthOptions = {
   },
   debug: process.env.NODE_ENV === 'development',
   callbacks: {
+    async signIn({ user }) {
+      try {
+        if (!user.email) {
+          throw new Error('Email não fornecido');
+        }
+
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        if (!existingUser) {
+          throw new Error('Usuário não encontrado');
+        }
+
+        return true;
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new Error(error.message);
+        }
+        return false;
+      }
+    },
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -86,17 +121,17 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
+        session.user.id = token.sub as string;
       }
       return session;
     },
   },
   events: {
-    async signIn({ user }) {
-      console.error('User signed in:', user.email);
+    async signIn({ user: _user }) {
+      // Log successful sign in
     },
-    async signOut({ token }) {
-      console.error('User signed out:', token.email);
+    async signOut({ token: _token }) {
+      // Log successful sign out
     },
   },
 }; 

@@ -4,8 +4,93 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    --background: #f5f5f5;
+    --background-light: #f5f5f5;
+    --background-dark: #171717;
+    --foreground: #1e293b;
+    --text-light: #1e293b;
+    --text-dark: #ffffff;
+    --text-primary-light: #1e293b;
+    --text-primary-dark: #ffffff;
+    --text-secondary-light: #475569;
+    --text-secondary-dark: #9CA3AF;
+    --primary: #0f766e;
+    --primary-dark: #059669;
+    --primary-light: #ccfbf1;
+    --component-bg-light: #ffffff;
+    --component-bg-dark: #1f2937;
+    --component-bg-hover-light: #eaeaea;
+    --component-bg-hover-dark: #374151;
+    --red-50: #FEF2F2;
+    --red-100: #FEE2E2;
+    --red-200: #FECACA;
+    --red-300: #FCA5A5;
+    --red-400: #F87171;
+    --red-500: #EF4444;
+    --red-600: #DC2626;
+    --red-700: #B91C1C;
+    --red-800: #991B1B;
+    --red-900: #7F1D1D;
+    --blue-50: #EFF6FF;
+    --blue-100: #DBEAFE;
+    --blue-200: #BFDBFE;
+    --blue-300: #93C5FD;
+    --blue-400: #60A5FA;
+    --blue-500: #3B82F6;
+    --blue-600: #2563EB;
+    --blue-700: #1D4ED8;
+    --blue-800: #1E40AF;
+    --blue-900: #1E3A8A;
+    --yellow-50: #FFFBEB;
+    --yellow-100: #FEF3C7;
+    --yellow-200: #FDE68A;
+    --yellow-300: #FCD34D;
+    --yellow-400: #FBBF24;
+    --yellow-500: #F59E0B;
+    --yellow-600: #D97706;
+    --yellow-700: #B45309;
+    --yellow-800: #92400E;
+    --yellow-900: #78350F;
+    --orange-50: #FFF7ED;
+    --orange-100: #FFEDD5;
+    --orange-200: #FED7AA;
+    --orange-300: #FDBA74;
+    --orange-400: #FB923C;
+    --orange-500: #F97316;
+    --orange-600: #EA580C;
+    --orange-700: #C2410C;
+    --orange-800: #9A3412;
+    --orange-900: #7C2D12;
+    --neutral-50: #F9FAFB;
+    --neutral-100: #F3F4F6;
+    --neutral-200: #E5E7EB;
+    --neutral-300: #D1D5DB;
+    --neutral-400: #9CA3AF;
+    --neutral-500: #6B7280;
+    --neutral-600: #4B5563;
+    --neutral-700: #374151;
+    --neutral-800: #1F2937;
+    --neutral-900: #111827;
+  }
+
+  .dark {
+    --background: #121212;
+    --background-light: #ffffff;
+    --background-dark: #121212;
+    --foreground: #ffffff;
+    --text-light: #171717;
+    --text-dark: #ffffff;
+    --text-primary-light: #171717;
+    --text-primary-dark: #ffffff;
+    --text-secondary-light: #4B5563;
+    --text-secondary-dark: #9CA3AF;
+    --primary: #10B981;
+    --primary-dark: #059669;
+    --primary-light: #D1FAE5;
+    --component-bg-light: #ffffff;
+    --component-bg-dark: #1e1e1e;
+    --component-bg-hover-light: #f3f4f6;
+    --component-bg-hover-dark: #2d2d2d;
   }
 
   body {
@@ -15,6 +100,26 @@
 
   html {
     @apply scroll-smooth antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-foreground dark:text-text-dark;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  p {
+    @apply text-neutral-700 dark:text-neutral-300;
   }
 }
 
@@ -58,7 +163,7 @@
 
 /* Remove default focus outline and add custom one */
 *:focus-visible {
-  @apply outline-2 outline-blue-500 outline-offset-2;
+  @apply outline-2 outline-primary outline-offset-2;
 }
 
 /* Responsive container */
@@ -109,5 +214,180 @@ img {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* PDF Viewer Dark Mode Styles */
+.dark .rpv-core__viewer {
+  background-color: var(--background-dark);
+}
+
+.dark .rpv-core__toolbar {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__toolbar-item {
+  color: var(--text-dark);
+}
+
+.dark .rpv-core__toolbar-item:hover {
+  background-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__menu {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__menu-item {
+  color: var(--text-dark);
+}
+
+.dark .rpv-core__menu-item:hover {
+  background-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__thumbnail {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__thumbnail--selected {
+  background-color: var(--primary-dark);
+}
+
+.dark .rpv-core__search {
+  background-color: var(--component-bg-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__search-input {
+  background-color: var(--component-bg-dark);
+  color: var(--text-dark);
+  border-color: var(--component-bg-hover-dark);
+}
+
+.dark .rpv-core__search-input:focus {
+  border-color: var(--primary-dark);
+}
+
+/* Prevent text selection and set default cursor */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* Allow text selection in specific elements */
+input, 
+textarea, 
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  cursor: text;
+}
+
+/* Set pointer cursor for all interactive elements */
+a,
+button,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+.cursor-pointer,
+[onclick],
+[data-clickable="true"],
+.clickable,
+.interactive,
+.btn,
+.link,
+.nav-link,
+.menu-item,
+select,
+summary,
+details,
+.hover\:scale-*,
+.hover\:shadow-*,
+.hover\:bg-*,
+[class*="hover:"],
+[class*="active:"],
+[class*="focus:"] {
+  cursor: pointer !important;
+}
+
+/* Ensure links and buttons maintain pointer cursor even when nested */
+a *,
+button *,
+[role="button"] *,
+.cursor-pointer *,
+.clickable *,
+.interactive *,
+.btn *,
+.link *,
+.nav-link * {
+  cursor: pointer !important;
+}
+
+/* Allow text selection in specific text elements */
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6, 
+span, 
+div {
+  cursor: default;
+}
+
+/* Specific cursor styles for different states */
+*:disabled,
+.disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed !important;
+}
+
+/* Resize cursors */
+.resize,
+textarea {
+  cursor: resize !important;
+}
+
+.resize-x {
+  cursor: ew-resize !important;
+}
+
+.resize-y {
+  cursor: ns-resize !important;
+}
+
+/* Move cursors */
+.move,
+.draggable {
+  cursor: move !important;
+}
+
+/* Loading cursor */
+.loading,
+[aria-busy="true"] {
+  cursor: wait !important;
+}
+
+/* Help cursor */
+[title],
+[data-tooltip] {
+  cursor: help !important;
+}
+
+/* Override cursor for non-interactive disabled elements */
+button:disabled *,
+a.disabled *,
+.btn.disabled * {
+  cursor: not-allowed !important;
 }
 

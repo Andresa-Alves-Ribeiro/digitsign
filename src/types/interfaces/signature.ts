@@ -13,8 +13,8 @@ export interface Signature {
 }
 
 export interface SignaturePadProps {
-  onSave: (signatureData: string) => void;
-  onClear?: () => void;
+  onSave: (signature: string) => Promise<void>;
+  onCancel: () => void;
 }
 
 export interface SignatureCardProps {

@@ -18,7 +18,7 @@ interface IconProps {
 
 export const LoadingSpinner: React.FC<IconProps> = ({ className = 'h-4 w-4' }) => (
   <div className={`${className} relative`}>
-    <div className="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
+    <div className="absolute inset-0 border-2 border-neutral-300 rounded-full"></div>
     <div className="absolute inset-0 border-2 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
   </div>
 );

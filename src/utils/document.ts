@@ -15,9 +15,14 @@ export interface DocumentWithSignatures extends Document {
   } | null;
 }
 
-export const useDocumentActions = (onDocumentsChange?: (documents: Document[]) => void): {
+export interface DocumentActionsProps {
+  onDocumentsChange?: (documents: Document[]) => void;
+  onDeleteConfirm?: (documentId: string) => Promise<void>;
+}
+
+export const useDocumentActions = ({ onDocumentsChange, onDeleteConfirm }: DocumentActionsProps = {}): {
   onSign: (documentId: string) => void;
-  onDelete: (documentId: string) => Promise<void>;
+  onDelete: (documentId: string) => void;
 } => {
   const router = useRouter();
 
@@ -25,11 +30,19 @@ export const useDocumentActions = (onDocumentsChange?: (documents: Document[]) =
     router.push(`/documents/${documentId}/sign`);
   };
 
-  const onDelete = async (documentId: string): Promise<void> => {
-    if (!confirm('Tem certeza que deseja excluir este documento?')) {
-      return;
+  const onDelete = (documentId: string): void => {
+    if (onDeleteConfirm) {
+      onDeleteConfirm(documentId);
+    } else {
+      // Fallback to basic confirm if no custom handler is provided
+      if (!confirm('Tem certeza que deseja excluir este documento?')) {
+        return;
+      }
+      handleDelete(documentId);
     }
+  };
 
+  const handleDelete = async (documentId: string): Promise<void> => {
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
         method: 'DELETE',

@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-light: #3b82f6;
+  --primary-dark: #60a5fa;
+  --background-light: #ffffff;
+  --background-dark: #121212;
+  --text-light: #1a1a1a;
+  --text-dark: #ffffff;
+}
+
+@layer base {
+  body {
+    @apply bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-light dark:bg-primary-dark text-white hover:opacity-90;
+  }
+  
+  .btn-secondary {
+    @apply bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-600;
+  }
+} 

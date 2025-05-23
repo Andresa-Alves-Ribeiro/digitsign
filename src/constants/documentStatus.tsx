@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@prisma/client';
 
 type StatusConfig = {
   label: string;
@@ -10,7 +10,7 @@ type StatusConfig = {
 export const documentStatusConfig: Record<DocumentStatus, StatusConfig> = {
   [DocumentStatus.PENDING]: {
     label: 'Pendente',
-    color: 'text-yellow-700 bg-yellow-100 border border-yellow-200',
+    color: 'text-yellow-700 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -19,41 +19,21 @@ export const documentStatusConfig: Record<DocumentStatus, StatusConfig> = {
   },
   [DocumentStatus.SIGNED]: {
     label: 'Assinado',
-    color: 'text-green-700 bg-green-100 border border-green-200',
+    color: 'text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
       </svg>
     ),
-  },
-  [DocumentStatus.REJECTED]: {
-    label: 'Rejeitado',
-    color: 'text-red-700 bg-red-100 border border-red-200',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    ),
-  },
-  [DocumentStatus.EXPIRED]: {
-    label: 'Expirado',
-    color: 'text-orange-700 bg-orange-100 border border-orange-200',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
   }
 };
 
-export const getStatusConfig = (status: string): StatusConfig => {
-  const normalizedStatus = status.toUpperCase() as DocumentStatus;
-  
-  if (isValidStatus(normalizedStatus)) {
-    return documentStatusConfig[normalizedStatus];
+export const getStatusConfig = (status: DocumentStatus): StatusConfig => {
+  if (status in documentStatusConfig) {
+    return documentStatusConfig[status];
   }
   
-  // Return default status if no match is found
+  console.warn(`Status inválido recebido: ${status}. Usando status padrão.`);
   return documentStatusConfig[DocumentStatus.PENDING];
 };
 

@@ -66,7 +66,9 @@ export default async function handler(
       const secureUrl = cloudinary.url(document.fileKey, {
         resource_type: 'raw',
         type: 'upload',
-        secure: true
+        secure: true,
+        sign_url: true,
+        expires_at: Math.floor(Date.now() / 1000) + 3600 // URL expires in 1 hour
       });
 
       return res.status(200).json({ url: secureUrl });

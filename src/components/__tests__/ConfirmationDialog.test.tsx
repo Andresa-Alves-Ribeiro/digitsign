@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import ConfirmationDialog, { ConfirmationDialogProps } from '../ConfirmationDialog';
+import { ConfirmationDialog, ConfirmationDialogProps } from '../ui/ConfirmationDialog';
 
 describe('ConfirmationDialog Component', () => {
   const mockOnClose = jest.fn();
@@ -9,7 +9,8 @@ describe('ConfirmationDialog Component', () => {
     onClose: mockOnClose,
     onConfirm: mockOnConfirm,
     title: 'Test Title',
-    message: 'Test Message'
+    message: 'Test Message',
+    type: 'danger'
   };
 
   beforeEach(() => {

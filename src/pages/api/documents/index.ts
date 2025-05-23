@@ -2,13 +2,14 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { DocumentStatus } from '@prisma/client';
 
 interface DocumentResponse {
   id: string;
   name: string;
   fileKey: string;
   userId: string;
-  status: string;
+  status: DocumentStatus;
   createdAt: Date;
   updatedAt: Date;
   mimeType?: string | null;
@@ -38,54 +39,22 @@ export default async function handler(
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const documents = await prisma.document.findMany({
+    // Get all documents with their signatures
+    const documentsWithSignatures = await prisma.document.findMany({
       where: {
         userId: session.user.id,
       },
-      select: {
-        id: true,
-        name: true,
-        fileKey: true,
-        userId: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
-        mimeType: true,
-        size: true,
-        signature: {
-          select: {
-            id: true,
-            documentId: true,
-            userId: true,
-            signatureImg: true,
-            createdAt: true,
-            signedAt: true,
-          },
-        },
+      include: {
+        signature: true,
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    const documentIds = documents.map(doc => doc.id);
-
-    const signatures = await prisma.signature.findMany({
-      where: {
-        documentId: {
-          in: documentIds,
-        },
-      },
-    });
-
-    const documentsWithSignatures = documents.map(doc => ({
-      ...doc,
-      signature: signatures.find(sig => sig.documentId === doc.id) || null,
-    }));
-
     return res.status(200).json(documentsWithSignatures);
   } catch (error) {
     console.error('Error fetching documents:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Erro ao buscar documentos' });
   }
 } 

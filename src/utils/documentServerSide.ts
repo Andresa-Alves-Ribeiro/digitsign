@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import { Document } from '@/types/interfaces';
+import { Document } from '@prisma/client';
 
 interface DocumentPageProps {
   document: Document | null;

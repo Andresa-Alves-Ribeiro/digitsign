@@ -15,7 +15,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
     }, [status, router]);
 
     if (status === 'loading') {
-      return <LoadingSpinner />;
+      return <LoadingSpinner text="Verificando autenticação..." />;
     }
 
     if (status === 'authenticated') {

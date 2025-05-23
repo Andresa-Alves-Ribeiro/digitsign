@@ -18,25 +18,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex h-screen bg-neutral-100 dark:bg-neutral-900">
       {/* Sidebar */}
       <aside
         className={`${
           isSidebarOpen ? 'w-64' : 'w-20'
-        } bg-white dark:bg-gray-800 transition-all duration-300 ease-in-out`}
+        } bg-white dark:bg-neutral-800 transition-all duration-300 ease-in-out`}
       >
         <div className="p-4 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <span className={`text-xl font-bold text-gray-900 dark:text-white ${!isSidebarOpen && 'hidden'}`}>
+            <span className={`text-xl font-bold text-neutral-900 dark:text-white ${!isSidebarOpen && 'hidden'}`}>
               DigitSign
             </span>
           </Link>
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700"
           >
             <svg
-              className="w-6 h-6 text-gray-600 dark:text-gray-300"
+              className="w-6 h-6 text-neutral-600 dark:text-neutral-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -55,8 +55,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <li key={item.path}>
                 <Link
                   href={item.path}
-                  className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    isActive(item.path) ? 'bg-gray-100 dark:bg-gray-700' : ''
+                  className={`flex items-center px-4 py-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                    isActive(item.path) ? 'bg-neutral-100 dark:bg-neutral-700' : ''
                   }`}
                 >
                   <span className={!isSidebarOpen ? 'hidden' : ''}>{item.label}</span>

@@ -78,18 +78,18 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
   return (
     <>
       <motion.div
-        className="bg-component-bg-light dark:bg-component-bg-dark rounded-t-xl shadow-sm p-4 flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-100 dark:border-gray-700"
+        className="bg-component-bg-light dark:bg-component-bg-dark rounded-t-xl shadow-sm p-4 flex flex-col md:flex-row gap-4 items-center justify-between border border-neutral-100 dark:border-neutral-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <div className="relative w-full md:w-96">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+            <MagnifyingGlassIcon className="h-5 w-5 text-neutral-400 dark:text-neutral-500" />
           </div>
           <input
             type="text"
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark placeholder-gray-400 dark:placeholder-gray-500"
+            className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark placeholder-neutral-400 dark:placeholder-neutral-500"
             placeholder="Buscar documentos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -99,10 +99,10 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FunnelIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <FunnelIcon className="h-5 w-5 text-neutral-400 dark:text-neutral-500" />
             </div>
             <select
-              className="block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark"
+              className="block w-full pl-10 pr-10 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white dark:bg-neutral-800 text-text-light dark:text-text-dark"
               value={statusFilter}
               onChange={(e) => handleFilterChange(e.target.value)}
             >
@@ -113,7 +113,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
           </div>
 
           <motion.button
-            className="p-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-gray-300 transition-colors"
+            className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => fetchDocuments()}
@@ -125,7 +125,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
       </motion.div>
 
       <motion.div
-        className="bg-component-bg-light dark:bg-component-bg-dark rounded-b-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+        className="bg-component-bg-light dark:bg-component-bg-dark rounded-b-xl shadow-sm overflow-hidden border border-neutral-100 dark:border-neutral-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
@@ -138,7 +138,7 @@ export default function DocumentList({ initialFilter = 'all' }: DocumentListProp
           />
         ) : (
           <div className="p-8 text-center">
-            <DocumentTextIcon className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <DocumentTextIcon className="h-12 w-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-text-light dark:text-text-dark mb-1">
               Nenhum documento encontrado
             </h3>

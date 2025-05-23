@@ -51,7 +51,7 @@ export function ErrorLayout({ children }: ErrorLayoutProps): JSX.Element {
 
       {/* Content */}
       <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full p-8 bg-component-bg-light dark:bg-component-bg-dark rounded-lg shadow-lg dark:shadow-gray-900/20">
+        <div className="max-w-md w-full p-8 bg-component-bg-light dark:bg-component-bg-dark rounded-lg shadow-lg dark:shadow-neutral-900/20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

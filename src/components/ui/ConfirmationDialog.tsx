@@ -30,7 +30,7 @@ export function ConfirmationDialog({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-40"
             onClick={onClose}
           />
           <motion.dialog
@@ -45,16 +45,16 @@ export function ConfirmationDialog({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-lg shadow-sm p-6 max-w-md w-full"
+              className="bg-white dark:bg-neutral-800 shadow-sm p-6 max-w-md w-full"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 id="dialog-title" className="text-lg font-medium text-gray-900">
+                <h3 id="dialog-title" className="text-lg font-medium text-neutral-900 dark:text-white">
                   {title}
                 </h3>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-500 transition-colors duration-200"
+                  className="text-neutral-400 hover:text-neutral-500 dark:text-neutral-300 dark:hover:text-neutral-200 transition-colors duration-200"
                   aria-label="Close"
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -62,14 +62,14 @@ export function ConfirmationDialog({
                   </svg>
                 </button>
               </div>
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm text-neutral-500 dark:text-neutral-300 mb-6">
                 {message}
               </p>
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-900 bg-neutral-200 border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="px-4 py-2 text-sm font-medium text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   {cancelText}
                 </button>

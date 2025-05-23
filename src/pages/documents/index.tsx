@@ -2,7 +2,7 @@ import { useSession, getSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
 import PageHeader from '@/components/PageHeader';
-import Loading from '@/components/ui/Loading';
+import LoadingSpinner from '@/components/documents/LoadingSpinner';
 import DocumentList from '@/components/documents/DocumentList';
 import withAuth from '@/features/auth/withAuth';
 
@@ -12,7 +12,7 @@ function DocumentsPage() {
   if (status === 'loading') {
     return (
       <div className="h-screen flex items-center justify-center bg-component-bg-light dark:bg-component-bg-dark">
-        <Loading text="Carregando documentos..." />
+        <LoadingSpinner />
       </div>
     );
   }

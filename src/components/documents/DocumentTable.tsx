@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { getStatusConfig } from '@/constants/documentStatus';
 import { PdfIcon } from '@/assets/icons';
-import { PencilSquareIcon, TrashIcon, EyeIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { DocumentTableProps as DocumentTablePropsType } from '@/types/interfaces';
 import { useDocumentActions } from '@/utils/document';
 import { format } from 'date-fns';
@@ -10,9 +9,11 @@ import { ptBR } from 'date-fns/locale';
 import Badge from '@/components/ui/Badge';
 
 const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, onSign }) => {
-  const { onSign: handleSign, onDelete: handleDelete } = useDocumentActions(() => {
-    if (onDelete) {
-      onDelete(documents[0].id);
+  const { onSign: handleSign, onDelete: handleDelete } = useDocumentActions({
+    onDocumentsChange: () => {
+      if (onDelete) {
+        onDelete(documents[0].id);
+      }
     }
   });
 
@@ -67,11 +68,11 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
           variants={rowVariants}
           initial="hidden"
           animate="visible"
-          className="bg-component-bg-light dark:bg-component-bg-dark rounded-lg shadow-sm p-4 border border-gray-100 dark:border-gray-700"
+          className="bg-component-bg-light dark:bg-component-bg-dark rounded-lg shadow-sm p-4 border border-neutral-100 dark:border-neutral-700"
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 h-10 w-10 text-gray-400 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-md flex items-center justify-center">
+              <div className="flex-shrink-0 h-10 w-10 text-neutral-400 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800 rounded-md flex items-center justify-center">
                 <PdfIcon className="h-6 w-6" />
               </div>
               <div>
@@ -88,8 +89,7 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
             <div className="flex items-center space-x-2">
               <Link 
                 href={`/documents/${doc.id}`}
-                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-                title="Visualizar documento"
+                className="p-1.5 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200"
               >
                 <EyeIcon className="w-5 h-5" />
               </Link>
@@ -97,7 +97,6 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                 <button
                   onClick={() => onSign ? onSign(doc.id) : handleSign(doc.id)}
                   className="p-1.5 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 rounded-full hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-200"
-                  title="Assinar documento"
                 >
                   <PencilSquareIcon className="w-5 h-5" />
                 </button>
@@ -105,7 +104,6 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
               <button
                 onClick={() => onDelete ? onDelete(doc.id) : handleDelete(doc.id)}
                 className="p-1.5 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-200"
-                title="Excluir documento"
               >
                 <TrashIcon className="w-5 h-5" />
               </button>
@@ -126,8 +124,8 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
   const DesktopView = () => (
     <div className="hidden lg:block bg-component-bg-light dark:bg-component-bg-dark rounded-lg shadow-sm">
       <div className="w-full">
-        <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-neutral-800/50 sticky top-0 z-10">
+        <table className="w-full divide-y divide-neutral-200 dark:divide-neutral-700">
+          <thead className="bg-neutral-50 dark:bg-neutral-800/50 sticky top-0 z-10">
             <tr>
               <th scope="col" className="w-1/3 px-4 py-3 text-left text-xs font-medium text-text-light/70 dark:text-text-dark/70 uppercase tracking-wider">
                 Nome do documento
@@ -148,7 +146,7 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
           </thead>
 
           <motion.tbody
-            className="bg-component-bg-light dark:bg-component-bg-dark divide-y divide-gray-200 dark:divide-gray-700"
+            className="bg-component-bg-light dark:bg-component-bg-dark divide-y divide-neutral-200 dark:divide-neutral-700"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -157,15 +155,15 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
               <motion.tr
                 key={doc.id}
                 variants={rowVariants}
-                className="transition-colors duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                className="transition-colors duration-200 hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
               >
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10 text-gray-400 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-md flex items-center justify-center">
+                    <div className="flex-shrink-0 h-10 w-10 text-neutral-400 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800 rounded-md flex items-center justify-center">
                       <PdfIcon className="h-6 w-6" />
                     </div>
                     <div className="ml-4 min-w-0">
-                      <Link href={`/documents/${doc.id}`} className="block w-96 text-sm font-medium text-text-light dark:text-text-dark hover:text-green-600 dark:hover:text-green-400 overflow-hidden text-ellipsis whitespace-nowrap" title={doc.name}>
+                      <Link href={`/documents/${doc.id}`} className="block w-96 text-sm font-medium text-text-light dark:text-text-dark hover:text-green-600 dark:hover:text-green-400 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">
                         {doc.name}
                       </Link>
                     </div>
@@ -188,8 +186,7 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                   <div className="flex items-center justify-end space-x-2">
                     <Link 
                       href={`/documents/${doc.id}`}
-                      className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-                      title="Visualizar documento"
+                      className="p-1.5 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200"
                     >
                       <EyeIcon className="w-5 h-5" />
                     </Link>
@@ -197,7 +194,6 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                       <button
                         onClick={() => onSign ? onSign(doc.id) : handleSign(doc.id)}
                         className="p-1.5 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 rounded-full hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-200"
-                        title="Assinar documento"
                       >
                         <PencilSquareIcon className="w-5 h-5" />
                       </button>
@@ -205,7 +201,6 @@ const DocumentTable: React.FC<DocumentTablePropsType> = ({ documents, onDelete, 
                     <button
                       onClick={() => onDelete ? onDelete(doc.id) : handleDelete(doc.id)}
                       className="p-1.5 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-200"
-                      title="Excluir documento"
                     >
                       <TrashIcon className="w-5 h-5" />
                     </button>

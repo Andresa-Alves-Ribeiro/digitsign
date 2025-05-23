@@ -13,6 +13,7 @@ import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { TOAST_MESSAGES, TOAST_CONFIG } from '@/constants/toast';
+import LoadingSpinner from '@/components/documents/LoadingSpinner';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -27,6 +28,7 @@ export default function Login() {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
+  const [isSuccessLoading, setIsSuccessLoading] = useState(false);
 
   const {
     register,
@@ -38,7 +40,6 @@ export default function Login() {
   });
 
   useEffect(() => {
-    // Check for saved email on component mount
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
       setValue('email', savedEmail);
@@ -50,11 +51,14 @@ export default function Login() {
     try {
       setIsLoading(true);
       await login(data);
+      setIsSuccessLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       router.push('/');
     } catch {
-      // Error toast is already handled in useAuth hook
+      // Erro de login já é tratado no useAuth hook
     } finally {
       setIsLoading(false);
+      setIsSuccessLoading(false);
     }
   };
 
@@ -81,22 +85,28 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex overflow-hidden bg-gray-50">
+    <div className="min-h-screen flex overflow-hidden bg-neutral-50">
       <AuthBackground />
       
+      {isSuccessLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-90 z-50">
+          <LoadingSpinner />
+        </div>
+      )}
+
       <PageTransition>
         <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
           <div className="max-w-md w-full mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+              <h1 className="text-4xl font-extrabold text-neutral-900 tracking-tight">
                 Bem-vindo de volta
               </h1>
-              <p className="mt-3 text-lg text-gray-600">
+              <p className="mt-3 text-lg text-neutral-500">
                 Entre com suas credenciais para acessar sua conta
               </p>
             </div>
 
-            <div className="bg-white py-8 px-6 shadow-xl rounded-2xl border border-gray-100">
+            <div className="bg-white py-8 px-6 shadow-xl rounded-2xl border border-neutral-100">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <FormField<LoginFormData>
                   label="Email"
@@ -105,7 +115,7 @@ export default function Login() {
                   placeholder="seu@email.com"
                   error={errors.email?.message}
                   register={register}
-                  icon={<FiMail className="w-5 h-5 text-gray-400" />}
+                  icon={<FiMail className="w-5 h-5 text-neutral-400" />}
                 />
                 <FormField<LoginFormData>
                   label="Senha"
@@ -114,17 +124,17 @@ export default function Login() {
                   placeholder="••••••••"
                   error={errors.password?.message}
                   register={register}
-                  icon={<FiLock className="w-5 h-5 text-gray-400" />}
+                  icon={<FiLock className="w-5 h-5 text-neutral-400" />}
                 />
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <input
                       id="remember-me"
                       type="checkbox"
-                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-neutral-300 rounded"
                       {...register('rememberMe')}
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-neutral-700">
                       Lembrar-me
                     </label>
                   </div>
@@ -149,10 +159,10 @@ export default function Login() {
               <div className="mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200" />
+                    <div className="w-full border-t border-neutral-200" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Ou continue com</span>
+                    <span className="px-2 bg-white text-neutral-500">Ou continue com</span>
                   </div>
                 </div>
 
@@ -161,10 +171,10 @@ export default function Login() {
                     type="button"
                     onClick={() => handleSocialLogin('google')}
                     disabled={isSocialLoading !== null}
-                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full inline-flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm bg-white text-sm font-medium text-neutral-500 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSocialLoading === 'google' ? (
-                      <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin" />
                     ) : (
                       <>
                         <span className="sr-only">Sign in with Google</span>
@@ -178,10 +188,10 @@ export default function Login() {
                     type="button"
                     onClick={() => handleSocialLogin('github')}
                     disabled={isSocialLoading !== null}
-                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full inline-flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm bg-white text-sm font-medium text-neutral-500 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSocialLoading === 'github' ? (
-                      <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin" />
                     ) : (
                       <>
                         <span className="sr-only">Sign in with GitHub</span>
@@ -195,9 +205,9 @@ export default function Login() {
               </div>
             </div>
 
-            <p className="mt-8 text-center text-sm text-gray-600">
+            <p className="mt-8 text-center text-sm text-neutral-600">
               Não tem uma conta?{' '}
-              <Link href="/register" className="font-medium text-green-600 hover:text-green-500">
+              <Link href="/register" className="font-medium text-green-600 hover:text-green-500 cursor-pointer">
                 Registre-se agora
               </Link>
             </p>

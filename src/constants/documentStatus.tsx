@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@prisma/client';
 
 type StatusConfig = {
   label: string;
@@ -28,14 +28,12 @@ export const documentStatusConfig: Record<DocumentStatus, StatusConfig> = {
   }
 };
 
-export const getStatusConfig = (status: string): StatusConfig => {
-  const normalizedStatus = status.toUpperCase() as DocumentStatus;
-  
-  if (isValidStatus(normalizedStatus)) {
-    return documentStatusConfig[normalizedStatus];
+export const getStatusConfig = (status: DocumentStatus): StatusConfig => {
+  if (status in documentStatusConfig) {
+    return documentStatusConfig[status];
   }
   
-  // Return default status if no match is found
+  console.warn(`Status inválido recebido: ${status}. Usando status padrão.`);
   return documentStatusConfig[DocumentStatus.PENDING];
 };
 

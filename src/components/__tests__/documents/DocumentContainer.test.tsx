@@ -126,7 +126,7 @@ describe('DocumentContainer', () => {
         <div>Test content</div>
       </DocumentContainer>
     );
-    expect(screen.getByText('Test Document')).toHaveClass('text-lg', 'font-medium', 'text-gray-900');
+    expect(screen.getByText('Test Document')).toHaveClass('text-lg', 'font-medium', 'text-neutral-900');
   });
 
   it('renders with custom status class', () => {
@@ -162,7 +162,7 @@ describe('DocumentContainer', () => {
         <div>Test content</div>
       </DocumentContainer>
     );
-    expect(screen.getByText(/Jan 1, 2024/)).toHaveClass('text-sm', 'text-gray-500');
+    expect(screen.getByText(/Jan 1, 2024/)).toHaveClass('text-sm', 'text-neutral-500');
   });
 
   it('renders with loading state', () => {

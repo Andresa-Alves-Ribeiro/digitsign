@@ -217,7 +217,14 @@ The application uses three main models:
 
 ## 🧪 Tests
 
-The project includes a comprehensive test suite using Jest and React Testing Library. Run tests using:
+Tests are currently being implemented using Jest and React Testing Library. The test suite will include:
+
+- Unit tests for components
+- Integration tests for features
+- End-to-end testing
+- API route testing
+
+Once implemented, tests can be run using:
 
 ```bash
 npm run test

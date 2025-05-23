@@ -29,7 +29,7 @@ export default function Navbar() {
             >
               Contact
             </Link>
-            <div className="ml-4 border-l border-gray-300 dark:border-gray-700 pl-4">
+            <div className="ml-4 border-l border-neutral-300 dark:border-neutral-700 pl-4">
               <ThemeToggleButton />
             </div>
           </div>

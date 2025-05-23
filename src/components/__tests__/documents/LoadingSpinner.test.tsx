@@ -15,7 +15,7 @@ describe('LoadingSpinner', () => {
 
   it('renders with default class when no custom class provided', () => {
     render(<LoadingSpinner />);
-    expect(screen.getByTestId('loading-spinner')).toHaveClass('animate-spin', 'h-5', 'w-5', 'text-gray-500');
+    expect(screen.getByTestId('loading-spinner')).toHaveClass('animate-spin', 'h-5', 'w-5', 'text-neutral-500');
   });
 
   it('renders with custom size', () => {
@@ -35,7 +35,7 @@ describe('LoadingSpinner', () => {
 
   it('renders with default color when no custom color provided', () => {
     render(<LoadingSpinner />);
-    expect(screen.getByTestId('loading-spinner')).toHaveClass('text-gray-500');
+    expect(screen.getByTestId('loading-spinner')).toHaveClass('text-neutral-500');
   });
 
   it('renders with custom animation', () => {
@@ -99,13 +99,13 @@ describe('LoadingSpinner', () => {
   });
 
   it('renders with custom background', () => {
-    render(<LoadingSpinner background="bg-gray-100" />);
-    expect(screen.getByTestId('loading-spinner')).toHaveClass('bg-gray-100');
+    render(<LoadingSpinner background="bg-neutral-100" />);
+    expect(screen.getByTestId('loading-spinner')).toHaveClass('bg-neutral-100');
   });
 
   it('renders with default background when no custom background provided', () => {
     render(<LoadingSpinner />);
-    expect(screen.getByTestId('loading-spinner')).not.toHaveClass('bg-gray-100');
+    expect(screen.getByTestId('loading-spinner')).not.toHaveClass('bg-neutral-100');
   });
 
   it('renders with custom border', () => {

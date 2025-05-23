@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { DocumentTextIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@prisma/client';
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 
@@ -32,7 +32,7 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
   };
 
   return (
-    <div className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+    <div className="bg-component-bg-light dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-neutral-100 dark:border-neutral-700">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-text-light dark:text-text-dark">Atividades Recentes</h3>
 
@@ -54,14 +54,14 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
             <motion.div
               key={doc.id}
               variants={itemVariants}
-              className="flex items-center justify-between p-3 bg-white dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 border border-slate-100 dark:border-gray-700"
+              className="flex items-center justify-between p-3 bg-white dark:bg-neutral-800/50 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 border border-slate-100 dark:border-neutral-700"
             >
               <div className="flex items-center gap-3">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <DocumentTextIcon className="w-5 h-5 text-slate-400 dark:text-gray-500" />
+                  <DocumentTextIcon className="w-5 h-5 text-slate-400 dark:text-neutral-500" />
                 </motion.div>
                 <div>
                   <p className="text-sm font-medium text-slate-800 dark:text-text-dark">{doc.name}</p>
@@ -99,7 +99,7 @@ const RecentActivities: FC<RecentActivitiesProps> = ({ documents }): JSX.Element
                 repeatType: 'reverse'
               }}
             >
-              <DocumentTextIcon className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+              <DocumentTextIcon className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
             </motion.div>
             <p className="text-text-light/70 dark:text-text-dark/70">Nenhum documento encontrado</p>
           </motion.div>

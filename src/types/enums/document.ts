@@ -1,6 +1,6 @@
 export enum DocumentStatus {
-    PENDING = 'PENDING',
-    SIGNED = 'SIGNED'
+    PENDING,
+    SIGNED
 }
 
 export const statusLabels: Record<DocumentStatus, string> = {

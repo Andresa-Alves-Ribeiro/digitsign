@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { Document } from '@/types/interfaces';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@prisma/client';
 import { DashboardStats } from '@/types/interfaces/dashboard';
 import {
   DocumentTextIcon,
@@ -36,18 +36,15 @@ export default function Home() {
 
   const calculateStats = useCallback((documents: Document[]): void => {
     const total = documents.length;
-    const pending = documents.filter(d => d.status.toUpperCase() === DocumentStatus.PENDING).length;
-    const signed = documents.filter(d => d.status.toUpperCase() === DocumentStatus.SIGNED).length;
+    const pending = documents.filter(d => d.status === DocumentStatus.PENDING).length;
+    const signed = documents.filter(d => d.status === DocumentStatus.SIGNED).length;
     const recent = [...documents].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 
     setStats({
       totalDocuments: total,
       pendingDocuments: pending,
       signedDocuments: signed,
-      recentDocuments: recent.map(doc => ({
-        ...doc,
-        status: doc.status.toUpperCase() as DocumentStatus
-      })),
+      recentDocuments: recent,
     });
   }, []);
 
@@ -154,6 +151,7 @@ export default function Home() {
               buttonText="Ver Pendentes"
               href="/documents?status=pending"
               isActionCard
+              showButton={stats.pendingDocuments > 0}
             />
             <StatCard
               title="Documentos Assinados"
@@ -169,6 +167,7 @@ export default function Home() {
               buttonText="Ver Assinados"
               href="/documents?status=signed"
               isActionCard
+              showButton={stats.signedDocuments > 0}
             />
           </motion.div>
 

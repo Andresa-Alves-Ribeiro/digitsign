@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Loading from '@/components/ui/Loading';
+import LoadingSpinner from '@/components/documents/LoadingSpinner';
 
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   return function WithAuthComponent(props: P) {
@@ -15,7 +15,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
     }, [status, router]);
 
     if (status === 'loading') {
-      return <Loading text="Verificando autenticação..." />;
+      return <LoadingSpinner />;
     }
 
     if (status === 'authenticated') {

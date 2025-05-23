@@ -16,8 +16,8 @@ export function BackButton({ className = '', text = 'Voltar' }: BackButtonProps)
       onClick={() => router.back()}
       className={`flex items-center justify-center bg-component-bg-light dark:bg-component-bg-dark hover:bg-component-bg-hover-light dark:hover:bg-component-bg-hover-dark ${className}`}
     >
-      <ArrowLeftIcon className="w-5 h-5 mr-2 text-gray-700 dark:text-gray-300" />
-      <span className="text-gray-700 dark:text-gray-300">{text}</span>
+      <ArrowLeftIcon className="w-5 h-5 mr-2 text-neutral-700 dark:text-neutral-300" />
+      <span className="text-neutral-700 dark:text-neutral-300">{text}</span>
     </Button>
   );
 } 

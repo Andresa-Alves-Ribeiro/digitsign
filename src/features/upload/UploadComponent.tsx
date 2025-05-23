@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Loading from '@/components/ui/Loading';
+import LoadingSpinner from '@/components/documents/LoadingSpinner';
 import useDocumentStore from '@/store/useDocumentStore';
 import { getSession } from 'next-auth/react';
 import { commonStyles } from '@/constants/styles';
@@ -10,6 +10,7 @@ import { formatFileSizeInMB } from '@/utils/file';
 import Logger from '@/utils/logger';
 import { Document } from '@/types/interfaces';
 import { ErrorDisplay } from '@/components/ErrorDisplay';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
 interface UploadResponse {
   message?: string;
@@ -116,7 +117,7 @@ const UploadComponent = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-4xl"
       >
-        <div className="bg-component-bg-light dark:bg-component-bg-dark rounded-2xl shadow-md p-6 border border-gray-100 dark:border-gray-800">
+        <div className="bg-component-bg-light dark:bg-component-bg-dark rounded-2xl shadow-md p-6 border border-neutral-600 dark:border-neutral-800">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -154,16 +155,16 @@ const UploadComponent = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded-md"
+                className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-400 dark:border-green-500 p-4 mb-6 rounded-md"
               >
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg className="h-6 w-6 text-green-400 dark:text-green-500" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-green-700">Documento enviado com sucesso! Redirecionando...</p>
+                    <p className="text-sm font-medium text-green-700 dark:text-green-300">Documento enviado com sucesso! Redirecionando...</p>
                   </div>
                 </div>
               </motion.div>
@@ -176,7 +177,7 @@ const UploadComponent = () => {
               animate={{ opacity: 1 }}
               className="mb-6"
             >
-              <Loading text="Enviando documento..." />
+              <LoadingSpinner />
             </motion.div>
           )}
 
@@ -185,7 +186,7 @@ const UploadComponent = () => {
               <div className="mt-1 relative">
                 <div className="group relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative flex flex-col items-center justify-center px-8 py-16 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 group-hover:border-transparent transition-all duration-300">
+                  <div className="relative flex flex-col items-center justify-center px-8 py-16 border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-800 group-hover:border-transparent transition-all duration-300">
                     <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-green-600/5 dark:from-green-500/10 dark:to-green-600/10 rounded-xl" />
                     <motion.div 
                       className="flex justify-center"
@@ -193,20 +194,7 @@ const UploadComponent = () => {
                       transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     >
                       <div className="p-4 rounded-full bg-green-50 dark:bg-green-900/30 group-hover:bg-green-100 dark:group-hover:bg-green-900/50 transition-colors duration-300">
-                        <svg
-                          className="h-10 w-10 text-green-500 dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300 transition-colors duration-300"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 48 48"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <DocumentTextIcon className="h-12 w-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
                       </div>
                     </motion.div>
                     <label
@@ -241,7 +229,7 @@ const UploadComponent = () => {
                         required
                       />
                     </label>
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">PDF até {MAX_FILE_SIZE_MB}MB</p>
+                    <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">PDF até {MAX_FILE_SIZE_MB}MB</p>
                   </div>
                 </div>
               </div>
@@ -252,7 +240,7 @@ const UploadComponent = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="mt-4 flex items-center justify-between p-4 bg-component-bg-light dark:bg-component-bg-dark rounded-xl border border-gray-200 shadow-sm"
+                    className="mt-4 flex items-center justify-between p-4 bg-component-bg-light dark:bg-component-bg-dark rounded-xl border border-neutral-200 shadow-sm"
                   >
                     <div className="flex items-center space-x-4">
                       <div className="p-3 rounded-full bg-component-bg-light dark:bg-component-bg-dark">
@@ -261,8 +249,8 @@ const UploadComponent = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-medium text-neutral-900">{file.name}</p>
+                        <p className="text-xs text-neutral-500">
                           {formatFileSizeInMB(file.size)}
                         </p>
                       </div>
@@ -278,7 +266,7 @@ const UploadComponent = () => {
                       }}
                       className={commonStyles.button.ghost}
                     >
-                      <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="h-5 w-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </motion.button>

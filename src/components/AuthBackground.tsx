@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 export const AuthBackground: FC = (): JSX.Element => {
   return (
-    <div className="hidden lg:block lg:w-1/2 bg-gray-100 relative overflow-hidden">
+    <div className="hidden lg:block lg:w-1/2 bg-neutral-100 relative overflow-hidden">
       <Image
         src={background}
         alt="Background"

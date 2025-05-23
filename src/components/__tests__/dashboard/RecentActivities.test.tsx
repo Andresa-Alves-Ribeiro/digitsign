@@ -188,7 +188,7 @@ describe('RecentActivities', () => {
 
   it('renders with default title class when no custom title class provided', () => {
     render(<RecentActivities activities={mockActivities} />);
-    expect(screen.getByText('Recent Activities')).toHaveClass('text-lg', 'font-medium', 'leading-6', 'text-gray-900');
+    expect(screen.getByText('Recent Activities')).toHaveClass('text-lg', 'font-medium', 'leading-6', 'text-neutral-900');
   });
 
   it('renders with custom empty state class', () => {
@@ -198,7 +198,7 @@ describe('RecentActivities', () => {
 
   it('renders with default empty state class when no custom empty state class provided', () => {
     render(<RecentActivities activities={[]} />);
-    expect(screen.getByText('No recent activities')).toHaveClass('text-sm', 'text-gray-500');
+    expect(screen.getByText('No recent activities')).toHaveClass('text-sm', 'text-neutral-500');
   });
 
   it('renders with custom error state class', () => {
@@ -218,7 +218,7 @@ describe('RecentActivities', () => {
 
   it('renders with default loading state class when no custom loading state class provided', () => {
     render(<RecentActivities activities={[]} isLoading={true} />);
-    expect(screen.getByTestId('loading-spinner')).toHaveClass('animate-spin', 'h-5', 'w-5', 'text-gray-500');
+    expect(screen.getByTestId('loading-spinner')).toHaveClass('animate-spin', 'h-5', 'w-5', 'text-neutral-500');
   });
 
   it('renders with custom activity item class', () => {
@@ -233,7 +233,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityItems = screen.getAllByTestId('activity-item');
     activityItems.forEach(item => {
-      expect(item).toHaveClass('py-4', 'border-b', 'border-gray-200', 'last:border-b-0');
+      expect(item).toHaveClass('py-4', 'border-b', 'border-neutral-200', 'last:border-b-0');
     });
   });
 
@@ -249,7 +249,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityIcons = screen.getAllByTestId(/icon$/);
     activityIcons.forEach(icon => {
-      expect(icon).toHaveClass('h-5', 'w-5', 'text-gray-400');
+      expect(icon).toHaveClass('h-5', 'w-5', 'text-neutral-400');
     });
   });
 
@@ -281,7 +281,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityTitles = screen.getAllByTestId('activity-title');
     activityTitles.forEach(title => {
-      expect(title).toHaveClass('text-sm', 'font-medium', 'text-gray-900');
+      expect(title).toHaveClass('text-sm', 'font-medium', 'text-neutral-900');
     });
   });
 
@@ -297,7 +297,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityDescriptions = screen.getAllByTestId('activity-description');
     activityDescriptions.forEach(description => {
-      expect(description).toHaveClass('text-sm', 'text-gray-500');
+      expect(description).toHaveClass('text-sm', 'text-neutral-500');
     });
   });
 
@@ -313,7 +313,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityTimes = screen.getAllByTestId('activity-time');
     activityTimes.forEach(time => {
-      expect(time).toHaveClass('text-xs', 'text-gray-400');
+      expect(time).toHaveClass('text-xs', 'text-neutral-400');
     });
   });
 
@@ -329,7 +329,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const activityUsers = screen.getAllByTestId('activity-user');
     activityUsers.forEach(user => {
-      expect(user).toHaveClass('text-sm', 'text-gray-500');
+      expect(user).toHaveClass('text-sm', 'text-neutral-500');
     });
   });
 
@@ -355,7 +355,7 @@ describe('RecentActivities', () => {
     render(<RecentActivities activities={mockActivities} />);
     const filterButtons = screen.getAllByRole('button');
     filterButtons.forEach(button => {
-      expect(button).toHaveClass('text-sm', 'font-medium', 'text-gray-500', 'hover:text-gray-700');
+      expect(button).toHaveClass('text-sm', 'font-medium', 'text-neutral-500', 'hover:text-neutral-700');
     });
   });
 
@@ -366,7 +366,7 @@ describe('RecentActivities', () => {
 
   it('renders with default filter input class when no custom filter input class provided', () => {
     render(<RecentActivities activities={mockActivities} />);
-    expect(screen.getByPlaceholderText('Filter by user')).toHaveClass('block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-indigo-500', 'focus:ring-indigo-500', 'sm:text-sm');
+    expect(screen.getByPlaceholderText('Filter by user')).toHaveClass('block', 'w-full', 'rounded-md', 'border-neutral-300', 'shadow-sm', 'focus:border-indigo-500', 'focus:ring-indigo-500', 'sm:text-sm');
   });
 
   it('renders with custom sort button class', () => {
@@ -376,6 +376,6 @@ describe('RecentActivities', () => {
 
   it('renders with default sort button class when no custom sort button class provided', () => {
     render(<RecentActivities activities={mockActivities} />);
-    expect(screen.getByText('Most recent')).toHaveClass('text-sm', 'font-medium', 'text-gray-500', 'hover:text-gray-700');
+    expect(screen.getByText('Most recent')).toHaveClass('text-sm', 'font-medium', 'text-neutral-500', 'hover:text-neutral-700');
   });
 }); 

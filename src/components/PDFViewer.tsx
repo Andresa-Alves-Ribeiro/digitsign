@@ -7,7 +7,7 @@ import { selectionModePlugin } from '@react-pdf-viewer/selection-mode';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ErrorDisplay } from '@/components/ErrorDisplay';
-import Loading from '@/components/ui/Loading';
+import LoadingSpinner from '@/components/documents/LoadingSpinner';
 import { useTheme } from '@/contexts/ThemeContext';
 
 // Import only core styles
@@ -120,14 +120,14 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   if (isLoading || !pdfUrl) {
     return (
       <div className={`h-[800px] w-full flex items-center justify-center ${className}`}>
-        <Loading text="Loading PDF..." />
+        <LoadingSpinner />
       </div>
     );
   }
 
   return (
     <div className={`h-[800px] w-full ${className}`}>
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
         <Viewer
           fileUrl={pdfUrl}
           plugins={[

@@ -1,6 +1,6 @@
 import { ChartBarIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Document } from '@/types/interfaces';
-import { DocumentStatus } from '@/types/enums/document';
+import { DocumentStatus } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { FC, useState } from 'react';
 
@@ -105,7 +105,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
 
   return (
     <motion.div 
-      className="bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 overflow-hidden"
+      className="bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-slate-100 dark:border-neutral-700 overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -117,12 +117,12 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-slate-800 dark:text-text-dark">Timeline de Assinaturas</h3>
           <motion.button
-            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setShowLegend(!showLegend)}
           >
-            <InformationCircleIcon className="w-5 h-5 text-slate-400 dark:text-gray-500" />
+            <InformationCircleIcon className="w-5 h-5 text-slate-400 dark:text-neutral-500" />
           </motion.button>
         </div>
         <motion.div 
@@ -140,7 +140,7 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
       >
         {showLegend && (
           <motion.div 
-            className="bg-gray-50/50 dark:bg-gray-800/50 p-3 rounded-lg text-sm text-slate-600 dark:text-gray-400 mb-4"
+            className="bg-neutral-50/50 dark:bg-neutral-800/50 p-3 rounded-lg text-sm text-slate-600 dark:text-neutral-400 mb-4"
             variants={legendVariants}
             initial="hidden"
             animate="visible"
@@ -257,9 +257,9 @@ const SigningTimeline: FC<SigningTimelineProps> = ({ documents }): JSX.Element =
                 repeatType: 'reverse'
               }}
             >
-              <ChartBarIcon className="w-12 h-12 text-slate-300 dark:text-gray-600 mx-auto mb-2" />
+              <ChartBarIcon className="w-12 h-12 text-slate-300 dark:text-neutral-600 mx-auto mb-2" />
             </motion.div>
-            <p className="text-slate-500 dark:text-gray-400">Nenhum documento encontrado</p>
+            <p className="text-slate-500 dark:text-neutral-400">Nenhum documento encontrado</p>
           </motion.div>
         )}
       </motion.div>

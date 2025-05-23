@@ -27,7 +27,7 @@ describe('PageTransition', () => {
         <div>Test content</div>
       </PageTransition>
     );
-    expect(screen.getByTestId('page-transition')).toHaveClass('min-h-screen', 'bg-gray-100');
+    expect(screen.getByTestId('page-transition')).toHaveClass('min-h-screen', 'bg-neutral-100');
   });
 
   it('renders with custom animation class', () => {

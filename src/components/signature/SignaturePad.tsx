@@ -9,7 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProps) => {
   const signaturePadRef = useRef<SignatureCanvas>(null);
   const { theme: _isDarkMode } = useTheme();
-  const previousThemeRef = useRef(theme);
+  const previousThemeRef = useRef(_isDarkMode);
   const signatureDataRef = useRef<string>('');
 
   const clear = useCallback(() => {
@@ -67,12 +67,12 @@ const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProp
   // Only clear on initial mount
   useEffect(() => {
     clear();
-  }, []);
+  }, [clear]);
 
   // Handle theme changes
   useEffect(() => {
-    if (previousThemeRef.current !== theme) {
-      previousThemeRef.current = theme;
+    if (previousThemeRef.current !== _isDarkMode) {
+      previousThemeRef.current = _isDarkMode;
       
       if (signaturePadRef.current && !signaturePadRef.current.isEmpty()) {
         // Save current signature
@@ -84,7 +84,7 @@ const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProp
         redrawSignature(currentSignature);
       }
     }
-  }, [theme, clear, redrawSignature]);
+  }, [_isDarkMode, clear, redrawSignature]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -104,7 +104,7 @@ const SignaturePad = ({ onSave: _onSave, onCancel: _onCancel }: SignaturePadProp
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="w-full border border-gray-200 dark:border-gray-700 rounded-lg mb-6 overflow-hidden bg-white dark:bg-gray-800">
+      <div className="w-full border border-neutral-200 dark:border-neutral-700 rounded-lg mb-6 overflow-hidden bg-white dark:bg-neutral-800">
         <SignatureCanvas
           ref={signaturePadRef}
           canvasProps={{

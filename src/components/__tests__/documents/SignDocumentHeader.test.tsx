@@ -352,10 +352,10 @@ describe('SignDocumentHeader', () => {
   });
 
   it('should render sign document header with custom back button color', () => {
-    render(<SignDocumentHeader document={mockDocument} backButtonColor="text-gray-500" />);
+    render(<SignDocumentHeader document={mockDocument} backButtonColor="text-neutral-500" />);
     
     const backButton = screen.getByText('Voltar');
-    expect(backButton).toHaveClass('text-gray-500');
+    expect(backButton).toHaveClass('text-neutral-500');
   });
 
   it('should render sign document header with custom sign button size', () => {
@@ -520,7 +520,7 @@ describe('SignDocumentHeader', () => {
   it('renders with default title class when no custom title class provided', () => {
     render(<SignDocumentHeader document={mockDocument} />);
     const title = screen.getByText('Test Document');
-    expect(title).toHaveClass('text-2xl', 'font-bold', 'text-gray-900');
+    expect(title).toHaveClass('text-2xl', 'font-bold', 'text-neutral-900');
   });
 
   it('renders with custom status class', () => {
@@ -532,7 +532,7 @@ describe('SignDocumentHeader', () => {
   it('renders with default status class when no custom status class provided', () => {
     render(<SignDocumentHeader document={mockDocument} />);
     const status = screen.getByText('PENDING');
-    expect(status).toHaveClass('text-sm', 'font-medium', 'text-gray-500');
+    expect(status).toHaveClass('text-sm', 'font-medium', 'text-neutral-500');
   });
 
   it('renders with custom back button class', () => {
@@ -544,7 +544,7 @@ describe('SignDocumentHeader', () => {
   it('renders with default back button class when no custom back button class provided', () => {
     render(<SignDocumentHeader document={mockDocument} />);
     const backButton = screen.getByRole('button', { name: /back/i });
-    expect(backButton).toHaveClass('text-gray-500', 'hover:text-gray-700');
+    expect(backButton).toHaveClass('text-neutral-500', 'hover:text-neutral-700');
   });
 
   it('renders with custom back button text', () => {

@@ -11,18 +11,18 @@ export default function SettingsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+      <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
         Settings
       </h1>
-      <div className="max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <div className="max-w-2xl bg-white dark:bg-neutral-800 p-6 rounded-lg shadow">
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
               Preferences
             </h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-700 dark:text-gray-300">Notifications</span>
+                <span className="text-neutral-700 dark:text-neutral-300">Notifications</span>
                 <input
                   type="checkbox"
                   checked={settings.notifications}
@@ -31,7 +31,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700 dark:text-gray-300">Dark Mode</span>
+                <span className="text-neutral-700 dark:text-neutral-300">Dark Mode</span>
                 <input
                   type="checkbox"
                   checked={settings.darkMode}
@@ -40,7 +40,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700 dark:text-gray-300">Language</span>
+                <span className="text-neutral-700 dark:text-neutral-300">Language</span>
                 <select
                   value={settings.language}
                   onChange={(e) => setSettings({ ...settings, language: e.target.value })}

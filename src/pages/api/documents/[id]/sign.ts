@@ -4,13 +4,18 @@ import { authOptions } from '@/lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { v2 as cloudinary } from 'cloudinary';
 import { PDFDocument, PDFImage } from 'pdf-lib';
-import { Document, Signature } from '@prisma/client';
+import { Document, Signature, DocumentStatus } from '@prisma/client';
 
 interface SignResponse {
   error?: string;
   document?: Document & {
-    signatures: Signature[];
-  };
+    signature: Signature | null;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
+  } | null;
 }
 
 interface CloudinaryResource {
@@ -66,7 +71,7 @@ export default async function handler(
   try {
     // Ensure Cloudinary is configured
     ensureCloudinaryConfig();
-    
+
     const session = await getServerSession(req, res, authOptions);
     if (!session) {
       return res.status(401).json({ error: 'Não autorizado' });
@@ -127,8 +132,8 @@ export default async function handler(
           type: 'upload'
         });
       } catch (cloudinaryError) {
-        return res.status(404).json({ 
-          error: 'Arquivo não encontrado no Cloudinary. Por favor, tente fazer upload do documento novamente.' 
+        return res.status(404).json({
+          error: 'Arquivo não encontrado no Cloudinary. Por favor, tente fazer upload do documento novamente.'
         });
       }
 
@@ -138,7 +143,7 @@ export default async function handler(
         type: 'upload',
         secure: true
       });
-      
+
       try {
         // Use a more reliable method to download the PDF
         const pdfResponse = await fetch(cloudinaryUrl, {
@@ -148,7 +153,7 @@ export default async function handler(
             'User-Agent': 'SuperSign/1.0'
           }
         });
-        
+
         if (!pdfResponse.ok) {
           // Try an alternative approach using Cloudinary's API
           try {
@@ -156,13 +161,13 @@ export default async function handler(
               resource_type: 'raw',
               type: 'upload'
             }) as CloudinaryResource;
-            
+
             if (!result || !result.secure_url) {
               throw new Error('No secure URL found in Cloudinary response');
             }
-            
+
             const alternativeUrl = result.secure_url;
-            
+
             const alternativeResponse = await fetch(alternativeUrl, {
               method: 'GET',
               headers: {
@@ -170,13 +175,13 @@ export default async function handler(
                 'User-Agent': 'SuperSign/1.0'
               }
             });
-            
+
             if (!alternativeResponse.ok) {
               throw new Error(`Alternative download failed with status: ${alternativeResponse.status}`);
             }
-            
+
             const pdfBytes = await alternativeResponse.arrayBuffer();
-            
+
             let pdfDoc: PDFDocument;
             try {
               pdfDoc = await PDFDocument.load(pdfBytes);
@@ -184,11 +189,11 @@ export default async function handler(
                 throw new Error('Failed to load PDF document');
               }
             } catch (loadError) {
-              return res.status(500).json({ 
-                error: 'Falha ao carregar o documento PDF. O arquivo pode estar corrompido.' 
+              return res.status(500).json({
+                error: 'Falha ao carregar o documento PDF. O arquivo pode estar corrompido.'
               });
             }
-            
+
             // Convert base64 signature to image
             const base64Data = signatureImage.split(',')[1];
             if (!base64Data) {
@@ -230,8 +235,9 @@ export default async function handler(
                 width: signatureDims.width,
                 height: signatureDims.height,
               });
-            } catch (_drawError) {
-              throw new Error('Failed to draw signature on PDF');
+            } catch (error: unknown) {
+              console.error('Erro ao desenhar assinatura:', error);
+              throw new Error('Falha ao adicionar assinatura ao PDF');
             }
 
             // Save the modified PDF
@@ -239,56 +245,86 @@ export default async function handler(
             try {
               const savedBytes = await pdfDoc.save();
               if (!savedBytes) {
-                throw new Error('Failed to save modified PDF');
+                throw new Error('Falha ao salvar PDF modificado: resultado vazio');
               }
               modifiedPdfBytes = savedBytes;
-            } catch (_saveError) {
-              throw new Error('Failed to save modified PDF');
+            } catch (error: unknown) {
+              console.error('Erro ao salvar PDF modificado:', error);
+              throw new Error('Falha ao salvar PDF modificado');
             }
 
-            // Upload the modified PDF to Cloudinary
+            // Upload the modified PDF back to Cloudinary
             try {
-              const uploadResult = await cloudinary.uploader.upload(
-                Buffer.from(modifiedPdfBytes).toString('base64'),
-                {
-                  resource_type: 'raw',
-                  public_id: document.fileKey,
-                  overwrite: true
-                }
-              ) as CloudinaryResource;
+              const uploadResult = await new Promise<CloudinaryResource>((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                  {
+                    resource_type: 'raw',
+                    public_id: document.fileKey,
+                    overwrite: true,
+                  },
+                  (error: Error | undefined, result: CloudinaryResource | undefined) => {
+                    if (error) reject(error);
+                    else if (result) resolve(result);
+                    else reject(new Error('Upload failed with no error or result'));
+                  }
+                ).end(Buffer.from(modifiedPdfBytes));
+              });
 
               if (!uploadResult || !uploadResult.secure_url) {
-                throw new Error('Failed to upload modified PDF to Cloudinary');
+                throw new Error('Falha ao fazer upload do PDF modificado');
               }
 
-              // Create signature record
-              const signature = await prisma.signature.create({
-                data: {
-                  documentId: document.id,
-                  userId: session.user.id,
-                  signedAt: new Date(),
-                  signatureImg: signatureImage
+              // Create signature record and update document status in a transaction
+              const [updatedDocument] = await prisma.$transaction([
+                prisma.document.update({
+                  where: { id: document.id },
+                  data: { 
+                    status: DocumentStatus.SIGNED
+                  },
+                  include: {
+                    signature: true,
+                    user: {
+                      select: {
+                        id: true,
+                        name: true,
+                        email: true
+                      }
+                    }
+                  }
+                }),
+                prisma.signature.create({
+                  data: {
+                    documentId: document.id,
+                    userId: session.user.id,
+                    signedAt: new Date(),
+                    signatureImg: signatureImage
+                  }
+                })
+              ]);
+
+              if (!updatedDocument) {
+                throw new Error('Falha ao atualizar o documento');
+              }
+
+              // Retornar o documento atualizado com a assinatura
+              const finalDocument = await prisma.document.findUnique({
+                where: { id: document.id },
+                include: {
+                  signature: true,
+                  user: true
                 }
               });
 
               return res.status(200).json({
-                document: {
-                  id: document.id,
-                  name: document.name,
-                  fileKey: document.fileKey,
-                  userId: document.userId,
-                  status: document.status,
-                  createdAt: document.createdAt,
-                  updatedAt: document.updatedAt,
-                  mimeType: document.mimeType,
-                  size: document.size,
-                  signatures: [signature]
-                }
+                document: finalDocument
               });
-            } catch (uploadError) {
-              return res.status(500).json({
-                error: 'Falha ao fazer upload do documento assinado'
-              });
+            } catch (updateError) {
+              if (updateError instanceof Error) {
+                console.error('Erro ao atualizar o documento:', updateError);
+                throw new Error(`Falha ao atualizar o status do documento: ${updateError.message}`);
+              } else {
+                throw new Error('Falha ao atualizar o status do documento: erro desconhecido');
+              }
             }
           } catch (alternativeError) {
             return res.status(500).json({

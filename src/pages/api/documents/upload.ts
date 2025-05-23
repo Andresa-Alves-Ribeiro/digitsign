@@ -6,6 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { NextApiRequestWithFiles } from '@/types/api';
 import type { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
+import { Document, DocumentStatus } from '@prisma/client';
 
 export const config = {
   api: {
@@ -28,15 +29,22 @@ const storage = multer.memoryStorage();
 
 interface UploadResponse {
   message?: string;
-  document?: {
-    id: string;
-    name: string;
-    fileKey: string;
-  };
+  document?: Document;
   error?: string;
   details?: {
     mimetype?: string;
     name?: string;
+    message?: string;
+    stack?: string;
+    rawError?: unknown;
+  };
+  inputData?: {
+    name: string;
+    fileKey: string;
+    userId: string;
+    status: DocumentStatus;
+    mimeType: string;
+    size: number;
   };
 }
 
@@ -98,6 +106,18 @@ export default async function handler(
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    // Verify user exists in database
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id }
+    });
+
+    if (!user) {
+      return res.status(401).json({ 
+        message: 'User not found in database',
+        error: 'User not found'
+      });
+    }
+
     // Run multer middleware
     await runMiddleware(req, res, upload.single('file'));
 
@@ -129,29 +149,63 @@ export default async function handler(
     });
 
     // Create document record
-    const document = await prisma.document.create({
-      data: {
-        name: file.originalname,
-        fileKey: uploadResponse.public_id,
-        userId: session.user.id,
-        status: 'pending',
-        mimeType: file.mimetype,
-        size: file.size
-      },
-    });
+    try {
+      if (!file.mimetype) {
+        throw new Error('MIME type is required');
+      }
 
-    return res.status(201).json({
-      message: 'Documento enviado com sucesso',
-      document,
-    });
+      const document = await prisma.document.create({
+        data: {
+          name: file.originalname,
+          fileKey: uploadResponse.public_id,
+          userId: session.user.id,
+          status: 'PENDING',
+          mimeType: file.mimetype,
+          size: file.size
+        },
+      });
+
+      return res.status(201).json({
+        message: 'Documento enviado com sucesso',
+        document,
+      });
+    } catch (prismaError) {
+      console.error('Prisma error:', prismaError);
+
+      // Enhanced error logging
+      return res.status(500).json({
+        error: 'Database error while creating document',
+        details: prismaError instanceof Error
+              ? { 
+                  name: prismaError.name, 
+                  message: prismaError.message, 
+                  stack: prismaError.stack,
+                  mimetype: file.mimetype || 'undefined'
+                }
+              : { 
+                  message: 'Unknown error occurred', 
+                  rawError: prismaError,
+                  mimetype: file.mimetype || 'undefined'
+                },
+        inputData: {
+          name: file.originalname,
+          fileKey: uploadResponse.public_id,
+          userId: session.user.id,
+          status: 'PENDING',
+          mimeType: file.mimetype || 'undefined',
+          size: file.size
+        }
+      });
+    }
   } catch (error) {
     console.error('Error uploading document:', error);
     return res.status(500).json({ 
       error: 'Internal Server Error',
       details: error instanceof Error ? { 
         mimetype: undefined,
-        name: error.name
+        name: error.name,
+        message: error.message
       } : undefined
     });
   }
-} 
+}

@@ -120,7 +120,7 @@ describe('ErrorMessage', () => {
 
   it('renders with default message color when no custom message color provided', () => {
     render(<ErrorMessage message="Test error message" />);
-    expect(screen.getByTestId('error-text')).toHaveClass('text-red-600');
+    expect(screen.getByTestId('error-text')).toHaveClass('text-neutral-800', 'dark:text-neutral-200');
   });
 
   it('renders with custom message size', () => {
@@ -234,13 +234,13 @@ describe('ErrorMessage', () => {
   });
 
   it('renders with custom container background', () => {
-    render(<ErrorMessage message="Test error message" containerBackground="bg-gray-100" />);
-    expect(screen.getByTestId('error-container')).toHaveClass('bg-gray-100');
+    render(<ErrorMessage message="Test error message" containerBackground="bg-neutral-100" />);
+    expect(screen.getByTestId('error-container')).toHaveClass('bg-neutral-100');
   });
 
   it('renders with default container background when no custom container background provided', () => {
     render(<ErrorMessage message="Test error message" />);
-    expect(screen.getByTestId('error-container')).not.toHaveClass('bg-gray-100');
+    expect(screen.getByTestId('error-container')).not.toHaveClass('bg-neutral-100');
   });
 
   it('renders with custom container border', () => {

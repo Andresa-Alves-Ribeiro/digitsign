@@ -17,6 +17,7 @@ interface StatCardProps {
   buttonText?: string;
   href?: string;
   isActionCard?: boolean;
+  showButton?: boolean;
 }
 
 const StatCard: FC<StatCardProps> = ({
@@ -33,6 +34,7 @@ const StatCard: FC<StatCardProps> = ({
   buttonText,
   href,
   isActionCard = false,
+  showButton = true,
 }): JSX.Element => {
   const percentage = total && value ? Math.round((value / total) * 100) : 0;
 
@@ -40,16 +42,16 @@ const StatCard: FC<StatCardProps> = ({
   const wrapperProps = isActionCard ? {
     whileHover: { scale: 1.02 },
     whileTap: { scale: 0.98 },
-    className: 'bg-white dark:bg-component-bg-dark overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-slate-100 dark:border-gray-700 h-full'
+    className: 'bg-white dark:bg-component-bg-dark overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-neutral-100 dark:border-neutral-700 h-full'
   } : {
-    className: 'bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 h-full'
+    className: 'bg-white dark:bg-component-bg-dark p-6 rounded-xl shadow-sm border border-neutral-100 dark:border-neutral-700 h-full'
   };
 
   return (
     <CardWrapper {...wrapperProps}>
       <div className={`${isActionCard ? 'p-6' : ''} flex flex-col h-full`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-text-dark">{title}</h3>
+          <h3 className="text-lg font-semibold text-neutral-800 dark:text-text-dark">{title}</h3>
           <motion.div 
             className={`p-2 rounded-full ${iconColor.replace('text-', 'bg-').replace('-500', '-100')}`}
             whileHover={{ rotate: 360 }}
@@ -87,19 +89,19 @@ const StatCard: FC<StatCardProps> = ({
           </div>
         </div>
 
-        {buttonText && href && (
-          <div className="mt-auto pt-6">
-            {description && (
-              <motion.p 
-                className="text-sm text-slate-600 dark:text-text-dark/70 mb-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                {description}
-              </motion.p>
-            )}
+        <div className="mt-auto pt-6">
+          {description && (
+            <motion.p 
+              className="text-sm text-neutral-600 dark:text-text-dark/70 mb-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              {description}
+            </motion.p>
+          )}
 
+          {showButton && href && buttonText && (
             <Link href={href}>
               <motion.div
                 className={`inline-flex items-center justify-center w-fit px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white ${buttonColor} ${buttonHoverColor} transition-colors duration-200`}
@@ -110,8 +112,8 @@ const StatCard: FC<StatCardProps> = ({
                 {buttonText}
               </motion.div>
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </CardWrapper>
   );

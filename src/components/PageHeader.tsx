@@ -9,7 +9,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, description, showNewDocumentButton = true }: PageHeaderProps): JSX.Element {
   return (
-    <div className="w-full bg-component-bg-light dark:bg-component-bg-dark p-8 md:p-10 rounded-md shadow-sm border border-gray-100 dark:border-gray-800">
+    <div className="w-full bg-component-bg-light dark:bg-component-bg-dark p-8 md:p-10 rounded-md shadow-sm border border-neutral-100 dark:border-neutral-800">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
         <div className="flex flex-col gap-3 max-w-2xl">
           <h2 className="text-2xl md:text-3xl font-medium text-text-light dark:text-text-dark tracking-tight">

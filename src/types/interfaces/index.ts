@@ -1,4 +1,4 @@
-import { DocumentStatus } from '../enums/document';
+import { DocumentStatus } from '@prisma/client';
 
 // User Domain
 export interface User {

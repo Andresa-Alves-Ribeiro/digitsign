@@ -24,7 +24,7 @@ const FormField = <T extends Record<string, unknown>>({
     
   return (
     <div>
-      <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={inputId} className="block text-sm font-medium text-neutral-700">
         {label}
       </label>
       <div className="relative">
@@ -32,13 +32,13 @@ const FormField = <T extends Record<string, unknown>>({
           id={inputId}
           {...register(name)}
           type={type}
-          className="w-full p-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent transition-all duration-200 outline-0"
+          className="w-full p-3 pl-12 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent transition-all duration-200 outline-0"
           placeholder={placeholder}
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           {icon || (
             <svg
-              className="h-5 w-5 text-gray-400"
+              className="h-5 w-5 text-neutral-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

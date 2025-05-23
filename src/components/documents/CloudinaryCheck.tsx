@@ -5,11 +5,6 @@ import { TOAST_CONFIG } from '@/constants/toast';
 import LoadingSpinner from './LoadingSpinner';
 import { CloudinaryCheckProps } from '@/types/interfaces/cloudinary';
 
-interface CloudinaryCheckResponse {
-  configured: boolean;
-  error?: string;
-}
-
 const CloudinaryCheck: React.FC<CloudinaryCheckProps> = ({ children }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -19,25 +14,21 @@ const CloudinaryCheck: React.FC<CloudinaryCheckProps> = ({ children }) => {
     const checkCloudinary = async () => {
       try {
         const response = await fetch('/api/cloudinary/check');
-        const data = await response.json() as CloudinaryCheckResponse;
+        const data = await response.json();
 
         if (!response.ok) {
-          toast.error(data.error ?? 'Erro ao verificar configuração do Cloudinary', TOAST_CONFIG);
-          router.push('/documents');
-          return;
+          throw new Error(data.error || 'Erro ao verificar Cloudinary');
         }
 
         if (!data.configured) {
-          toast.error('Cloudinary não está configurado corretamente', TOAST_CONFIG);
-          router.push('/documents');
-          return;
+          throw new Error('Cloudinary não está configurado corretamente');
         }
 
         setIsConfigured(true);
       } catch (error) {
-        console.error('Error checking Cloudinary:', error);
+        console.error('Erro detalhado ao verificar Cloudinary:', error);
         toast.error('Erro ao verificar configuração do Cloudinary', TOAST_CONFIG);
-        router.push('/documents');
+        setIsConfigured(false);
       } finally {
         setIsLoading(false);
       }

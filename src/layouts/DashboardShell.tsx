@@ -12,9 +12,7 @@ import {
   DocumentTextIcon,
   UserIcon,
   ChevronDownIcon,
-  ArrowRightStartOnRectangleIcon,
-  _SunIcon as SunIcon,
-  _MoonIcon as MoonIcon
+  ArrowRightStartOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
 interface DashboardShellProps {
@@ -56,16 +54,16 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
   }) => (
     <Link
       href={href}
-      className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 rounded-lg transition-all duration-200 group cursor-pointer ${
+      className={`flex items-center px-4 py-2 text-neutral-700 dark:text-neutral-200 rounded-lg transition-all duration-200 group cursor-pointer ${
         isActive 
           ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 shadow-sm border border-green-100 dark:border-green-800' 
-          : 'hover:bg-gray-100 dark:hover:bg-green-800'
+          : 'hover:bg-neutral-100 dark:hover:bg-green-800'
       }`}
     >
       <Icon className={`w-5 h-5 mr-3 ${
         isActive 
           ? 'text-green-500 dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300' 
-          : 'text-gray-400 dark:text-gray-500 group-hover:text-green-500 dark:group-hover:text-green-400'
+          : 'text-neutral-400 dark:text-neutral-500 group-hover:text-green-500 dark:group-hover:text-green-400'
       }`} />
       <span className="font-medium truncate cursor-pointer">{title}</span>
     </Link>
@@ -74,8 +72,8 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
   return (
     <div className="flex h-full w-full bg-background-light dark:bg-background-dark">
       {/* Sidebar - Hidden on mobile, visible on tablet and up */}
-      <div className="hidden lg:block fixed inset-y-0 left-0 w-64 bg-component-bg-light dark:bg-component-bg-dark shadow-lg border-r border-gray-100 dark:border-gray-700">
-        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+      <div className="hidden lg:block fixed inset-y-0 left-0 w-64 bg-component-bg-light dark:bg-component-bg-dark shadow-lg border-r border-neutral-100 dark:border-neutral-700">
+        <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
           <Link href="/" className="flex items-center justify-center cursor-pointer">
             <Image
               src={theme === 'dark' ? logoDark : logoLight}
@@ -111,8 +109,8 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
           </nav>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-neutral-100 dark:border-neutral-700">
+          <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
             <span>Made by <a href="https://github.com/Andresa-Alves-Ribeiro" target="_blank" className="text-green-500 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 font-medium">Andresa A. R.</a></span>
             <span>© 2025</span>
           </div>
@@ -136,7 +134,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                   className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'dashboard'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800'
                   }`}
                   title="Dashboard"
                 >
@@ -147,7 +145,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                   className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'upload'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800'
                   }`}
                   title="Upload"
                 >
@@ -158,7 +156,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                   className={`p-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
                     activePage === 'documents'
                       ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm border border-green-100 dark:border-green-800'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800'
                   }`}
                   title="Documentos"
                 >
@@ -171,7 +169,7 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                 {/* Theme Toggle Switch */}
                 <button
                   onClick={toggleTheme}
-                  className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 bg-gray-200 dark:bg-gray-700 group"
+                  className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 bg-neutral-200 dark:bg-neutral-700 group"
                   aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                 >
                   <span
@@ -226,14 +224,14 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                     className="flex items-center space-x-3 focus:outline-none px-3 py-2 rounded-lg transition-all duration-200 hover:bg-component-bg-hover-light dark:hover:bg-component-bg-hover-dark group"
                   >
                     <div className="relative">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-sm transition-transform duration-200 group-hover:scale-105">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-500 to-neutral-600 dark:from-neutral-600 dark:to-neutral-700 flex items-center justify-center ring-2 ring-white dark:ring-neutral-700 shadow-sm transition-transform duration-200 group-hover:scale-105">
                         <UserIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                     </div>
 
                     <ChevronDownIcon
-                      className={`w-4 h-4 text-gray-500 dark:text-gray-400 cursor-pointer transition-all duration-200 group-hover:text-green-600 dark:group-hover:text-green-400 ${
+                      className={`w-4 h-4 text-neutral-500 dark:text-neutral-400 cursor-pointer transition-all duration-200 group-hover:text-green-600 dark:group-hover:text-green-400 ${
                         isDropdownOpen ? 'transform rotate-180' : ''
                       }`}
                     />
@@ -246,19 +244,19 @@ export default function DashboardShell({ activePage = 'dashboard', children }: D
                         : 'opacity-0 -translate-y-2 invisible'
                     }`}
                   >
-                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                    <div className="px-4 py-3 border-b border-neutral-100 dark:border-neutral-700">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center shadow-sm">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-neutral-500 to-neutral-600 dark:from-neutral-600 dark:to-neutral-700 flex items-center justify-center shadow-sm">
                           <UserIcon className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{session?.user?.name}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{session?.user?.email}</p>
+                          <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{session?.user?.name}</p>
+                          <p className="text-xs text-neutral-500 dark:text-neutral-400">{session?.user?.email}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="border-t border-gray-100 dark:border-gray-700">
+                    <div className="border-t border-neutral-100 dark:border-neutral-700">
                       <LogoutButton
                         className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-200 group"
                         onLogout={() => setIsDropdownOpen(false)}

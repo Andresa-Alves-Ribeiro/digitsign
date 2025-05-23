@@ -16,11 +16,6 @@ import DocumentStatusCheck from '../../../components/documents/DocumentStatusChe
 import CloudinaryCheck from '../../../components/documents/CloudinaryCheck';
 import CloudinaryDocumentCheck from '../../../components/documents/CloudinaryDocumentCheck';
 
-interface ApiResponse {
-  error?: string;
-  success?: boolean;
-}
-
 function SignDocumentPage() {
   const router = useRouter();
   const params = useParams();
@@ -50,28 +45,24 @@ function SignDocumentPage() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const requestBody = {
-        signatureImage: signatureData,
-      };
-
       const response = await fetch(`/api/documents/${documentId}/sign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ signatureImage: signatureData }),
       });
 
-      const data = await response.json() as ApiResponse;
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Erro ao salvar assinatura');
+        throw new Error(data.error || 'Erro ao salvar assinatura');
       }
 
       router.push(`/documents/${documentId}`);
     } catch (error) {
       console.error('Error saving signature:', error);
-      setError(error instanceof Error ? error.message : 'Erro ao salvar assinatura. Tente novamente.');
+      setError(error instanceof Error ? error.message : 'Erro ao salvar assinatura');
     } finally {
       setIsSubmitting(false);
     }
@@ -131,7 +122,7 @@ function SignDocumentPage() {
                   variant="clear"
                   onClick={handleClear}
                   disabled={isSaving}
-                  className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 >
                   <TrashIcon className="w-5 h-5 mr-2" />
                   Limpar

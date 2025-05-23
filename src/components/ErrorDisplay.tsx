@@ -14,7 +14,7 @@ export function ErrorDisplay({ error, onRetry, className = '' }: ErrorDisplayPro
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`bg-component-bg-light dark:bg-component-bg-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden ${className}`}
+      className={`bg-component-bg-light dark:bg-component-bg-dark rounded-2xl shadow-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden ${className}`}
     >
       <div className="p-8">
         <div className="flex flex-col items-center text-center">
@@ -24,11 +24,11 @@ export function ErrorDisplay({ error, onRetry, className = '' }: ErrorDisplayPro
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
             Ops!
           </h2>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
             {error}
           </p>
 

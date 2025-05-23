@@ -177,7 +177,7 @@ const UploadComponent = () => {
               animate={{ opacity: 1 }}
               className="mb-6"
             >
-              <LoadingSpinner />
+              <LoadingSpinner text="Enviando arquivo..." />
             </motion.div>
           )}
 

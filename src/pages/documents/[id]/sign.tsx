@@ -23,6 +23,7 @@ function SignDocumentPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const documentId = params?.id as string;
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClear = useCallback((): void => {
     // @ts-expect-error - Accessing window.signaturePadMethods
@@ -101,7 +102,7 @@ function SignDocumentPage() {
   }
 
   if (isSubmitting) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner text="Processando assinatura..." />;
   }
 
   return (
@@ -153,6 +154,11 @@ function SignDocumentPage() {
           </DocumentContainer>
         </CloudinaryDocumentCheck>
       </DocumentStatusCheck>
+      {isLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-90 z-50">
+          <LoadingSpinner text="Processando assinatura..." />
+        </div>
+      )}
     </CloudinaryCheck>
   );
 }

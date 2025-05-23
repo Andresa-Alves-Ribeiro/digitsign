@@ -120,7 +120,7 @@ export function PDFViewer({ url, className = '' }: PDFViewerProps) {
   if (isLoading || !pdfUrl) {
     return (
       <div className={`h-[800px] w-full flex items-center justify-center ${className}`}>
-        <LoadingSpinner />
+        <LoadingSpinner text="Carregando documento..." />
       </div>
     );
   }

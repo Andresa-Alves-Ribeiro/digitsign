@@ -72,7 +72,7 @@ DigitSign is a modern web application that I developed as part of a technical as
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Andresa-Alves-Ribeiro/teste-tecnico-digitsign/main/public/screenshots/desktop.PNG" alt="Versão Desktop" />
+  <img src="![Captura de tela 2025-05-23 153941](https://github.com/user-attachments/assets/532d59eb-b478-4ccf-8f17-926e5fe4126b)" alt="Versão Desktop" />
 </p>
 
 <p align="center">

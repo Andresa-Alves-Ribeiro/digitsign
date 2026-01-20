@@ -179,6 +179,9 @@ DigitSign is a modern web application that I developed as part of a technical as
 
 https://digitsign.vercel.app/
 
+Email: admin@email.com
+Senha: 123456
+
 <a id="project-structure"></a>
 
 ## 📁 Project Structure
